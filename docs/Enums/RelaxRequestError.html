@@ -14,12 +14,13 @@
     <a title="RelaxRequestError Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (3% documented)</p>
+        <p><a href="../index.html">Relax Docs</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="../index.html"> Reference</a>
+        <a href="../index.html">Relax Reference</a>
         <img id="carat" src="../img/carat.png" />
         RelaxRequestError Enumeration Reference
       </p>
@@ -28,18 +29,26 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Enums.html">Enumerations</a>
+            <a href="../Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestType.html">RelaxRequestType</a>
+                <a href="../Protocols/RelaxService.html">RelaxService</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Protocols.html">Protocols</a>
+            <a href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
@@ -47,13 +56,10 @@
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxRequest.html">RelaxRequest</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/RelaxService.html">RelaxService</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Structs.html">Structures</a>
+            <a href="../Other%20Structs.html">Other Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
@@ -72,7 +78,7 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>An error that occurs when making a <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
 
           </section>
           <section class="section task-group-section">
@@ -91,7 +97,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Bad request (HTTP status 400)</p>
 
                       </div>
                       <div class="declaration">
@@ -118,7 +124,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Unauthorized (HTTP status 401)</p>
 
                       </div>
                       <div class="declaration">
@@ -145,7 +151,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Not found (HTTP status 404)</p>
 
                       </div>
                       <div class="declaration">
@@ -153,6 +159,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">notFound</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Relax0A12RequestErrorO06serverC0yAcA0aB0_p_tcACmF"></a>
+                    <a name="//apple_ref/swift/Element/serverError(request:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax0A12RequestErrorO06serverC0yAcA0aB0_p_tcACmF">serverError(request:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Server error occured (HTTP status 500-599</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -172,7 +205,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Another HTTP error status code occurred (besides 400, 401, 404, and outside the 200-399 success code range)</p>
 
                       </div>
                       <div class="declaration">
@@ -199,7 +232,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>An invalid URL was provided for the request</p>
 
                       </div>
                       <div class="declaration">
@@ -226,7 +259,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A   <code>URLError</code> occurred with the request</p>
 
                       </div>
                       <div class="declaration">
@@ -253,7 +286,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>No response was received</p>
 
                       </div>
                       <div class="declaration">
@@ -280,7 +313,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Another error occurred</p>
 
                       </div>
                       <div class="declaration">

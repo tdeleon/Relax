@@ -1,0 +1,12 @@
+module: Relax
+github_url: https://github.com/tdeleon/Relax
+clean: Yes
+output: docs
+hide_documentation_coverage: Yes
+documentation: Documentation/*.md
+custom_categories:
+  - name: Defining Services
+    children:
+    - RelaxService
+abstract: Documentation/Sections/*.md
+

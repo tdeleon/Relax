@@ -23,7 +23,7 @@ internal extension URLRequest {
         self = urlRequest
     }
     
-    init?(type: RelaxRequestType,
+    init?(type: RelaxHTTPRequestType,
           baseURL: URL,
           endpoint: String? = nil,
           pathParameters: [String] = [String](),

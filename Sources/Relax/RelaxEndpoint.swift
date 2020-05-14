@@ -7,9 +7,11 @@
 
 import Foundation
 
+/// <#Description#>
 public protocol RelaxEndpoint {
+    ///
     var service: RelaxService { get }
-    
+    ///
     var name: String? { get }
 }
 

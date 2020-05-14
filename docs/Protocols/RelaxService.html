@@ -14,12 +14,13 @@
     <a title="RelaxService Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (3% documented)</p>
+        <p><a href="../index.html">Relax Docs</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="../index.html"> Reference</a>
+        <a href="../index.html">Relax Reference</a>
         <img id="carat" src="../img/carat.png" />
         RelaxService Protocol Reference
       </p>
@@ -28,18 +29,26 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Enums.html">Enumerations</a>
+            <a href="../Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestType.html">RelaxRequestType</a>
+                <a href="../Protocols/RelaxService.html">RelaxService</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Protocols.html">Protocols</a>
+            <a href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
@@ -47,13 +56,10 @@
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxRequest.html">RelaxRequest</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/RelaxService.html">RelaxService</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Structs.html">Structures</a>
+            <a href="../Other%20Structs.html">Other Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
@@ -72,7 +78,20 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A protocol to define a REST API service</p>
+
+<p>Implement this protocol to define a REST service. All endpoints defined to use this service will share
+the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp">RelaxService.baseURL</a></code> and <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">RelaxService.session</a></code> properties.</p>
+
+<p>For example, to define a service at <code>http://www.example.com</code>:</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">RelaxService</span> <span class="p">{</span>
+   <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>All endpoints will be appened to the <code>baseURL</code> value of &ldquo;<a href="https://www.example.com/">https://www.example.com/</a>&rdquo;.</p>
+
+<p>See also: <code><a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a></code>, <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
 
           </section>
           <section class="section task-group-section">
@@ -91,7 +110,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The base URL of the service. This value is shared among all endpoints on the service.</p>
 
                       </div>
                       <div class="declaration">
@@ -118,7 +137,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Response for an HTTP request</p>
 
                       </div>
                       <div class="declaration">
@@ -145,41 +164,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Response for an HTTP request using a Combine publisher</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxPublisherResponse</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Relax0A7ServiceP0A6Resulta"></a>
-                    <a name="//apple_ref/swift/Alias/RelaxResult" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP0A6Resulta">RelaxResult</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxResult</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A8Responsea">RelaxResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RelaxRequestError.html">RelaxRequestError</a></span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxPublisherResponse</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -199,20 +191,33 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Completion handler for requests made</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxRequestCompletion</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A6Resulta">RelaxResult</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxRequestCompletion</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A8Responsea">RelaxResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RelaxRequestError.html">RelaxRequestError</a></span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Making%20Requests"></a>
+                <a name="//apple_ref/swift/Section/Making Requests" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Making%20Requests"></a>
+                  <h3 class="section-name"><p>Making Requests</p>
+</h3>
+                </div>
+              </div>
+              <ul>
                 <li class="item">
                   <div>
                     <code>
@@ -229,7 +234,10 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A default <code>URLSession</code> instance which requests will use if another is not provided.</p>
+
+<p>The configuration of this session has <code>timeoutIntervalForRequest</code> and <code>timeoutIntervalForResource</code> values of 30,
+and <code>waitsForConnectivity</code> set to true (for supported platform versions).</p>
 
                       </div>
                       <div class="declaration">
@@ -259,7 +267,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Make a request using the given <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code> and parameters</p>
+
+<p>Call this method to create a <code>URLSessionDataTask</code> for a given request. By default, the <code>resume()</code> will be called on the task, executing the request immediately.</p>
+<div class="aside aside-warning">
+    <p class="aside-title">Warning</p>
+    When <code>autoResumeTask</code> is <code>true</code>, calling <code>resume()</code> on the returned task will cause the request to be executed again.
+
+</div>
 
                       </div>
                       <div class="declaration">
@@ -271,15 +286,74 @@
 
                         </div>
                       </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code> to use</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>session</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The session to use. If none is provided, the default <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></code> property on the service will be used.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>autoResumeTask</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>If <code>true</code>, then <code>resume()</code> will be called automatically on the created <code>URLSessionDataTask</code>. Default value is <code>true</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>completion</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17RequestCompletiona">RelaxRequestCompletion</a></code> handler which is executed when the task is completed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A <code>URLSessionDataTask</code>, or <code>nil</code> if there was a failure in creating the task.</p>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataVSg4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF"></a>
+                    <a name="/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF"></a>
                     <a name="//apple_ref/swift/Method/make(_:session:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataVSg4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF">make(_:<wbr>session:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF">make(_:<wbr>session:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -290,7 +364,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Make a request using a Combine publisher.</p>
 
                       </div>
                       <div class="declaration">
@@ -300,6 +374,41 @@
                           <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">make</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17PublisherResponsea">RelaxPublisherResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RelaxRequestError.html">RelaxRequestError</a></span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
 
                         </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The request to execute</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>session</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The session to use. If not specified, the default provided by the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></code> property of the <code>RelaxService</code> will be used</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div>
+                        <h4>Return Value</h4>
+                        <p>A Combine publisher of type <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17PublisherResponsea">RelaxPublisherResponse</a></code>.</p>
                       </div>
                     </section>
                   </div>

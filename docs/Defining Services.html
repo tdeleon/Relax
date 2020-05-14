@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Defining Services  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Section/Defining Services" class="dashAnchor"></a>
+    <a title="Defining Services  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">Relax Docs</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png"/>View on GitHub</a></p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">Relax Reference</a>
+        <img id="carat" src="img/carat.png" />
+        Defining Services  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Defining%20Services.html">Defining Services</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/RelaxService.html">RelaxService</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/RelaxRequestError.html">RelaxRequestError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other%20Protocols.html">Other Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/RelaxRequest.html">RelaxRequest</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other%20Structs.html">Other Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>Defining Services</h1>
+            <h2 id='subhead-here' class='heading'>Subhead here</h2>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Relax0A7ServiceP"></a>
+                    <a name="//apple_ref/swift/Protocol/RelaxService" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax0A7ServiceP">RelaxService</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A protocol to define a REST API service</p>
+
+<p>Implement this protocol to define a REST service. All endpoints defined to use this service will share
+the <code><a href="Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp">RelaxService.baseURL</a></code> and <code><a href="Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">RelaxService.session</a></code> properties.</p>
+
+<p>For example, to define a service at <code>http://www.example.com</code>:</p>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">RelaxService</span> <span class="p">{</span>
+   <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
+<span class="p">}</span>
+</code></pre>
+
+<p>All endpoints will be appened to the <code>baseURL</code> value of &ldquo;<a href="https://www.example.com/">https://www.example.com/</a>&rdquo;.</p>
+
+<p>See also: <code><a href="Protocols/RelaxEndpoint.html">RelaxEndpoint</a></code>, <code><a href="Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
+
+                        <a href="Protocols/RelaxService.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RelaxService</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-13)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

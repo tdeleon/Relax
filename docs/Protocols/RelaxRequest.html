@@ -14,12 +14,13 @@
     <a title="RelaxRequest Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html"> Docs</a> (3% documented)</p>
+        <p><a href="../index.html">Relax Docs</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="../img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="../index.html"> Reference</a>
+        <a href="../index.html">Relax Reference</a>
         <img id="carat" src="../img/carat.png" />
         RelaxRequest Protocol Reference
       </p>
@@ -28,18 +29,26 @@
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="../Enums.html">Enumerations</a>
+            <a href="../Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestType.html">RelaxRequestType</a>
+                <a href="../Protocols/RelaxService.html">RelaxService</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Protocols.html">Protocols</a>
+            <a href="../Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
@@ -47,13 +56,10 @@
               <li class="nav-group-task">
                 <a href="../Protocols/RelaxRequest.html">RelaxRequest</a>
               </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/RelaxService.html">RelaxService</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Structs.html">Structures</a>
+            <a href="../Other%20Structs.html">Other Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
@@ -72,7 +78,7 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>&lt;#Description#&gt;</p>
 
           </section>
           <section class="section task-group-section">
@@ -94,13 +100,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The base URL of the service request is being made</p>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -116,9 +121,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7RequestP11requestTypeAA0abD0Ovp"></a>
+                    <a name="/s:5Relax0A7RequestP11requestTypeAA0a11HTTPRequestD0Ovp"></a>
                     <a name="//apple_ref/swift/Property/requestType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7RequestP11requestTypeAA0abD0Ovp">requestType</a>
+                    <a class="token" href="#/s:5Relax0A7RequestP11requestTypeAA0a11HTTPRequestD0Ovp">requestType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -126,14 +131,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The type of request</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">requestType</span><span class="p">:</span> <span class="kt"><a href="../Enums/RelaxRequestType.html">RelaxRequestType</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">requestType</span><span class="p">:</span> <span class="kt"><a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -153,7 +158,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The endpoint the request is made at</p>
 
                       </div>
                       <div class="declaration">
@@ -183,13 +188,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Path parameters of the request. Array elements are separated by a <code>/</code> in the final request URL. Defaults to an empty array (no parameters).</p>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -218,13 +222,12 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Query parameters of the request. Default is an empty array (no parameters)</p>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -253,13 +256,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>HTTP headers of the request. Default is an empty array (no headers)</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    Do not set <code>Content-Type</code> header field values here; instead use the <code><a href="../Protocols/RelaxRequest.html#/s:5Relax0A7RequestP11contentTypeAA0ab7ContentD0VSgvp">contentType</a></code> property. The contents of that property will be added to the <code>URLRequest.allHTTPHeaderFields</code> property.
+
+</div>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -288,19 +295,23 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The content type of the request. Default value is <code>application/json</code>.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    This value is added as an HTTP header on the URLRequest.
+
+</div>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">contentType</span><span class="p">:</span> <span class="kt"><a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">contentType</span><span class="p">:</span> <span class="kt"><a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a></span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -323,19 +334,18 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Body of the request</p>
 
                       </div>
                       <h4>Default Implementation</h4>
                       <div class="default_impl abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -358,7 +368,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The <code>URLRequest</code> object representing this request</p>
 
                       </div>
                       <div class="declaration">

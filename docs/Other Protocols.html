@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Enumerations  Reference</title>
+    <title>Other Protocols  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,36 +10,45 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Section/Enumerations" class="dashAnchor"></a>
-    <a title="Enumerations  Reference"></a>
+    <a name="//apple_ref/swift/Section/Other Protocols" class="dashAnchor"></a>
+    <a title="Other Protocols  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html"> Docs</a> (3% documented)</p>
+        <p><a href="index.html">Relax Docs</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png"/>View on GitHub</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="index.html"> Reference</a>
+        <a href="index.html">Relax Reference</a>
         <img id="carat" src="img/carat.png" />
-        Enumerations  Reference
+        Other Protocols  Reference
       </p>
     </div>
     <div class="content-wrapper">
       <nav class="sidebar">
         <ul class="nav-groups">
           <li class="nav-group-name">
-            <a href="Enums.html">Enumerations</a>
+            <a href="Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Enums/RelaxRequestType.html">RelaxRequestType</a>
+                <a href="Protocols/RelaxService.html">RelaxService</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Protocols.html">Protocols</a>
+            <a href="Other%20Enums.html">Other Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/RelaxRequestError.html">RelaxRequestError</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Other%20Protocols.html">Other Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
@@ -47,13 +56,10 @@
               <li class="nav-group-task">
                 <a href="Protocols/RelaxRequest.html">RelaxRequest</a>
               </li>
-              <li class="nav-group-task">
-                <a href="Protocols/RelaxService.html">RelaxService</a>
-              </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Structs.html">Structures</a>
+            <a href="Other%20Structs.html">Other Structures</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
@@ -65,8 +71,8 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>Enumerations</h1>
-            <p>The following enumerations are available globally.</p>
+            <h1>Other Protocols</h1>
+            <p>The following protocols are available globally.</p>
 
           </section>
           <section class="section task-group-section">
@@ -75,9 +81,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A11RequestTypeO"></a>
-                    <a name="//apple_ref/swift/Enum/RelaxRequestType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A11RequestTypeO">RelaxRequestType</a>
+                    <a name="/s:5Relax0A8EndpointP"></a>
+                    <a name="//apple_ref/swift/Protocol/RelaxEndpoint" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax0A8EndpointP">RelaxEndpoint</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -85,15 +91,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>&lt;#Description#&gt;</p>
 
-                        <a href="Enums/RelaxRequestType.html" class="slightly-smaller">See more</a>
+                        <a href="Protocols/RelaxEndpoint.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RelaxRequestType</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RelaxEndpoint</span></code></pre>
 
                         </div>
                       </div>
@@ -103,9 +109,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO"></a>
-                    <a name="//apple_ref/swift/Enum/RelaxRequestError" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO">RelaxRequestError</a>
+                    <a name="/s:5Relax0A7RequestP"></a>
+                    <a name="//apple_ref/swift/Protocol/RelaxRequest" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax0A7RequestP">RelaxRequest</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -113,15 +119,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>&lt;#Description#&gt;</p>
 
-                        <a href="Enums/RelaxRequestError.html" class="slightly-smaller">See more</a>
+                        <a href="Protocols/RelaxRequest.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RelaxRequestError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RelaxRequest</span></code></pre>
 
                         </div>
                       </div>
