@@ -1,19 +1,6 @@
 {
   "warnings": [
-    {
-      "file": "/Users/tdeleon/Documents/Projects/Relax/Sources/Relax/RelaxRequest.swift",
-      "line": 63,
-      "symbol": "RelaxRequest.isEqual(to:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/tdeleon/Documents/Projects/Relax/Sources/Relax/RelaxRequest.swift",
-      "line": 72,
-      "symbol": "RelaxRequestContentType.init(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    }
+
   ],
   "source_directory": "/Users/tdeleon/Documents/Projects/Relax"
 }

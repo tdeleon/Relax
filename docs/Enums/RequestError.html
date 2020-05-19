@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RelaxRequestError Enumeration Reference</title>
+    <title>RequestError Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/RelaxRequestError" class="dashAnchor"></a>
-    <a title="RelaxRequestError Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Enum/RequestError" class="dashAnchor"></a>
+    <a title="RequestError Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Relax Docs</a></p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Relax Reference</a>
         <img id="carat" src="../img/carat.png" />
-        RelaxRequestError Enumeration Reference
+        RequestError Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -32,37 +32,24 @@
             <a href="../Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/RelaxService.html">RelaxService</a>
+                <a href="../Protocols/Service.html">Service</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Other%20Enums.html">Other Enumerations</a>
+            <a href="../Making%20Requests.html">Making Requests</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+                <a href="../Protocols/ServiceRequest.html">ServiceRequest</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other%20Protocols.html">Other Protocols</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
+                <a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/RelaxRequest.html">RelaxRequest</a>
+                <a href="../Structs/RequestContentType.html">RequestContentType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other%20Structs.html">Other Structures</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
+                <a href="../Enums/RequestError.html">RequestError</a>
               </li>
             </ul>
           </li>
@@ -71,14 +58,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>RelaxRequestError</h1>
+            <h1>RequestError</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RelaxRequestError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>An error that occurs when making a <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
+            <p>An error that occurs when making a <code><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></code></p>
 
           </section>
           <section class="section task-group-section">
@@ -87,9 +74,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO03badB0yAcA0aB0_p_tcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO03badB0yAC10Foundation10URLRequestV_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/badRequest(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO03badB0yAcA0aB0_p_tcACmF">badRequest(request:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO03badB0yAC10Foundation10URLRequestV_tcACmF">badRequest(request:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -104,7 +91,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">badRequest</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">badRequest</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -114,9 +101,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO12unauthorizedyAcA0aB0_p_tcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO12unauthorizedyAC10Foundation10URLRequestV_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/unauthorized(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO12unauthorizedyAcA0aB0_p_tcACmF">unauthorized(request:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO12unauthorizedyAC10Foundation10URLRequestV_tcACmF">unauthorized(request:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -131,7 +118,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">unauthorized</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">unauthorized</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -141,9 +128,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO8notFoundyAcA0aB0_p_tcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO8notFoundyAC10Foundation10URLRequestV_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/notFound(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO8notFoundyAcA0aB0_p_tcACmF">notFound(request:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO8notFoundyAC10Foundation10URLRequestV_tcACmF">notFound(request:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -158,7 +145,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">notFound</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">notFound</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -168,9 +155,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO06serverC0yAcA0aB0_p_tcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/serverError(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO06serverC0yAcA0aB0_p_tcACmF">serverError(request:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_tcACmF">serverError(request:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -185,7 +172,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -195,9 +182,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO9otherHTTPyAcA0aB0_p_SitcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO9otherHTTPyAC10Foundation10URLRequestV_SitcACmF"></a>
                     <a name="//apple_ref/swift/Element/otherHTTP(request:status:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO9otherHTTPyAcA0aB0_p_SitcACmF">otherHTTP(request:<wbr>status:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO9otherHTTPyAC10Foundation10URLRequestV_SitcACmF">otherHTTP(request:<wbr>status:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -212,7 +199,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">otherHTTP</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">otherHTTP</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -222,9 +209,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO10invalidURLyAcA0aB0_p_tcACmF"></a>
-                    <a name="//apple_ref/swift/Element/invalidURL(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO10invalidURLyAcA0aB0_p_tcACmF">invalidURL(request:<wbr>)</a>
+                    <a name="/s:5Relax12RequestErrorO10invalidURLyAC10Foundation0E0V_tcACmF"></a>
+                    <a name="//apple_ref/swift/Element/invalidURL(baseURL:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO10invalidURLyAC10Foundation0E0V_tcACmF">invalidURL(baseURL:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -239,7 +226,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">invalidURL</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">invalidURL</span><span class="p">(</span><span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -249,9 +236,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO03urlC0yAcA0aB0_p_10Foundation8URLErrorVtcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO03urlC0yAC10Foundation10URLRequestV_AE8URLErrorVtcACmF"></a>
                     <a name="//apple_ref/swift/Element/urlError(request:error:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO03urlC0yAcA0aB0_p_10Foundation8URLErrorVtcACmF">urlError(request:<wbr>error:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO03urlC0yAC10Foundation10URLRequestV_AE8URLErrorVtcACmF">urlError(request:<wbr>error:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -266,7 +253,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">urlError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">,</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">URLError</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">urlError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">URLError</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -276,9 +263,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO10noResponseyAcA0aB0_p_tcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO10noResponseyAC10Foundation10URLRequestV_tcACmF"></a>
                     <a name="//apple_ref/swift/Element/noResponse(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO10noResponseyAcA0aB0_p_tcACmF">noResponse(request:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO10noResponseyAC10Foundation10URLRequestV_tcACmF">noResponse(request:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -293,7 +280,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">noResponse</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">noResponse</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -303,9 +290,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A12RequestErrorO5otheryAcA0aB0_p_SStcACmF"></a>
+                    <a name="/s:5Relax12RequestErrorO5otheryAC10Foundation10URLRequestV_SStcACmF"></a>
                     <a name="//apple_ref/swift/Element/other(request:message:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A12RequestErrorO5otheryAcA0aB0_p_SStcACmF">other(request:<wbr>message:<wbr>)</a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO5otheryAC10Foundation10URLRequestV_SStcACmF">other(request:<wbr>message:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -320,7 +307,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">other</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">other</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span> <span class="nv">message</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -332,7 +319,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-13)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -32,37 +32,24 @@
             <a href="Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/RelaxService.html">RelaxService</a>
+                <a href="Protocols/Service.html">Service</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="Other%20Enums.html">Other Enumerations</a>
+            <a href="Making%20Requests.html">Making Requests</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+                <a href="Protocols/ServiceRequest.html">ServiceRequest</a>
               </li>
               <li class="nav-group-task">
-                <a href="Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="Other%20Protocols.html">Other Protocols</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
+                <a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/RelaxRequest.html">RelaxRequest</a>
+                <a href="Structs/RequestContentType.html">RequestContentType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="Other%20Structs.html">Other Structures</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
+                <a href="Enums/RequestError.html">RequestError</a>
               </li>
             </ul>
           </li>
@@ -72,7 +59,186 @@
         <section>
           <section class="section">
             <h1>Defining Services</h1>
-            <h2 id='subhead-here' class='heading'>Subhead here</h2>
+            <h3 id='overview' class='heading'>Overview</h3>
+
+<p>To define a service, implement the <code><a href="Protocols/Service.html">Service</a></code> protocol. Each service has a distinct base URL, and all requests made
+to the service will use this base URL. Use services to logically group requests together for better organization and code
+reusability.</p>
+
+<blockquote>
+<p><strong>Note:</strong> For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc), 
+it is not necessary to define multiple services.</p>
+</blockquote>
+<h4 id='about-the-protocol' class='heading'>About the protocol</h4>
+
+<p>This protocol only has two properties- <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code>. The <code>baseURL</code> property is required to be
+implemented, and provides the base URL used for all requests (see <a href="Making%20Requests.html">Making Requests</a> for more on requests). The <code>session</code> property is a <code>URLSession</code> instance that requests are made using. This property has a default implementation of <code>URLSession.shared</code>, but you can override this with your own. Additionally, when making requests,
+a session may be passed in per request.</p>
+<h3 id='defining-a-service' class='heading'>Defining a Service</h3>
+<h4 id='simple-service' class='heading'>Simple Service</h4>
+
+<p>Defining a service is as simple as declaring the base URL:</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/")!
+}
+</code></pre>
+<h4 id='customizing-urlsession' class='heading'>Customizing URLSession</h4>
+
+<p>By overriding the default <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code> property, you can use your own instance of <code>URLSession</code> instead of the default shared one.</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/")!
+    static var session: URLSession {
+        var config = URLSessionConfiguration.default
+        config.timeIntervalForRequest = 30
+        config.allowsCellularAccess = false
+        return URLSession(configuration: config)
+    }
+}
+</code></pre>
+<h4 id='dynamic-base-urls' class='heading'>Dynamic Base URLs</h4>
+
+<p>Often the service will have multiple environments, such as <em>Dev</em>, <em>Stage</em>, <em>Prod</em>, etc. Or, the domain used may be
+different per user account or location, not being known until runtime. This can be accomplished a few ways.</p>
+
+<p>By not providing an implementation of the <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> property, the base URL must then be provided as an initializer argument each time an instance of the service is created.</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    var baseURL: URL
+}
+
+let devURL = URL(string: "https://dev.example.com/")!
+
+ExampleService(baseURL: devURL).request(MyRequest()) { response in
+    ...
+}
+</code></pre>
+
+<p>Alternatively, an enum could be used as an initializer argument:</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    enum Environment {
+        case dev, stage, prod
+        var url: URL {
+            switch self {
+            case .dev:
+                return URL(string: "https://dev.example.com/")!
+            case .stage:
+                return URL(string: "https://stage.example.com/")!
+            case .prod:
+                return URL(string: "https://dev.example.com/")!
+            }
+        }
+    }
+
+    let environment: Environment
+
+    var baseURL: URL {
+        return environment.url
+    }
+}
+
+ExampleService(environment: .dev).request(MyRequest()) { response in
+    ...
+}
+</code></pre>
+
+<p>When using compiler flags to determine the current environment:</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    var baseURL: URL {
+    #if DEV
+        return URL(string: "https://dev.example.com/")!
+    #elseif STAGE
+        return URL(string: "https://stage.example.com/")!
+    #else
+        return URL(string: "https://prod.example.com/")!
+    #endif
+    }
+}
+
+
+ExampleService().request(MyRequest()) { response in
+    ...
+}
+</code></pre>
+<h3 id='making-requests' class='heading'>Making Requests</h3>
+
+<p>There are two ways of making requests against a service- a completion closure based method or using a Combine publisher
+(on available platforms/OS versions). For either case, a <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> must first be defined to represent the request, and then passed in to <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">Service.request(_:session:)</a></code>
+respectively.</p>
+<h4 id='defining-a-request' class='heading'>Defining a Request</h4>
+
+<blockquote>
+<p>For a more detailed explanation on <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code>, see <a href="Making%20Requests.html">Making Requests</a>.</p>
+</blockquote>
+
+<p>This example defines a <code>GET</code> request at the URL <em><a href="https://example.com/products">https://example.com/products</a></em>:</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+   let baseURL: URL = URL(string: "https://example.com/")!
+
+   struct GetProducts: ServiceRequest {
+      let requestType: HTTPRequestMethod = .get
+      var pathComponents: [String] = ["products"]
+   }
+}
+</code></pre>
+<h4 id='using-a-completion-handler' class='heading'>Using a Completion Handler</h4>
+
+<p>To make the request, pass an instance of the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> into the
+<code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code>:</p>
+<pre class="highlight plaintext"><code>ExampleService().request(ExampleService.GetProducts()) { response in
+    switch response {
+    case .failure(let error):
+        debugPrint("Failed to fetch products - \(error)")
+    case .success(let success):
+        // handle success response
+    }
+}
+</code></pre>
+
+<p>This method also returns a discardable result of <code>URLSessionDataTask</code>. By default, <code>resume()</code> is called on the task to
+start the download. If desired, you can manage this yourself by passing in <code>false</code> to the <code>autoResume</code>, and then calling <code>resume()</code> and/or <code>cancel()</code> on the returned task.</p>
+
+<blockquote>
+<p><strong>Warning:</strong> If the <code>autoResume()</code> parameter is true (the default), <strong>do not</strong> call <code>resume()</code> on the returned task, or
+the download will be started multiple times.</p>
+</blockquote>
+<pre class="highlight plaintext"><code>...
+task = ExampleService().request(ExampleService.GetProducts()) { response in
+    ...
+}
+
+task?.resume()
+...
+deinit() {
+    task?.cancel()
+}
+</code></pre>
+<h4 id='using-combine' class='heading'>Using Combine</h4>
+
+<p>To make the request, pass an instance of the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> into the <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">Service.request(_:session:)</a></code> method. This 
+method returns a publisher of type <code>AnyPublisher&lt;PublisherResponse&lt;Request&gt;, RequestError&gt;</code>.</p>
+
+<p><em>In this example, assume that there is a Codable object <code>Product</code> previously defined.</em></p>
+<pre class="highlight plaintext"><code>cancellable = ExampleService().request(ExampleService.GetProducts())
+    .map { $0.data }
+    .decode(type: Product.self, decoder: JSONDecoder())
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .finished:
+            break
+        case .failure(let error):
+            debugPrint("Received error: \(error)")
+        }
+
+    }, receiveValue: { product in
+        debugPrint("Received product: \(product)")
+    })
+</code></pre>
+<h3 id='errors' class='heading'>Errors</h3>
+
+<p>Errors are returned as <code><a href="Enums/RequestError.html">RequestError</a></code> enum cases with associated values. In cases where a request had a problem, the
+associated <code>URLRequest</code> that was used will be returned as an associated value.</p>
+
+<p>See <code><a href="Enums/RequestError.html">RequestError</a></code> for details.</p>
+<h1 id='reference' class='heading'>Reference</h1>
 
           </section>
           <section class="section task-group-section">
@@ -81,9 +247,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServiceP"></a>
-                    <a name="//apple_ref/swift/Protocol/RelaxService" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP">RelaxService</a>
+                    <a name="/s:5Relax7ServiceP"></a>
+                    <a name="//apple_ref/swift/Protocol/Service" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServiceP">Service</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -94,25 +260,26 @@
                         <p>A protocol to define a REST API service</p>
 
 <p>Implement this protocol to define a REST service. All endpoints defined to use this service will share
-the <code><a href="Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp">RelaxService.baseURL</a></code> and <code><a href="Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">RelaxService.session</a></code> properties.</p>
+the <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code> properties.</p>
 
 <p>For example, to define a service at <code>http://www.example.com</code>:</p>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">RelaxService</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">Service</span> <span class="p">{</span>
    <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
 <span class="p">}</span>
 </code></pre>
 
 <p>All endpoints will be appened to the <code>baseURL</code> value of &ldquo;<a href="https://www.example.com/">https://www.example.com/</a>&rdquo;.</p>
+<h4 id='see-also' class='heading'>See Also</h4>
 
-<p>See also: <code><a href="Protocols/RelaxEndpoint.html">RelaxEndpoint</a></code>, <code><a href="Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
+<p><code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code></p>
 
-                        <a href="Protocols/RelaxService.html" class="slightly-smaller">See more</a>
+                        <a href="Protocols/Service.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RelaxService</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Service</span></code></pre>
 
                         </div>
                       </div>
@@ -124,7 +291,7 @@ the <code><a href="Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10Fou
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-13)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

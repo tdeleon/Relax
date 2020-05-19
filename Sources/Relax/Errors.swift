@@ -1,5 +1,5 @@
 //
-//  RelaxErrors.swift
+//  Errors.swift
 //  
 //
 //  Created by Thomas De Leon on 5/13/20.
@@ -7,29 +7,29 @@
 
 import Foundation
 
-//MARK: - Errors
-/// An error that occurs when making a `RelaxRequest`
-public enum RelaxRequestError: Error {
+//MARK: - Handling Errors
+/// An error that occurs when making a `ServiceRequest`
+public enum RequestError: Error {
     /// Bad request (HTTP status 400)
-    case badRequest(request: RelaxRequest)
+    case badRequest(request: URLRequest)
     /// Unauthorized (HTTP status 401)
-    case unauthorized(request: RelaxRequest)
+    case unauthorized(request: URLRequest)
     /// Not found (HTTP status 404)
-    case notFound(request: RelaxRequest)
+    case notFound(request: URLRequest)
     /// Server error occured (HTTP status 500-599
-    case serverError(request: RelaxRequest)
+    case serverError(request: URLRequest)
     /// Another HTTP error status code occurred (besides 400, 401, 404, and outside the 200-399 success code range)
-    case otherHTTP(request: RelaxRequest, status: Int)
+    case otherHTTP(request: URLRequest, status: Int)
     /// An invalid URL was provided for the request
-    case invalidURL(request: RelaxRequest)
+    case invalidURL(baseURL: URL)
     /// A   `URLError` occurred with the request
-    case urlError(request: RelaxRequest, error: URLError)
+    case urlError(request: URLRequest, error: URLError)
     /// No response was received
-    case noResponse(request: RelaxRequest)
+    case noResponse(request: URLRequest)
     /// Another error occurred
-    case other(request: RelaxRequest, message: String)
+    case other(request: URLRequest, message: String)
     
-    init?(httpStatusCode: Int, request: RelaxRequest) {
+    init?(httpStatusCode: Int, request: URLRequest) {
         switch httpStatusCode {
         case 100...399:
             return nil

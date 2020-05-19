@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>RelaxService Protocol Reference</title>
+    <title>Service Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Protocol/RelaxService" class="dashAnchor"></a>
-    <a title="RelaxService Protocol Reference"></a>
+    <a name="//apple_ref/swift/Protocol/Service" class="dashAnchor"></a>
+    <a title="Service Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">Relax Docs</a></p>
@@ -22,7 +22,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">Relax Reference</a>
         <img id="carat" src="../img/carat.png" />
-        RelaxService Protocol Reference
+        Service Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -32,37 +32,24 @@
             <a href="../Defining%20Services.html">Defining Services</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/RelaxService.html">RelaxService</a>
+                <a href="../Protocols/Service.html">Service</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
-            <a href="../Other%20Enums.html">Other Enumerations</a>
+            <a href="../Making%20Requests.html">Making Requests</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/RelaxHTTPRequestType.html">RelaxHTTPRequestType</a>
+                <a href="../Protocols/ServiceRequest.html">ServiceRequest</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/RelaxRequestError.html">RelaxRequestError</a>
-              </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other%20Protocols.html">Other Protocols</a>
-            <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a>
+                <a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/RelaxRequest.html">RelaxRequest</a>
+                <a href="../Structs/RequestContentType.html">RequestContentType</a>
               </li>
-            </ul>
-          </li>
-          <li class="nav-group-name">
-            <a href="../Other%20Structs.html">Other Structures</a>
-            <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Structs/RelaxRequestContentType.html">RelaxRequestContentType</a>
+                <a href="../Enums/RequestError.html">RequestError</a>
               </li>
             </ul>
           </li>
@@ -71,38 +58,48 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>RelaxService</h1>
+            <h1>Service</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RelaxService</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Service</span></code></pre>
 
                 </div>
               </div>
             <p>A protocol to define a REST API service</p>
 
 <p>Implement this protocol to define a REST service. All endpoints defined to use this service will share
-the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp">RelaxService.baseURL</a></code> and <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">RelaxService.session</a></code> properties.</p>
+the <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code> properties.</p>
 
 <p>For example, to define a service at <code>http://www.example.com</code>:</p>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">RelaxService</span> <span class="p">{</span>
+<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">Service</span> <span class="p">{</span>
    <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
 <span class="p">}</span>
 </code></pre>
 
 <p>All endpoints will be appened to the <code>baseURL</code> value of &ldquo;<a href="https://www.example.com/">https://www.example.com/</a>&rdquo;.</p>
+<h4 id='see-also' class='heading'>See Also</h4>
 
-<p>See also: <code><a href="../Protocols/RelaxEndpoint.html">RelaxEndpoint</a></code>, <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code></p>
+<p><code><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></code></p>
 
           </section>
           <section class="section task-group-section">
             <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Properties"></a>
+                <a name="//apple_ref/swift/Section/Properties" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Properties"></a>
+                  <h3 class="section-name"><p>Properties</p>
+</h3>
+                </div>
+              </div>
               <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp"></a>
+                    <a name="/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp"></a>
                     <a name="//apple_ref/swift/Property/baseURL" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP7baseURL10Foundation0D0Vvp">baseURL</a>
+                    <a class="token" href="#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">baseURL</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -127,9 +124,60 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServiceP0A8Responsea"></a>
-                    <a name="//apple_ref/swift/Alias/RelaxResponse" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP0A8Responsea">RelaxResponse</a>
+                    <a name="/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/session" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The <code>URLSession</code> that requests to this service will use.</p>
+
+<p>The value of this property will be used for all requests made on this service, unless an override
+is provided to a given request.</p>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        <p>Returns <code>URLSession.shared</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Handling%20Responses"></a>
+                <a name="//apple_ref/swift/Section/Handling Responses" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Handling%20Responses"></a>
+                  <h3 class="section-name"><p>Handling Responses</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Relax7ServiceP8Responsea"></a>
+                    <a name="//apple_ref/swift/Alias/Response" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServiceP8Responsea">Response</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -144,7 +192,7 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxResponse</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">Response</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -154,9 +202,9 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServiceP0A17PublisherResponsea"></a>
-                    <a name="//apple_ref/swift/Alias/RelaxPublisherResponse" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP0A17PublisherResponsea">RelaxPublisherResponse</a>
+                    <a name="/s:5Relax7ServiceP17PublisherResponsea"></a>
+                    <a name="//apple_ref/swift/Alias/PublisherResponse" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServiceP17PublisherResponsea">PublisherResponse</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -171,7 +219,7 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxPublisherResponse</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">PublisherResponse</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">response</span><span class="p">:</span> <span class="kt">HTTPURLResponse</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -181,9 +229,9 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServiceP0A17RequestCompletiona"></a>
-                    <a name="//apple_ref/swift/Alias/RelaxRequestCompletion" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServiceP0A17RequestCompletiona">RelaxRequestCompletion</a>
+                    <a name="/s:5Relax7ServiceP17RequestCompletiona"></a>
+                    <a name="//apple_ref/swift/Alias/RequestCompletion" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServiceP17RequestCompletiona">RequestCompletion</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -198,7 +246,7 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RelaxRequestCompletion</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A8Responsea">RelaxResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RelaxRequestError.html">RelaxRequestError</a></span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">typealias</span> <span class="kt">RequestCompletion</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="kt">Result</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/Service.html#/s:5Relax7ServiceP8Responsea">Response</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RequestError.html">RequestError</a></span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -221,9 +269,9 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/session" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a>
+                    <a name="/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF"></a>
+                    <a name="//apple_ref/swift/Method/request(_:session:autoResumeTask:completion:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">request(_:<wbr>session:<wbr>autoResumeTask:<wbr>completion:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -234,40 +282,7 @@ the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP7baseURL10
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A default <code>URLSession</code> instance which requests will use if another is not provided.</p>
-
-<p>The configuration of this session has <code>timeoutIntervalForRequest</code> and <code>timeoutIntervalForResource</code> values of 30,
-and <code>waitsForConnectivity</code> set to true (for supported platform versions).</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">static</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Relax0A7ServicePAAE4make_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__7request_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA0A12RequestErrorOGctAA0aQ0Rd__lF"></a>
-                    <a name="//apple_ref/swift/Method/make(_:session:autoResumeTask:completion:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServicePAAE4make_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__7request_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA0A12RequestErrorOGctAA0aQ0Rd__lF">make(_:<wbr>session:<wbr>autoResumeTask:<wbr>completion:<wbr>)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Extension method
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Make a request using the given <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code> and parameters</p>
+                        <p>Make a request using the given <code><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></code> and parameters</p>
 
 <p>Call this method to create a <code>URLSessionDataTask</code> for a given request. By default, the <code>resume()</code> will be called on the task, executing the request immediately.</p>
 <div class="aside aside-warning">
@@ -282,7 +297,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@discardableResult</span>
-<span class="kd">func</span> <span class="n">make</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">,</span> <span class="nv">autoResumeTask</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17RequestCompletiona">RelaxRequestCompletion</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">URLSessionDataTask</span><span class="p">?</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+<span class="kd">func</span> <span class="n">request</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">,</span> <span class="nv">autoResumeTask</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="nv">completion</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="kt"><a href="../Protocols/Service.html#/s:5Relax7ServiceP17RequestCompletiona">RequestCompletion</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">URLSessionDataTask</span><span class="p">?</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -298,7 +313,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                               </td>
                               <td>
                                 <div>
-                                  <p>The <code><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></code> to use</p>
+                                  <p>The <code><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></code> to use</p>
                                 </div>
                               </td>
                             </tr>
@@ -310,7 +325,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                               </td>
                               <td>
                                 <div>
-                                  <p>The session to use. If none is provided, the default <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></code> property on the service will be used.</p>
+                                  <p>The session to use. If none is provided, the default <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></code> property on the service will be used.</p>
                                 </div>
                               </td>
                             </tr>
@@ -334,7 +349,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                               </td>
                               <td>
                                 <div>
-                                  <p>A <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17RequestCompletiona">RelaxRequestCompletion</a></code> handler which is executed when the task is completed.</p>
+                                  <p>A <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP17RequestCompletiona">RequestCompletion</a></code> handler which is executed when the task is completed.</p>
                                 </div>
                               </td>
                             </tr>
@@ -351,9 +366,9 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF"></a>
-                    <a name="//apple_ref/swift/Method/make(_:session:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax0A7ServicePAAE4make_7session7Combine12AnyPublisherVyqd__7request_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA0A12RequestErrorOGqd___So12NSURLSessionCtAA0aN0Rd__lF">make(_:<wbr>session:<wbr>)</a>
+                    <a name="/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF"></a>
+                    <a name="//apple_ref/swift/Method/request(_:session:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">request(_:<wbr>session:<wbr>)</a>
                     </code>
                       <span class="declaration-note">
                         Extension method
@@ -371,7 +386,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">make</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17PublisherResponsea">RelaxPublisherResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RelaxRequestError.html">RelaxRequestError</a></span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/RelaxRequest.html">RelaxRequest</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="n">request</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/Service.html#/s:5Relax7ServiceP17PublisherResponsea">PublisherResponse</a></span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt"><a href="../Enums/RequestError.html">RequestError</a></span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
                       </div>
@@ -399,7 +414,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                               </td>
                               <td>
                                 <div>
-                                  <p>The session to use. If not specified, the default provided by the <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServicePAAE7sessionSo12NSURLSessionCvpZ">session</a></code> property of the <code>RelaxService</code> will be used</p>
+                                  <p>The session to use. If not specified, the default provided by the <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></code> property of the <code>Service</code> will be used</p>
                                 </div>
                               </td>
                             </tr>
@@ -408,7 +423,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
                       </div>
                       <div>
                         <h4>Return Value</h4>
-                        <p>A Combine publisher of type <code><a href="../Protocols/RelaxService.html#/s:5Relax0A7ServiceP0A17PublisherResponsea">RelaxPublisherResponse</a></code>.</p>
+                        <p>A Combine publisher of type <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP17PublisherResponsea">PublisherResponse</a></code>.</p>
                       </div>
                     </section>
                   </div>
@@ -418,7 +433,7 @@ and <code>waitsForConnectivity</code> set to true (for supported platform versio
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-13)</p>
+          <p>&copy; 2020 <a class="link" href="" target="_blank" rel="external"></a>. All rights reserved. (Last updated: 2020-05-19)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

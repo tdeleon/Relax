@@ -1,5 +1,5 @@
 //
-//  URLRequest+RelaxRequest.swift
+//  URLRequest+Request.swift
 //
 //
 //  Created by Thomas De Leon on 5/12/20.
@@ -8,11 +8,10 @@
 import Foundation
 
 internal extension URLRequest {
-    init?(request: RelaxRequest) {
+    init?<Request: ServiceRequest>(request: Request, baseURL: URL) {
         guard let urlRequest = URLRequest(type: request.requestType,
-                                          baseURL: request.baseURL,
-                                          endpoint: request.endpoint.name,
-                                          pathParameters: request.pathParameters,
+                                          baseURL: baseURL,
+                                          pathComponents: request.pathComponents,
                                           queryParameters: request.queryParameters,
                                           headers: request.headers,
                                           contentType: request.contentType,
@@ -23,19 +22,18 @@ internal extension URLRequest {
         self = urlRequest
     }
     
-    init?(type: RelaxHTTPRequestType,
+    init?(type: HTTPRequestMethod,
           baseURL: URL,
-          endpoint: String? = nil,
-          pathParameters: [String] = [String](),
+          pathComponents: [String] = [String](),
           queryParameters: [URLQueryItem] = [URLQueryItem](),
           headers: [String: String] = [String: String](),
-          contentType: RelaxRequestContentType? = .applicationJSON,
+          contentType: RequestContentType? = .applicationJSON,
           body: Data? = nil) {
         
-        var pathString = endpoint ?? ""
+        var pathString = ""
         
-        if !pathParameters.isEmpty {
-            let pathParameterString = pathParameters.joined(separator: "/")
+        if !pathComponents.isEmpty {
+            let pathParameterString = pathComponents.joined(separator: "/")
             pathString += "/\(pathParameterString)"
         }
         
