@@ -34,6 +34,9 @@ Relax is available on all Swift supported platforms, including:
 - watchOS
 - Linux
 
+### Reference Documentation
+[https://tdeleon.github.io/Relax/](https://tdeleon.github.io/Relax/)
+
 ## Getting Started
 
 ### Adding to a Project
