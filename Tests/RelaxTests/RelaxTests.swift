@@ -147,7 +147,7 @@ final class RelaxTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testEndpoint", testEndpoint),
     ]
 }
 #endif
