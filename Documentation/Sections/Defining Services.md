@@ -5,7 +5,7 @@ to the service will use this base URL. Use services to logically group requests 
 reusability.
 
 > **Note:** For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc), 
-> it is not necessary to define multiple services.
+> it is not necessary to define multiple services. See [Dynamic Base URLs](#dynamicURL).
 
 #### About the protocol
 This protocol only has two properties- `Service.baseURL` and `Service.session`. The `baseURL` property is required to be
@@ -39,11 +39,12 @@ struct ExampleService: Service {
     }
 }
 ```
+<a name="dynamicURL"></a>
 
 #### Dynamic Base URLs
 
 Often the service will have multiple environments, such as _Dev_, _Stage_, _Prod_, etc. Or, the domain used may be
-different per user account or location, not being known until runtime. This can be accomplished a few ways.
+different per user account or location, not being known until runtime. There are a few ways of handling this.
 
 By not providing an implementation of the `Service.baseURL` property, the base URL must then be provided as an initializer argument each time an instance of the service is created.
 

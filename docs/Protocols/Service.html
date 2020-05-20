@@ -67,16 +67,20 @@
               </div>
             <p>A protocol to define a REST API service</p>
 
-<p>Implement this protocol to define a REST service. All endpoints defined to use this service will share
-the <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code> properties.</p>
+<p>To define a service, implement the <code>Service</code> protocol. Each service has a distinct base URL, and all requests made
+to the service will use this base URL. Use services to logically group requests together for better organization and code
+reusability.</p>
 
-<p>For example, to define a service at <code>http://www.example.com</code>:</p>
-<pre class="highlight swift"><code><span class="kd">struct</span> <span class="kt">ExampleService</span><span class="p">:</span> <span class="kt">Service</span> <span class="p">{</span>
-   <span class="k">var</span> <span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/"</span><span class="p">)</span><span class="o">!</span>
-<span class="p">}</span>
-</code></pre>
+<blockquote>
+<p><strong>Note:</strong> For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc),
+it is not necessary to define multiple services.</p>
+</blockquote>
+<h4 id='about-the-protocol' class='heading'>About the protocol</h4>
 
-<p>All endpoints will be appened to the <code>baseURL</code> value of &ldquo;<a href="https://www.example.com/">https://www.example.com/</a>&rdquo;.</p>
+<p>This protocol only has two properties- <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code>. The <code>baseURL</code> property is required to be implemented, and provides
+the base URL used for all requests (see <a href="Making%20Requests.html">Making Requests</a> for more on requests). The <code>session</code> property is a
+<code>URLSession</code> instance that requests are made using. This property has a default implementation of <code>URLSession.shared</code>, but you can override this
+with your own. Additionally, when making requests,  a session may be passed in per request.</p>
 <h4 id='see-also' class='heading'>See Also</h4>
 
 <p><code><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></code></p>

@@ -76,7 +76,7 @@ for a great deal of flexibility in it&rsquo;s use.</p>
 <h3 id='features' class='heading'>Features</h3>
 
 <ul>
-<li>Simple - based on protocols</li>
+<li>Lightweight &amp; Simple - based on protocols</li>
 <li>Works directly on URLSession, for best performance and low overhead</li>
 <li>Allows for customization when desired (specify your own URLSession; manually <code>resume()</code> or <code>cancel()</code> URLSessionTasks as needed)</li>
 <li>Helps organize complex REST API request</li>
@@ -121,7 +121,227 @@ for a great deal of flexibility in it&rsquo;s use.</p>
 <pre class="highlight plaintext"><code>import Relax
 </code></pre>
 <h2 id='concepts' class='heading'>Concepts</h2>
+
+<p>The Relax framework comprises mainly of two protocols- <code><a href="Protocols/Service.html">Service</a></code> and <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code>. They can be implemented as structs or classes,
+whichever fits better with your use case. Most often you will want to use structs to define services and requests (due to the value semantics and immutabilty), but there is no requirement to do so. For more general information on the differences between structs and classes in Swift, see
+<a href="https://docs.swift.org/swift-book/LanguageGuide/ClassesAndStructures.html">the official Swift documentation</a>.</p>
+<h3 id='service' class='heading'>Service</h3>
+
+<p>The <code><a href="Protocols/Service.html">Service</a></code> protocol represents a REST API service that you will make requests to. Each service has a distinct base URL, and all requests
+made to the service will use this base URL. Use services to logically group requests together for better organization and code reusability.</p>
+
+<blockquote>
+<p><strong>Note:</strong> For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc), 
+it is not necessary to define multiple services.</p>
+</blockquote>
+
+<p>This protocol only has two properties- <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code>. The <code>baseURL</code> property is required to be implemented, and 
+provides the base URL used for all requests. The <code>session</code> property is a <code>URLSession</code> instance which requests to this service will be made with. 
+This property has a default implementation of  <code>URLSession.shared</code>, but you can override this with your own. Additionally, when making 
+requests, a session may be passed in to override for a per request.</p>
+<h3 id='servicerequest' class='heading'>ServiceRequest</h3>
+
+<p>The <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> protocol represents HTTP requests made against  a <code><a href="Protocols/Service.html">Service</a></code>.  Requests can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. 
+The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">ServiceRequest.requestType</a></code> is the only property that you must provide a value for- all others provide a default implementation.</p>
+
+<p>Requests can be customized with:</p>
+
+<ul>
+<li>Path components - see <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP14pathComponentsSaySSGvp">ServiceRequest.pathComponents</a></code>.</li>
+<li>Query parameters - see <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP15queryParametersSay10Foundation12URLQueryItemVGvp">ServiceRequest.queryParameters</a></code>.</li>
+<li>Headers - see <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP7headersSDyS2SGvp">ServiceRequest.headers</a></code>.</li>
+<li>Content type (this value will be added to the <code>URLRequest.allHTTPHeaders</code> field) - see <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11contentTypeAA0c7ContentE0VSgvp">ServiceRequest.contentType</a></code>.</li>
+<li>Request body - see <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP4body10Foundation4DataVSgvp">ServiceRequest.body</a></code>.</li>
+</ul>
+
+<p>To make a request, simply call the <code>request()</code> method on the <code><a href="Protocols/Service.html">Service</a></code>. There are two versions of this method, one using a completion closure,
+and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">Service.request(_:session:)</a></code>. </p>
 <h2 id='examples' class='heading'>Examples</h2>
+<h3 id='basic' class='heading'>Basic</h3>
+
+<p>As a minimum, a request only needs the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> defined. For example:</p>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+   let baseURL: URL = URL(string: "https://example.com/api/")!
+
+   struct Get: ServiceRequest {
+      let requestType: HTTPRequestMethod = .get
+   }
+}
+
+ExampleService().request(ExampleService.Get()) { response in
+   ...
+}
+</code></pre>
+<h3 id='dynamic-base-urls' class='heading'>Dynamic Base URLs</h3>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    var baseURL: URL
+
+    struct Get: ServiceRequest {
+       let requestType: HTTPRequestMethod = .get
+    } 
+}
+
+let devURL = URL(string: "https://dev.example.com/")!
+
+ExampleService(baseURL: devURL).request(MyRequest()) { response in
+    ...
+}
+</code></pre>
+<h3 id='paths' class='heading'>Paths</h3>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/api/")!
+
+    // Get request at /products
+    struct GetProducts: ServiceRequest {
+       let requestType: HTTPRequestMethod = .get
+       var productID: String
+       var queryParameters: [String] {
+          return ["products", productID]
+       }
+    }
+}
+
+// Request product with ID "123"
+ExampleService().request(ExampleService.GetProducts(productID: "123")) { response in
+    ...
+}
+</code></pre>
+<h3 id='grouping-requests' class='heading'>Grouping Requests</h3>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/api/")!
+
+    struct Customer {
+        static let basePath = "customer"
+
+        // Get customer by customer ID
+        struct Get: ServiceRequest {
+            let requestType: HTTPRequestMethod = .get
+
+            var customerID: String
+            var pathComponents: [String] {
+                return [Customer.basePath, customerID]
+            }
+        }
+
+        // Add new customer with customer ID, name
+        struct Add: ServiceRequest {
+            let requestType: HTTPRequestMethod = .post
+            let pathComponents: [String] = [Customer.basePath]
+
+            var customerID: String
+            var name: String
+
+            var body: Data? {
+                // Create JSON from arguments
+                let dictionary = ["id": customerID, "name": name]
+                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+            }
+        }
+    }
+}
+
+// Add customer with name "First Last" and ID "123"
+ExampleService().request(ExampleService.Customer.Add(customerID: "123", name: "First Last")) { response in
+    ...
+}
+
+// Request customer with ID "123"
+ExampleService().request(ExampleService.Customer.Get(customerID: "123")) { response in
+    ...
+}
+</code></pre>
+<h3 id='adding-convenience-methods' class='heading'>Adding Convenience Methods</h3>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/api/")!
+
+    struct Customer {
+        static let basePath = "customer"
+
+        // Convenience method to add customer
+        static func add(id: String, name: String) {
+            let request = ExampleService.Customer.Add(customerID: id, name: name)
+            ExampleService().request(request) { response in
+                // handle response here
+                ...
+            }
+        }
+
+        // Add new customer with customer ID, name
+        struct Add: ServiceRequest {
+            let requestType: HTTPRequestMethod = .post
+            let pathComponents: [String] = [Customer.basePath]
+
+            var customerID: String
+            var name: String
+
+            var body: Data? {
+                // Create JSON from arguments
+                let dictionary = ["id": customerID, "name": name]
+                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+            }
+        }
+    }
+}
+
+// Add customer with name "First Last" and ID "123"
+ExampleService.Customer.add(id: "123, name: "First Last")
+</code></pre>
+<h3 id='using-combine' class='heading'>Using Combine</h3>
+<h4 id='service-definition' class='heading'>Service Definition</h4>
+<pre class="highlight plaintext"><code>struct ExampleService: Service {
+    let baseURL: URL = URL(string: "https://example.com/api/")!
+
+    struct Customer {
+        static let basePath = "customer"
+
+        struct Response: Codable {
+            let name: String
+            let customerID: String
+        }
+
+        // Get customer by customer ID
+        struct Get: ServiceRequest {
+            let requestType: HTTPRequestMethod = .get
+
+            var customerID: String
+            var pathComponents: [String] {
+                return [Customer.basePath, customerID]
+            }
+        }
+
+        // Add new customer with customer ID, name
+        struct Add: ServiceRequest {
+            let requestType: HTTPRequestMethod = .post
+            let pathComponents: [String] = [Customer.basePath]
+
+            var customerID: String
+            var name: String
+
+            var body: Data? {
+                // Create JSON from arguments
+                let dictionary = ["id": customerID, "name": name]
+                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+            }
+        }
+    }
+}
+</code></pre>
+<h4 id='making-a-request' class='heading'>Making a Request</h4>
+<pre class="highlight plaintext"><code>cancellable = ExampleService().request(ExampleService.Customer.Get())
+    .map { $0.data }
+    .decode(type: ExampleService.Customer.Response.self, decoder: JSONDecoder())
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .finished:
+            break
+        case .failure(let error):
+            debugPrint("Received error: \(error)")
+        }
+
+    }, receiveValue: { product in
+        debugPrint("Received product: \(product)")
+    })
+</code></pre>
 
           </section>
         </section>
