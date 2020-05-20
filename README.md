@@ -1,2 +1,21 @@
-# Relax
-A Protocol-Oriented Swift library for building REST client requests
+
+<h1 style="text-align: center;"><img src="../Documentation/logo.png" height="60" style="vertical-align: middle; padding-right: 20px">Relax</h1>
+
+---
+
+![GitHub](https://img.shields.io/github/license/tdeleon/Relax)
+[![Swift](https://img.shields.io/badge/Swift-5.2-brightgreen.svg?colorA=orange&colorB=4E4E4E)](https://swift.org)
+
+_A Protocol-Oriented Swift library for building REST client requests_
+
+## Overview
+
+## Getting Started
+
+### Adding to a Project
+Relax can be added to projects using the Swift Package Manager, or added as a git submodule.
+
+
+## Concepts
+
+## Examples

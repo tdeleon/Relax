@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 internal extension URLRequest {
     init?<Request: ServiceRequest>(request: Request, baseURL: URL) {

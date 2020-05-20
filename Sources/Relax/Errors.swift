@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 //MARK: - Handling Errors
 /// An error that occurs when making a `ServiceRequest`

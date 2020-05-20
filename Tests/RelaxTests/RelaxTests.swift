@@ -1,5 +1,8 @@
 #if !os(watchOS)
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 #if canImport(Combine)
 import Combine
 #endif
