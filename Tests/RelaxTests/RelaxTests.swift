@@ -116,8 +116,9 @@ final class Example: XCTestCase {
     }
 }
 
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-final class RelaxTests: XCTestCase {
+final class CombineTests: XCTestCase {
     var cancellable: AnyCancellable?
     func testExample() {
         // This is an example of a functional test case.
@@ -147,8 +148,47 @@ final class RelaxTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testEndpoint", testEndpoint),
+        ("testExample", testExample),
     ]
 }
 #endif
 
+final class CompletionTests: XCTestCase {
+    func testEndpoint() {
+        let expectation = self.expectation(description: "Expect")
+                
+                Examples().request(Examples.Customers.Add(customerID: "123", name: "First Last")) { response in
+                    debugPrint(response)
+                    switch response {
+                    case .failure(let error):
+                        debugPrint(error)
+                    case .success(_):
+                        break
+                    }
+                    expectation.fulfill()
+                }
+                
+        //        Examples().request(Examples.Customers.Get(customerID: "123")) { response in
+        //            debugPrint(response)
+        //            switch response {
+        //            case .failure(let error):
+        //                debugPrint(error)
+        //            case .success(_):
+        //                break
+        //            }
+        //            expectation.fulfill()
+        //        }
+                
+        //        MyService().request(MyService.Products.Get(productID: "1234")) { response in
+        //            debugPrint(response)
+        //            expectation.fulfill()
+        //        }
+                waitForExpectations(timeout: 5)
+    }
+    
+    static var allTests = [
+        ("testEndpoint", testEndpoint)
+    ]
+}
+
+#endif
