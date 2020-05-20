@@ -114,6 +114,7 @@ public extension Service {
     }
 }
 
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension Service {
     /// Make a request using a Combine publisher.
@@ -153,3 +154,4 @@ public extension Service {
         .eraseToAnyPublisher()
     }
 }
+#endif
