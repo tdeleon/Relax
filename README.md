@@ -155,7 +155,7 @@ struct ExampleService: Service {
     }
 }
 
-// Request product with ID "123"
+// Request product with ID "123" - URL: https://example.com/api/products/123
 ExampleService().request(ExampleService.GetProducts(productID: "123")) { response in
     ...
 }
