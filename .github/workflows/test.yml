@@ -27,5 +27,5 @@ jobs:
     - name: Upload coverage
       run: bash <(curl https://codecov.io/bash)
     - name: Upload coverage mac
-      if: runnoer.os == 'macOS'
+      if: runner.os == 'macOS'
       run: bash <(curl -s https://codecov.io/bash) -X xcodellvm
