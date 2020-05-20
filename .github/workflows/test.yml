@@ -20,4 +20,8 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
-      run: swift test -v
+      run: swift test --enable-code-coverage -v
+    - name: Generate coverage
+      run: llvm-cov export -format="lcov" .build/debug/SwiftLoggerPackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
+    - name: Upload coverage
+      run: bash <(curl https://codecov.io/bash)
