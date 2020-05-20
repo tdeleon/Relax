@@ -22,6 +22,10 @@ jobs:
     - name: Run tests
       run: swift test --enable-code-coverage -v
     - name: Generate coverage
+      if: runner.os == 'Linux'
       run: llvm-cov export -format="lcov" .build/debug/SwiftLoggerPackageTests.xctest -instr-profile .build/debug/codecov/default.profdata > info.lcov
     - name: Upload coverage
       run: bash <(curl https://codecov.io/bash)
+    - name: Upload coverage mac
+      if: runnoer.os == 'macOS'
+      run: bash <(curl -s https://codecov.io/bash) -X xcodellvm
