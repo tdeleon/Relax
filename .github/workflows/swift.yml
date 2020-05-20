@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     strategy:
+      max-parallel: 5
       matrix:
         os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
