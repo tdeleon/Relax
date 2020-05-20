@@ -5,6 +5,7 @@
 
 ![GitHub](https://img.shields.io/github/license/tdeleon/Relax)
 [![Swift](https://img.shields.io/badge/Swift-5.2-brightgreen.svg?colorA=orange&colorB=4E4E4E)](https://swift.org)
+![Build](https://github.com/tdeleon/Relax/workflows/Build/badge.svg?branch=master)
 
 _A Protocol-Oriented Swift library for building REST client requests_
 
