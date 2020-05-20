@@ -8,7 +8,6 @@ custom_categories:
   - name: Defining Services
     children:
     - Service
-    - ServiceEndpoint
   - name: Making Requests
     children:
     - ServiceRequest
