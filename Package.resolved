@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MockURLSession",
+        "repositoryURL": "https://github.com/tdeleon/MockURLSession.git",
+        "state": {
+          "branch": "master",
+          "revision": "1d817f6ec7e233fae470a8be2e2abb92261fe68d",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -8,26 +8,26 @@ import Combine
 #endif
 @testable import Relax
 
-struct ExampleService: Service {
-    var baseURL: URL = URL(string: "https://www.example.com/")!
-        
-    struct Products {
-        static let apiKey: String = "123"
-        
-        struct Put: ServiceRequest {
-            let requestType: HTTPRequestMethod = .put
-        }
-        
-        struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
-            var token: String
-            var headers: [String : String] {
-                return ["Authorization": "Basic \(token)",
-                    "api-key": Products.apiKey]
-            }
-        }
-    }
-}
+//struct ExampleService: Service {
+//    var baseURL: URL = URL(string: "https://www.example.com/")!
+//        
+//    struct Products {
+//        static let apiKey: String = "123"
+//        
+//        struct Put: ServiceRequest {
+//            let requestType: HTTPRequestMethod = .put
+//        }
+//        
+//        struct Get: ServiceRequest {
+//            let requestType: HTTPRequestMethod = .get
+//            var token: String
+//            var headers: [String : String] {
+//                return ["Authorization": "Basic \(token)",
+//                    "api-key": Products.apiKey]
+//            }
+//        }
+//    }
+//}
 
 struct Examples: Service {
     let baseURL: URL = URL(string: "https://example.com/api/")!
@@ -115,43 +115,6 @@ final class Example: XCTestCase {
         waitForExpectations(timeout: 5)
     }
 }
-
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-final class CombineTests: XCTestCase {
-    var cancellable: AnyCancellable?
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-//        XCTAssertEqual(Relax().text, "Hello, World!")
-            let expectation = self.expectation(description: "expect")
-        let service = ExampleService()
-        let token = "1234"
-        cancellable = service.request(ExampleService.Products.Get(token: token))
-            .sink(receiveCompletion: { (completion) in
-                defer {
-                expectation.fulfill()
-                }
-                switch completion {
-                case .failure(let error):
-                    debugPrint(error)
-                    XCTFail(error.localizedDescription)
-                case .finished:
-                    break
-                }
-            }, receiveValue: { (response) in
-                debugPrint(response)
-            })
-            waitForExpectations(timeout: 31)
-            
-    }
-
-    static var allTests = [
-        ("testExample", testExample),
-    ]
-}
-#endif
 
 final class CompletionTests: XCTestCase {
     func testEndpoint() {

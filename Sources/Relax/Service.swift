@@ -46,12 +46,29 @@ public protocol Service {
     
     //MARK: - Handling Responses
     
-    /// Response for an HTTP request
-    typealias Response<Request: ServiceRequest> = (request: Request, response: HTTPURLResponse, data: Data?)
-    /// Response for an HTTP request using a Combine publisher
-    typealias PublisherResponse<Request: ServiceRequest> = (request: Request, response: HTTPURLResponse, data: Data)
-    /// Completion handler for requests made
-    typealias RequestCompletion<Request: ServiceRequest> = (Result<Response<Request>, RequestError>) -> ()
+    /**
+     Completion handler based response for an HTTP request
+    
+     - `request`: The request made
+     - `response`: The response received
+     - `data`: The data received, if any
+     */
+    typealias Response = (request: URLRequest, response: HTTPURLResponse, data: Data?)
+    /**
+     Response for an HTTP request using a Combine publisher
+     
+        - `request`: The request made
+        - `response`: The response received
+        - `data`: Data received
+     */
+    typealias PublisherResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
+    /**
+     Completion handler for requests made
+     
+     - Parameter result: Result receieved
+     
+     */
+    typealias RequestCompletion = (_ result: Result<Response, RequestError>) -> ()
 }
 
 //MARK: - Making Requests
@@ -73,7 +90,7 @@ public extension Service {
     ///
     /// - Warning: When `autoResumeTask` is `true`, calling `resume()` on the returned task will cause the request to be executed again.
     ///
-    @discardableResult func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session, autoResumeTask: Bool=true, completion: @escaping RequestCompletion<Request>) -> URLSessionDataTask? {
+    @discardableResult func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session, autoResumeTask: Bool=true, completion: @escaping RequestCompletion) -> URLSessionDataTask? {
         // Create the URLRequest
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
             completion(.failure(.invalidURL(baseURL: baseURL)))
@@ -104,7 +121,7 @@ public extension Service {
             }
             // Success
             else {
-                completion(.success((request, httpResponse, data)))
+                completion(.success((urlRequest, httpResponse, data)))
             }
         }
         if autoResumeTask {
@@ -122,7 +139,7 @@ public extension Service {
     ///   - request: The request to execute
     ///   - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
     /// - Returns: A Combine publisher of type `PublisherResponse`.
-    func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse<Request>, RequestError> {
+    func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
             return Fail(outputType: PublisherResponse.self, failure: .invalidURL(baseURL: baseURL))
                 .eraseToAnyPublisher()
@@ -130,7 +147,7 @@ public extension Service {
         // Create a data task publisher
         return session.dataTaskPublisher(for: urlRequest)
             // Convert the output to `RelaxPublisherResponse`, check for http errors
-            .tryMap { output -> PublisherResponse<Request> in
+            .tryMap { output -> PublisherResponse in
                 guard let response = output.response as? HTTPURLResponse else {
                     throw RequestError.noResponse(request: urlRequest)
                 }
@@ -139,7 +156,7 @@ public extension Service {
                     throw httpError
                 }
                 
-                return (request, response, output.data)
+                return (urlRequest, response, output.data)
         }
             // Convert errors to `RelaxRequestError`
         .mapError { error in

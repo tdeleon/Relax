@@ -163,7 +163,7 @@ ExampleService().request(MyRequest()) { response in
 <h3 id='making-requests' class='heading'>Making Requests</h3>
 
 <p>There are two ways of making requests against a service- a completion closure based method or using a Combine publisher
-(on available platforms/OS versions). For either case, a <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> must first be defined to represent the request, and then passed in to <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">Service.request(_:session:)</a></code>
+(on available platforms/OS versions). For either case, a <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> must first be defined to represent the request, and then passed in to <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">Service.request(_:session:)</a></code>
 respectively.</p>
 <h4 id='defining-a-request' class='heading'>Defining a Request</h4>
 
@@ -184,7 +184,7 @@ respectively.</p>
 <h4 id='using-a-completion-handler' class='heading'>Using a Completion Handler</h4>
 
 <p>To make the request, pass an instance of the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> into the
-<code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOyqd__AD_So17NSHTTPURLResponseC8response10Foundation0J0VSg4datatAA12RequestErrorOGctAA0bP0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code>:</p>
+<code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code>:</p>
 <pre class="highlight plaintext"><code>ExampleService().request(ExampleService.GetProducts()) { response in
     switch response {
     case .failure(let error):
@@ -215,7 +215,7 @@ deinit() {
 </code></pre>
 <h4 id='using-combine' class='heading'>Using Combine</h4>
 
-<p>To make the request, pass an instance of the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> into the <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVyqd__AD_So17NSHTTPURLResponseC8response10Foundation4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bM0Rd__lF">Service.request(_:session:)</a></code> method. This 
+<p>To make the request, pass an instance of the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> into the <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">Service.request(_:session:)</a></code> method. This 
 method returns a publisher of type <code>AnyPublisher&lt;PublisherResponse&lt;Request&gt;, RequestError&gt;</code>.</p>
 
 <p><em>In this example, assume that there is a Codable object <code>Product</code> previously defined.</em></p>
