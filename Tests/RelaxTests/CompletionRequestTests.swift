@@ -32,7 +32,7 @@ final class CompletionRequestTests: XCTestCase {
             case .failure(let error):
                 XCTFail("Request failed with error - \(error)")
             case .success(let received):
-                XCTAssertEqual(received.request.httpMethod, request.requestType.rawValue)
+                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
             }
             expectation.fulfill()
         }

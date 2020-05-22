@@ -67,7 +67,7 @@
               </div>
             <p>A protocol for requests to be made on a <code><a href="../Protocols/Service.html">Service</a></code>.</p>
 
-<p>Use this protocol to define requests, which can be any of the <code><a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">ServiceRequest.requestType</a></code>
+<p>Use this protocol to define requests, which can be any of the <code><a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp">ServiceRequest.httpMethod</a></code>
 is the only property that you must provide a value for- all others provide a default implementation.</p>
 
 <p>Requests can be customized with:</p>
@@ -99,9 +99,9 @@ and another which returns a Combine publisher (available on platforms where Comb
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp"></a>
-                    <a name="//apple_ref/swift/Property/requestType" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">requestType</a>
+                    <a name="/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp"></a>
+                    <a name="//apple_ref/swift/Property/httpMethod" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp">httpMethod</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -116,7 +116,7 @@ and another which returns a Combine publisher (available on platforms where Comb
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">requestType</span><span class="p">:</span> <span class="kt"><a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">httpMethod</span><span class="p">:</span> <span class="kt"><a href="../Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>

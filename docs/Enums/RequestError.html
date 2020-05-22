@@ -61,7 +61,7 @@
             <h1>RequestError</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestError</span> <span class="p">:</span> <span class="kt">Error</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
 
                 </div>
               </div>
@@ -155,9 +155,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_tcACmF"></a>
-                    <a name="//apple_ref/swift/Element/serverError(request:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_tcACmF">serverError(request:<wbr>)</a>
+                    <a name="/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_SitcACmF"></a>
+                    <a name="//apple_ref/swift/Element/serverError(request:status:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax12RequestErrorO06serverC0yAC10Foundation10URLRequestV_SitcACmF">serverError(request:<wbr>status:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -172,7 +172,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">serverError</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -200,33 +200,6 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">otherHTTP</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span> <span class="nv">status</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Relax12RequestErrorO10invalidURLyAC10Foundation0E0V_tcACmF"></a>
-                    <a name="//apple_ref/swift/Element/invalidURL(baseURL:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax12RequestErrorO10invalidURLyAC10Foundation0E0V_tcACmF">invalidURL(baseURL:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>An invalid URL was provided for the request</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">invalidURL</span><span class="p">(</span><span class="nv">baseURL</span><span class="p">:</span> <span class="kt">URL</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>

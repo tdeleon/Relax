@@ -124,7 +124,7 @@ struct ExampleService: Service {
    let baseURL: URL = URL(string: "https://example.com/")!
    
    struct GetProducts: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
       var pathComponents: [String] = ["products"]
    }
 }

@@ -12,7 +12,7 @@ import FoundationNetworking
 
 internal extension URLRequest {
     init?<Request: ServiceRequest>(request: Request, baseURL: URL) {
-        guard let urlRequest = URLRequest(type: request.requestType,
+        guard let urlRequest = URLRequest(type: request.httpMethod,
                                           baseURL: baseURL,
                                           pathComponents: request.pathComponents,
                                           queryParameters: request.queryParameters,

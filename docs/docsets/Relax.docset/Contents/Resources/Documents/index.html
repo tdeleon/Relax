@@ -145,7 +145,7 @@ requests, a session may be passed in to override for a per request.</p>
 <h3 id='servicerequest' class='heading'>ServiceRequest</h3>
 
 <p>The <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> protocol represents HTTP requests made against  a <code><a href="Protocols/Service.html">Service</a></code>.  Requests can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. 
-The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">ServiceRequest.requestType</a></code> is the only property that you must provide a value for- all others provide a default implementation.</p>
+The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp">ServiceRequest.httpMethod</a></code> is the only property that you must provide a value for- all others provide a default implementation.</p>
 
 <p>Requests can be customized with:</p>
 
@@ -167,7 +167,7 @@ and another which returns a Combine publisher (available on platforms where Comb
    let baseURL: URL = URL(string: "https://example.com/api/")!
 
    struct Get: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
    }
 }
 
@@ -180,7 +180,7 @@ ExampleService().request(ExampleService.Get()) { response in
     var baseURL: URL
 
     struct Get: ServiceRequest {
-       let requestType: HTTPRequestMethod = .get
+       let httpMethod: HTTPRequestMethod = .get
     } 
 }
 
@@ -196,7 +196,7 @@ ExampleService(baseURL: devURL).request(MyRequest()) { response in
 
     // Get request at /products
     struct GetProducts: ServiceRequest {
-       let requestType: HTTPRequestMethod = .get
+       let httpMethod: HTTPRequestMethod = .get
        var productID: String
        var queryParameters: [String] {
           return ["products", productID]
@@ -218,7 +218,7 @@ ExampleService().request(ExampleService.GetProducts(productID: "123")) { respons
 
         // Get customer by customer ID
         struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
+            let httpMethod: HTTPRequestMethod = .get
 
             var customerID: String
             var pathComponents: [String] {
@@ -228,7 +228,7 @@ ExampleService().request(ExampleService.GetProducts(productID: "123")) { respons
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String
@@ -271,7 +271,7 @@ ExampleService().request(ExampleService.Customer.Get(customerID: "123")) { respo
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String
@@ -304,7 +304,7 @@ ExampleService.Customer.add(id: "123, name: "First Last")
 
         // Get customer by customer ID
         struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
+            let httpMethod: HTTPRequestMethod = .get
 
             var customerID: String
             var pathComponents: [String] {
@@ -314,7 +314,7 @@ ExampleService.Customer.add(id: "123, name: "First Last")
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String

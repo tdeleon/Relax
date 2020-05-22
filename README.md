@@ -92,7 +92,7 @@ requests, a session may be passed in to override for a per request.
 ### ServiceRequest
 
 The `ServiceRequest` protocol represents HTTP requests made against  a `Service`.  Requests can be any of the `HTTPRequestMethod` types. 
-The `ServiceRequest.requestType` is the only property that you must provide a value for- all others provide a default implementation.
+The `ServiceRequest.httpMethod` is the only property that you must provide a value for- all others provide a default implementation.
 
 Requests can be customized with:
 
@@ -115,7 +115,7 @@ struct ExampleService: Service {
    let baseURL: URL = URL(string: "https://example.com/api/")!
    
    struct Get: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
    }
 }
 
@@ -131,7 +131,7 @@ struct ExampleService: Service {
     var baseURL: URL
     
     struct Get: ServiceRequest {
-       let requestType: HTTPRequestMethod = .get
+       let httpMethod: HTTPRequestMethod = .get
     } 
 }
 
@@ -150,7 +150,7 @@ struct ExampleService: Service {
    
     // Get request at /products
     struct GetProducts: ServiceRequest {
-       let requestType: HTTPRequestMethod = .get
+       let httpMethod: HTTPRequestMethod = .get
        var productID: String
        var queryParameters: [String] {
           return ["products", productID]
@@ -175,7 +175,7 @@ struct ExampleService: Service {
         
         // Get customer by customer ID
         struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
+            let httpMethod: HTTPRequestMethod = .get
             
             var customerID: String
             var pathComponents: [String] {
@@ -185,7 +185,7 @@ struct ExampleService: Service {
         
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
            
             var customerID: String
@@ -230,7 +230,7 @@ struct ExampleService: Service {
         
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
            
             var customerID: String
@@ -267,7 +267,7 @@ struct ExampleService: Service {
         
         // Get customer by customer ID
         struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
+            let httpMethod: HTTPRequestMethod = .get
             
             var customerID: String
             var pathComponents: [String] {
@@ -277,7 +277,7 @@ struct ExampleService: Service {
         
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customer.basePath]
            
             var customerID: String

@@ -64,7 +64,7 @@
 <p>To make requests, implement the <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code> protocol.</p>
 <h4 id='about-the-protocol' class='heading'>About the protocol</h4>
 
-<p>Use this protocol to define requests, which can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">ServiceRequest.requestType</a></code>
+<p>Use this protocol to define requests, which can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp">ServiceRequest.httpMethod</a></code>
 is the only property that you must provide a value for- all others provide a default implementation.</p>
 
 <p>Requests can be customized with:</p>
@@ -88,7 +88,7 @@ and another which returns a Combine publisher (available on platforms where Comb
    let baseURL: URL = URL(string: "https://example.com/api/")!
 
    struct Get: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
    }
 }
 
@@ -102,7 +102,7 @@ ExampleService().request(ExampleService.Get()) { response in
 
 <p>To remove or customize the <em>Content-Type</em> value, simply provide an implementation for the <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11contentTypeAA0c7ContentE0VSgvp">ServiceRequest.contentType</a></code> property:</p>
 <pre class="highlight plaintext"><code>struct Get: ServiceRequest {
-   let requestType: HTTPRequestMethod = .get
+   let httpMethod: HTTPRequestMethod = .get
    let contentType: RequestContentType = nil // No Content-Type value will be sent in the header
 }
 </code></pre>
@@ -123,13 +123,13 @@ combination of both.</p>
 
    // Get request at /products
    struct GetProducts: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
       let pathComponents: [String] = ["products"]
    }
 
    // Get request at /customers
    struct GetCustomers: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
       let pathComponents: [String] = ["customers"]
    }
 }
@@ -145,7 +145,7 @@ This example makes the request <em><a href="https://example.com/api/products/123
 
     // Get request at /products
     struct GetProducts: ServiceRequest {
-       let requestType: HTTPRequestMethod = .get
+       let httpMethod: HTTPRequestMethod = .get
        var productID: String
        var queryParameters: [String] {
           return ["products", productID]
@@ -167,7 +167,7 @@ Note that the <code>pathComponents</code> value also needs to be provided here, 
 
    // Get request at /products
    struct GetProducts: ServiceRequest {
-      let requestType: HTTPRequestMethod = .get
+      let httpMethod: HTTPRequestMethod = .get
       let pathComponents: [String] = ["products"]
 
       var productID: String
@@ -196,7 +196,7 @@ request defined, they can be grouped together. Additionally, this can help organ
 
         // Get customer by customer ID
         struct Get: ServiceRequest {
-            let requestType: HTTPRequestMethod = .get
+            let httpMethod: HTTPRequestMethod = .get
 
             var customerID: String
             var pathComponents: [String] {
@@ -206,7 +206,7 @@ request defined, they can be grouped together. Additionally, this can help organ
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
-            let requestType: HTTPRequestMethod = .post
+            let httpMethod: HTTPRequestMethod = .post
             let pathComponents: [String] = [Customers.basePath]
 
             var customerID: String
@@ -261,7 +261,7 @@ ExampleService().request(ExampleService.Customers.Get(customerID: "123")) { resp
                       <div class="abstract">
                         <p>A protocol for requests to be made on a <code><a href="Protocols/Service.html">Service</a></code>.</p>
 
-<p>Use this protocol to define requests, which can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP11requestTypeAA17HTTPRequestMethodOvp">ServiceRequest.requestType</a></code>
+<p>Use this protocol to define requests, which can be any of the <code><a href="Enums/HTTPRequestMethod.html">HTTPRequestMethod</a></code> types. The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP10httpMethodAA011HTTPRequestE0Ovp">ServiceRequest.httpMethod</a></code>
 is the only property that you must provide a value for- all others provide a default implementation.</p>
 
 <p>Requests can be customized with:</p>
@@ -382,7 +382,7 @@ and another which returns a Combine publisher (available on platforms where Comb
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RequestError</span> <span class="p">:</span> <span class="kt">Error</span><span class="p">,</span> <span class="kt">Equatable</span></code></pre>
 
                         </div>
                       </div>

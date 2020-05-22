@@ -14,7 +14,7 @@ import FoundationNetworking
 /**
  A protocol for requests to be made on a `Service`.
  
- Use this protocol to define requests, which can be any of the `HTTPRequestMethod` types. The `ServiceRequest.requestType`
+ Use this protocol to define requests, which can be any of the `HTTPRequestMethod` types. The `ServiceRequest.httpMethod`
  is the only property that you must provide a value for- all others provide a default implementation.
  
  Requests can be customized with:
@@ -33,7 +33,7 @@ public protocol ServiceRequest {
     //MARK: - Properties
     
     /// The type of request
-    var requestType: HTTPRequestMethod { get }
+    var httpMethod: HTTPRequestMethod { get }
     /// Path components of the request will be appended to the base URL.
     ///
     /// Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).

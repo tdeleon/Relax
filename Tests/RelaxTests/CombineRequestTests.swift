@@ -39,7 +39,7 @@ final class CombineRequestTests: XCTestCase {
                 }
                 expectation.fulfill()
             }, receiveValue: { (received) in
-                XCTAssertEqual(received.request.httpMethod, request.requestType.rawValue)
+                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
             })
         
         waitForExpectations(timeout: 3)
