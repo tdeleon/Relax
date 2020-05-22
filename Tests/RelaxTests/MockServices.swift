@@ -17,8 +17,40 @@ struct ExampleService: Service {
     struct Get: ServiceRequest {
         let requestType: HTTPRequestMethod = .get
         
-        static var urlRequest: URLRequest {
-            return URLRequest(request: Get(), baseURL: ExampleService().baseURL)!
+        var urlRequest: URLRequest {
+            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
+        }
+    }
+    
+    struct Put: ServiceRequest {
+        let requestType: HTTPRequestMethod = .put
+        
+        var urlRequest: URLRequest {
+            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
+        }
+    }
+    
+    struct Post: ServiceRequest {
+        let requestType: HTTPRequestMethod = .post
+        
+        var urlRequest: URLRequest {
+            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
+        }
+    }
+    
+    struct Patch: ServiceRequest {
+        let requestType: HTTPRequestMethod = .patch
+        
+        var urlRequest: URLRequest {
+            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
+        }
+    }
+    
+    struct Delete: ServiceRequest {
+        let requestType: HTTPRequestMethod = .delete
+        
+        var urlRequest: URLRequest {
+            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
         }
     }
 }

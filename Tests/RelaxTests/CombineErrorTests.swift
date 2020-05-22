@@ -26,10 +26,6 @@ final class CombineErrorTests: XCTestCase {
         session = nil
     }
     
-    private func basicRequest(request: ServiceRequest) throws {
-        let expectation = self.expectation(description: "Expect")
-    }
-    
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         session = MockURLSession(requestError: error)
@@ -77,23 +73,23 @@ final class CombineErrorTests: XCTestCase {
     }
     
     func testUnauthorizedError() throws {
-        try requestError(error: RequestError.unauthorized(request: ExampleService.Get.urlRequest))
+        try requestError(error: RequestError.unauthorized(request: ExampleService.Get().urlRequest))
     }
     
     func testNotFoundError() throws {
-        try requestError(error: RequestError.notFound(request: ExampleService.Get.urlRequest))
+        try requestError(error: RequestError.notFound(request: ExampleService.Get().urlRequest))
     }
     
     func testServerError() throws {
-        try requestError(error: RequestError.serverError(request: ExampleService.Get.urlRequest, status: 500))
+        try requestError(error: RequestError.serverError(request: ExampleService.Get().urlRequest, status: 500))
     }
     
     func testOtherHTTPError() throws {
-        try requestError(error: RequestError.otherHTTP(request: ExampleService.Get.urlRequest, status: 999))
+        try requestError(error: RequestError.otherHTTP(request: ExampleService.Get().urlRequest, status: 999))
     }
     
     func testURLError() throws {
-        try requestError(error: RequestError.urlError(request: ExampleService.Get.urlRequest, error: URLError(.badURL)))
+        try requestError(error: RequestError.urlError(request: ExampleService.Get().urlRequest, error: URLError(.badURL)))
     }
     
     func testNoResponseError() throws {
