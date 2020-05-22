@@ -116,42 +116,42 @@ final class Example: XCTestCase {
     }
 }
 
-final class CompletionTests: XCTestCase {
-    func testEndpoint() {
-        let expectation = self.expectation(description: "Expect")
-                
-                Examples().request(Examples.Customers.Add(customerID: "123", name: "First Last")) { response in
-                    debugPrint(response)
-                    switch response {
-                    case .failure(let error):
-                        debugPrint(error)
-                    case .success(_):
-                        break
-                    }
-                    expectation.fulfill()
-                }
-                
-        //        Examples().request(Examples.Customers.Get(customerID: "123")) { response in
-        //            debugPrint(response)
-        //            switch response {
-        //            case .failure(let error):
-        //                debugPrint(error)
-        //            case .success(_):
-        //                break
-        //            }
-        //            expectation.fulfill()
-        //        }
-                
-        //        MyService().request(MyService.Products.Get(productID: "1234")) { response in
-        //            debugPrint(response)
-        //            expectation.fulfill()
-        //        }
-                waitForExpectations(timeout: 5)
-    }
-    
-    static var allTests = [
-        ("testEndpoint", testEndpoint)
-    ]
-}
+//final class CompletionTests: XCTestCase {
+//    func testEndpoint() {
+//        let expectation = self.expectation(description: "Expect")
+//
+//                Examples().request(Examples.Customers.Add(customerID: "123", name: "First Last")) { response in
+//                    debugPrint(response)
+//                    switch response {
+//                    case .failure(let error):
+//                        debugPrint(error)
+//                    case .success(_):
+//                        break
+//                    }
+//                    expectation.fulfill()
+//                }
+//
+//        //        Examples().request(Examples.Customers.Get(customerID: "123")) { response in
+//        //            debugPrint(response)
+//        //            switch response {
+//        //            case .failure(let error):
+//        //                debugPrint(error)
+//        //            case .success(_):
+//        //                break
+//        //            }
+//        //            expectation.fulfill()
+//        //        }
+//
+//        //        MyService().request(MyService.Products.Get(productID: "1234")) { response in
+//        //            debugPrint(response)
+//        //            expectation.fulfill()
+//        //        }
+//                waitForExpectations(timeout: 5)
+//    }
+//
+//    static var allTests = [
+//        ("testEndpoint", testEndpoint)
+//    ]
+//}
 
 #endif

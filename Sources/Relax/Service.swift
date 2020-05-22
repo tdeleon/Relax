@@ -93,7 +93,7 @@ public extension Service {
     @discardableResult func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session, autoResumeTask: Bool=true, completion: @escaping RequestCompletion) -> URLSessionDataTask? {
         // Create the URLRequest
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            completion(.failure(.invalidURL(baseURL: baseURL)))
+            completion(.failure(.urlError(request: URLRequest(url: baseURL), error: URLError(.badURL))))
             return nil
         }
         
@@ -141,7 +141,7 @@ public extension Service {
     /// - Returns: A Combine publisher of type `PublisherResponse`.
     func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            return Fail(outputType: PublisherResponse.self, failure: .invalidURL(baseURL: baseURL))
+            return Fail(outputType: PublisherResponse.self, failure: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
                 .eraseToAnyPublisher()
         }
         // Create a data task publisher
