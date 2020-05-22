@@ -20,4 +20,5 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
-      run: swift test -v
+      if: runner.os == 'macOS'
+      run: swift test -v --enable-test-discovery
