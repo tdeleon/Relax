@@ -24,7 +24,7 @@ for a great deal of flexibility in it's use.
 
 - **Lightweight & Simple**:  based on protocols, works directly on URLSession for best performance and low overhead
 - **Customizable**: Allows for customization when desired (specify your own URLSession; manually `resume()` or `cancel()` URLSessionTasks as needed)
-- **Structured**: Helps organize complex REST API request
+- **Structured**: Helps organize complex REST API requests
 - Support for Combine (on available platforms)
 
 ### Platforms
