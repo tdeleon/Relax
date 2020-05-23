@@ -14,19 +14,17 @@ import FoundationNetworking
 /// An error that occurs when making a `ServiceRequest`
 public enum RequestError: Error, Equatable {
     /// Bad request (HTTP status 400)
-    case badRequest(request: URLRequest)
+    case httpBadRequest(request: URLRequest)
     /// Unauthorized (HTTP status 401)
-    case unauthorized(request: URLRequest)
+    case httpUnauthorized(request: URLRequest)
     /// Not found (HTTP status 404)
-    case notFound(request: URLRequest)
+    case httpNotFound(request: URLRequest)
     /// Server error occured (HTTP status 500-599
-    case serverError(request: URLRequest, status: Int)
+    case httpServerError(request: URLRequest, httpStatus: Int)
     /// Another HTTP error status code occurred (besides 400, 401, 404, and outside the 200-399 success code range)
-    case otherHTTP(request: URLRequest, status: Int)
+    case otherHTTPError(request: URLRequest, httpStatus: Int)
     /// A   `URLError` occurred with the request
     case urlError(request: URLRequest, error: URLError)
-    /// No response was received
-    case noResponse(request: URLRequest)
     /// Another error occurred
     case other(request: URLRequest, message: String)
     
@@ -35,15 +33,15 @@ public enum RequestError: Error, Equatable {
         case 100...399:
             return nil
         case 400:
-            self = .badRequest(request: request)
+            self = .httpBadRequest(request: request)
         case 401:
-            self = .unauthorized(request: request)
+            self = .httpUnauthorized(request: request)
         case 404:
-            self = .notFound(request: request)
+            self = .httpNotFound(request: request)
         case 500...599:
-            self = .serverError(request: request, status: httpStatusCode)
+            self = .httpServerError(request: request, httpStatus: httpStatusCode)
         default:
-            self = .otherHTTP(request: request, status: httpStatusCode)
+            self = .otherHTTPError(request: request, httpStatus: httpStatusCode)
         }
     }
 }

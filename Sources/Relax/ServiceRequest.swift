@@ -34,19 +34,23 @@ public protocol ServiceRequest {
     
     /// The type of request
     var httpMethod: HTTPRequestMethod { get }
-    /// Path components of the request will be appended to the base URL.
-    ///
-    /// Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).
-    ///
-    /// #### See Also
-    /// `Service.baseURL`
+    /**
+     Path components of the request will be appended to the base URL.
+    
+     Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).
+    
+     #### See Also
+     `Service.baseURL`
+     */
     var pathComponents: [String] { get }
     /// Query parameters of the request. Default is an empty array (no parameters)
     var queryParameters: [URLQueryItem] { get }
-    /// HTTP headers of the request. Default is an empty array (no headers)
-    ///
-    /// - Note: Do not set `Content-Type` header field values here; instead use the `contentType` property. The contents of that
-    /// property will be added to the `URLRequest.allHTTPHeaderFields` property.
+    /**
+     HTTP headers of the request. Default is an empty array (no headers)
+     
+     - Note: Do not set `Content-Type` header field values here; instead use the `contentType` property. The contents of that
+     property will be added to the `URLRequest.allHTTPHeaderFields` property.
+    */
     var headers: [String: String] { get }
     /// The content type of the request. The default is `application/json`.
     /// - Note: This value is added as an HTTP header on the URLRequest.
