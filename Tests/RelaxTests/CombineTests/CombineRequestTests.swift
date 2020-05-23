@@ -8,7 +8,6 @@
 #if os(macOS) || os(iOS) || os(tvOS)
 import XCTest
 import Combine
-import MockURLSession
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -17,19 +16,21 @@ final class CombineRequestTests: XCTestCase {
     
     var session: URLSession!
         
-    override class func setUp() {
-        
+    override func setUp() {
+        session = URLSession.sessionWithMock
     }
     
     override func tearDown() {
         cancellable = nil
         session = nil
+        URLProtocolMock.mock = nil
     }
     
     private func makeSuccess<Request: ServiceRequest>(request: Request) throws {
         let expectation = self.expectation(description: "Expect")
-        session = MockURLSession()
-        cancellable = ExampleService().request(request, session: session)
+        URLProtocolMock.mock = URLProtocolMock.mockResponse()
+        let service = ExampleService()
+        cancellable = service.request(request, session: session)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
@@ -39,7 +40,7 @@ final class CombineRequestTests: XCTestCase {
                 }
                 expectation.fulfill()
             }, receiveValue: { (received) in
-                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
+                service.checkSuccess(request: request, received: received.request)
             })
         
         waitForExpectations(timeout: 3)
@@ -65,5 +66,12 @@ final class CombineRequestTests: XCTestCase {
         try makeSuccess(request: ExampleService.Delete())
     }
     
+    func testComplexRequest() throws {
+        try makeSuccess(request: ExampleService.Complex())
+    }
+    
+    func testNoContentType() throws {
+        try makeSuccess(request: ExampleService.NoContentType())
+    }
 }
 #endif

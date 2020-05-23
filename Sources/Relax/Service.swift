@@ -78,18 +78,19 @@ public extension Service {
         return URLSession.shared
     }
     
-    /// Make a request using the given `ServiceRequest` and parameters
-    /// - Parameters:
-    ///   - request: The `ServiceRequest` to use
-    ///   - session: The session to use. If none is provided, the default `session` property on the service will be used.
-    ///   - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-    ///   - completion: A `RequestCompletion` handler which is executed when the task is completed.
-    /// - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-    ///
-    /// Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
-    ///
-    /// - Warning: When `autoResumeTask` is `true`, calling `resume()` on the returned task will cause the request to be executed again.
-    ///
+    /**
+     Make a request using the given `ServiceRequest` and parameters
+     - Parameters:
+        - request: The `ServiceRequest` to use
+        - session: The session to use. If none is provided, the default `session` property on the service will be used.
+        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
+        - completion: A `RequestCompletion` handler which is executed when the task is completed.
+     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
+    
+     Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
+     
+     - Warning: When `autoResumeTask` is `true`, calling `resume()` on the returned task will cause the request to be executed again.
+    */
     @discardableResult func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session, autoResumeTask: Bool=true, completion: @escaping RequestCompletion) -> URLSessionDataTask? {
         // Create the URLRequest
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
@@ -113,7 +114,7 @@ public extension Service {
             // Check for an HTTPURLResponse
             guard let response = response,
                 let httpResponse = response as? HTTPURLResponse else {
-                    return completion(.failure(.noResponse(request: urlRequest)))
+                    return completion(.failure(.urlError(request: urlRequest, error: URLError(.unknown))))
             }
             // Check for http status code errors (4xx-5xx series)
             if let httpError = RequestError(httpStatusCode: httpResponse.statusCode, request: urlRequest) {
@@ -134,11 +135,13 @@ public extension Service {
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension Service {
-    /// Make a request using a Combine publisher.
-    /// - Parameters:
-    ///   - request: The request to execute
-    ///   - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-    /// - Returns: A Combine publisher of type `PublisherResponse`.
+    /**
+     Make a request using a Combine publisher.
+     - Parameters:
+        - request: The request to execute
+        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
+     - Returns: A Combine publisher of type `PublisherResponse`.
+    */
     func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
             return Fail(outputType: PublisherResponse.self, failure: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
@@ -148,9 +151,7 @@ public extension Service {
         return session.dataTaskPublisher(for: urlRequest)
             // Convert the output to `RelaxPublisherResponse`, check for http errors
             .tryMap { output -> PublisherResponse in
-                guard let response = output.response as? HTTPURLResponse else {
-                    throw RequestError.noResponse(request: urlRequest)
-                }
+                let response = output.response as! HTTPURLResponse
                 
                 if let httpError = RequestError(httpStatusCode: response.statusCode, request: urlRequest) {
                     throw httpError

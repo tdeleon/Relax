@@ -3,11 +3,11 @@
 
 ---
 
-![GitHub](https://img.shields.io/github/license/tdeleon/Relax)
+[![GitHub](https://img.shields.io/github/license/tdeleon/Relax)](https://github.com/tdeleon/Relax/blob/master/LICENSE)
 [![Swift](https://img.shields.io/badge/Swift-5.2-brightgreen.svg?colorA=orange&colorB=4E4E4E)](https://swift.org)
-[![SPM](https://img.shields.io/badge/SPM-compatible-brightgreen)](https://swift.org/package-manager/)
+[![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen)](https://swift.org/package-manager/)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20iOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20Linux-lightgrey)](https://swift.org)
-![Test](https://github.com/tdeleon/Relax/workflows/Test/badge.svg?branch=master)
+[![Test](https://github.com/tdeleon/Relax/workflows/Test/badge.svg?branch=master)](https://github.com/tdeleon/Relax/actions?query=workflow%3ATest)
 
 
 _A Protocol-Oriented Swift library for building REST client requests_
@@ -17,12 +17,14 @@ _A Protocol-Oriented Swift library for building REST client requests_
 Relax is a client library for defining REST services and requests, built on the concept of [_Protocol Oriented Programming_](https://developer.apple.com/videos/play/wwdc2015/408/). This means that it is largely built with protocols, allowing
 for a great deal of flexibility in it's use.
 
+### Reference Documentation
+[https://tdeleon.github.io/Relax/](https://tdeleon.github.io/Relax/)
+
 ### Features
 
-- Lightweight & Simple - based on protocols
-- Works directly on URLSession, for best performance and low overhead
-- Allows for customization when desired (specify your own URLSession; manually `resume()` or `cancel()` URLSessionTasks as needed)
-- Helps organize complex REST API request
+- **Lightweight & Simple**:  based on protocols, works directly on URLSession for best performance and low overhead
+- **Customizable**: Allows for customization when desired (specify your own URLSession; manually `resume()` or `cancel()` URLSessionTasks as needed)
+- **Structured**: Helps organize complex REST API requests
 - Support for Combine (on available platforms)
 
 ### Platforms
@@ -33,9 +35,6 @@ Relax is available on all Swift supported platforms, including:
 - tvOS
 - watchOS
 - Linux
-
-### Reference Documentation
-[https://tdeleon.github.io/Relax/](https://tdeleon.github.io/Relax/)
 
 ## Getting Started
 

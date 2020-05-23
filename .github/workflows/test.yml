@@ -2,9 +2,9 @@ name: Test
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master, develop, release/** ]
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master, develop, release/** ]
 
 jobs:
   build:
@@ -20,5 +20,4 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
-      if: runner.os == 'macOS'
       run: swift test -v --enable-test-discovery

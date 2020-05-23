@@ -10,23 +10,23 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import MockURLSession
 @testable import Relax
 
 final class CompletionErrorTests: XCTestCase {
     var session: URLSession!
     
-    override class func setUp() {
-        
+    override func setUp() {
+        session = URLSession.sessionWithMock
     }
     
     override func tearDown() {
         session = nil
+        URLProtocolMock.mock = nil
     }
     
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
-        session = MockURLSession(requestError: error)
+        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
         ExampleService().request(ExampleService.Get(), session: session) { (result) in
             switch result {
             case .failure(let receivedError):
@@ -41,31 +41,27 @@ final class CompletionErrorTests: XCTestCase {
     }
     
     func testBadRequestError() throws {
-        try requestError(error: RequestError.badRequest(request: ExampleService.Get().urlRequest))
+        try requestError(error: RequestError.httpBadRequest(request: ExampleService.Get().urlRequest))
     }
     
     func testUnauthorizedError() throws {
-        try requestError(error: RequestError.unauthorized(request: ExampleService.Get().urlRequest))
+        try requestError(error: RequestError.httpUnauthorized(request: ExampleService.Get().urlRequest))
     }
     
     func testNotFoundError() throws {
-        try requestError(error: RequestError.notFound(request: ExampleService.Get().urlRequest))
+        try requestError(error: RequestError.httpNotFound(request: ExampleService.Get().urlRequest))
     }
     
     func testServerError() throws {
-        try requestError(error: RequestError.serverError(request: ExampleService.Get().urlRequest, status: 500))
+        try requestError(error: RequestError.httpServerError(request: ExampleService.Get().urlRequest, httpStatus: 500))
     }
     
     func testOtherHTTPError() throws {
-        try requestError(error: RequestError.otherHTTP(request: ExampleService.Get().urlRequest, status: 999))
+        try requestError(error: RequestError.otherHTTPError(request: ExampleService.Get().urlRequest, httpStatus: 999))
     }
     
     func testURLError() throws {
         try requestError(error: RequestError.urlError(request: ExampleService.Get().urlRequest, error: URLError(.badURL)))
-    }
-    
-    func testNoResponseError() throws {
-        try requestError(error: RequestError.noResponse(request: ExampleService.Get().urlRequest))
     }
     
     func testOtherError() throws {

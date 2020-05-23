@@ -10,29 +10,35 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import MockURLSession
 @testable import Relax
 
 final class CompletionRequestTests: XCTestCase {
     var session: URLSession!
     
-    override class func setUp() {
-        
+    override func setUp() {
+        let configuration = URLSessionConfiguration.default
+        configuration.protocolClasses = [URLProtocolMock.self]
+        session = URLSession(configuration: configuration)
     }
     
     override func tearDown() {
         session = nil
+        URLProtocolMock.mock = nil
     }
     
     private func makeSuccess<Request: ServiceRequest>(request: Request) throws {
         let expectation = self.expectation(description: "Expect")
-        session = MockURLSession()
-        ExampleService().request(request, session: session) { (result) in
+        URLProtocolMock.mock = { request in
+            let response = HTTPURLResponse(url: URL(string: "http://example.com/")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, nil, nil,0)
+        }
+        let service = ExampleService()
+        service.request(request, session: session) { (result) in
             switch result {
             case .failure(let error):
                 XCTFail("Request failed with error - \(error)")
             case .success(let received):
-                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
+                service.checkSuccess(request: request, received: received.request)
             }
             expectation.fulfill()
         }
@@ -57,6 +63,14 @@ final class CompletionRequestTests: XCTestCase {
     
     func testDelete() throws {
         try makeSuccess(request: ExampleService.Delete())
+    }
+    
+    func testComplexRequest() throws {
+        try makeSuccess(request: ExampleService.Complex())
+    }
+    
+    func testNoContentType() throws {
+        try makeSuccess(request: ExampleService.NoContentType())
     }
 }
 #endif
