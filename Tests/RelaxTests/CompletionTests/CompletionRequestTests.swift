@@ -32,12 +32,13 @@ final class CompletionRequestTests: XCTestCase {
             let response = HTTPURLResponse(url: URL(string: "http://example.com/")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (response, nil, nil,0)
         }
-        ExampleService().request(request, session: session) { (result) in
+        let service = ExampleService()
+        service.request(request, session: session) { (result) in
             switch result {
             case .failure(let error):
                 XCTFail("Request failed with error - \(error)")
             case .success(let received):
-                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
+                service.checkSuccess(request: request, received: received.request)
             }
             expectation.fulfill()
         }
@@ -62,6 +63,14 @@ final class CompletionRequestTests: XCTestCase {
     
     func testDelete() throws {
         try makeSuccess(request: ExampleService.Delete())
+    }
+    
+    func testComplexRequest() throws {
+        try makeSuccess(request: ExampleService.Complex())
+    }
+    
+    func testNoContentType() throws {
+        try makeSuccess(request: ExampleService.NoContentType())
     }
 }
 #endif

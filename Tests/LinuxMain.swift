@@ -1,3 +1,4 @@
+#if !os(watchOS)
 import XCTest
 
 import RelaxTests
@@ -7,3 +8,4 @@ import RelaxTests
 //XCTMain(tests)
 
 fatalError("Run tests with `swift test --enable-test-discovery`.")
+#endif

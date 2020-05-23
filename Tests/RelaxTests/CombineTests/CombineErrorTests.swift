@@ -69,6 +69,6 @@ final class CombineErrorTests: XCTestCase {
     func testURLError() throws {
         try requestError(error: RequestError.urlError(request: ExampleService.Get().urlRequest, error: URLError(.badURL)))
     }
-
+    
 }
 #endif

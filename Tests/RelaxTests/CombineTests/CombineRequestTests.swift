@@ -29,7 +29,8 @@ final class CombineRequestTests: XCTestCase {
     private func makeSuccess<Request: ServiceRequest>(request: Request) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
-        cancellable = ExampleService().request(request, session: session)
+        let service = ExampleService()
+        cancellable = service.request(request, session: session)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
@@ -39,7 +40,7 @@ final class CombineRequestTests: XCTestCase {
                 }
                 expectation.fulfill()
             }, receiveValue: { (received) in
-                XCTAssertEqual(received.request.httpMethod, request.httpMethod.rawValue)
+                service.checkSuccess(request: request, received: received.request)
             })
         
         waitForExpectations(timeout: 3)
@@ -65,5 +66,12 @@ final class CombineRequestTests: XCTestCase {
         try makeSuccess(request: ExampleService.Delete())
     }
     
+    func testComplexRequest() throws {
+        try makeSuccess(request: ExampleService.Complex())
+    }
+    
+    func testNoContentType() throws {
+        try makeSuccess(request: ExampleService.NoContentType())
+    }
 }
 #endif
