@@ -132,7 +132,7 @@ public extension Service {
     }
 }
 
-//#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 extension Service {
     /**
      Make a request using a Combine publisher.
@@ -172,4 +172,4 @@ extension Service {
         .eraseToAnyPublisher()
     }
 }
-//#endif
+#endif
