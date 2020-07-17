@@ -132,7 +132,7 @@ public extension Service {
     }
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if canImport(Combine)
 extension Service {
     /**
      Make a request using a Combine publisher.
