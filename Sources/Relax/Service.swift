@@ -132,9 +132,8 @@ public extension Service {
     }
 }
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-@available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-public extension Service {
+#if canImport(Combine)
+extension Service {
     /**
      Make a request using a Combine publisher.
      - Parameters:
@@ -142,7 +141,8 @@ public extension Service {
         - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
      - Returns: A Combine publisher of type `PublisherResponse`.
     */
-    func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
+    @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+    public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
             return Fail(outputType: PublisherResponse.self, failure: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
                 .eraseToAnyPublisher()
