@@ -55,6 +55,19 @@ final class AsyncErrorTests: XCTestCase {
     }
     
     func testURLError() async {
-        await requestError(expected: .urlError(request: method.urlRequest, error: URLError(.badURL)))
+        let expectedError = URLError(.badURL)
+        let testRequest = ExampleService.Get()
+        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: testRequest.urlRequest, error: expectedError))
+        do {
+            _ = try await ExampleService().request(testRequest, session: session)
+            XCTFail("Should fail")
+        } catch {
+            if case let .urlError(_, urlError) = error as? RequestError {
+                XCTAssertEqual(urlError.code, expectedError.code)
+            } else {
+                XCTFail("Wrong error type")
+            }
+        }
+        
     }
 }
