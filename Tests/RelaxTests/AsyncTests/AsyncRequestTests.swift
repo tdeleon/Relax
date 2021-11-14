@@ -5,7 +5,8 @@
 //  Created by Thomas De Leon on 11/11/21.
 //
 
-#if !os(watchOS) && swift(>=5.5)
+#if os(macOS) || os(iOS) || os(tvOS) // Async has not been implemented in FoundationNetworking (Linux/Windows) yet
+//#if !os(watchOS) && swift(>=5.5) - uncomment when support is added
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking

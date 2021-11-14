@@ -4,16 +4,20 @@ on: [push, pull_request]
 
 jobs:
   build:
+    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
     strategy:
       max-parallel: 5
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest]
+        swift: ["5.2", "5.3", "5.4", "5.5"]
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: fwal/setup-swift@v1
+      with:
+        swift-version: ${{ matrix.swift }}
     - name: Build
       run: swift build -v
-    - name: Run tests
+    - name: Test
       run: swift test -v --enable-test-discovery

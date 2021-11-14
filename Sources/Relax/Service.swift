@@ -177,7 +177,8 @@ extension Service {
 }
 #endif
 
-#if swift(>=5.5)
+#if !canImport(FoundationNetworking) // Async has not been implemented in FoundationNetworking (Linux/Windows) yet
+//#if swift(>=5.5) - uncomment when support is added
 extension Service {
     /**
      Make a request asyncrhonously
