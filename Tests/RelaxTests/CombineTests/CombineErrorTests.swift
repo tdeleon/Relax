@@ -30,20 +30,19 @@ final class CombineErrorTests: XCTestCase {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
         cancellable = ExampleService().request(ExampleService.Get(), session: session)
-            .sink(receiveCompletion: { (completion) in
+            .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let receivedError):
                     XCTAssertEqual(receivedError, error)
-                    break
                 case .finished:
                     break
                 }
                 expectation.fulfill()
-            }, receiveValue: { (received) in
+            }, receiveValue: { received in
                 XCTFail("Expected to fail with an error")
             })
         
-        waitForExpectations(timeout: 3)
+        waitForExpectations(timeout: 1)
     }
     
     func testBadRequestError() throws {
@@ -67,8 +66,26 @@ final class CombineErrorTests: XCTestCase {
     }
     
     func testURLError() throws {
-        try requestError(error: RequestError.urlError(request: ExampleService.Get().urlRequest, error: URLError(.badURL)))
+        let expectation = self.expectation(description: "URLError")
+        let expectedError = URLError(.badURL)
+        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: ExampleService.Get().urlRequest, error: expectedError))
+        cancellable = ExampleService().request(ExampleService.Get(), session: session)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let requestError):
+                    if case let .urlError(_, urlError) = requestError {
+                        XCTAssertEqual(urlError.code, expectedError.code)
+                    } else {
+                        XCTFail("Wrong error type")
+                    }
+                case .finished:
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { received in
+                XCTFail("Expected failure")
+            })
+        waitForExpectations(timeout: 1)
     }
-    
 }
 #endif
