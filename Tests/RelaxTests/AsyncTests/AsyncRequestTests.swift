@@ -5,10 +5,14 @@
 //  Created by Thomas De Leon on 11/11/21.
 //
 
+#if !os(watchOS) && swift(>=5.5)
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 @testable import Relax
 
-@available(iOS 15.0, macOS 12.0, *)
+@available(iOS 15.0, macOS 12.0, tvOS 15.0, *)
 final class AsyncRequestTests: XCTestCase {
     var session: URLSession!
     
@@ -54,3 +58,4 @@ final class AsyncRequestTests: XCTestCase {
         try await makeSuccess(request: type(of: self.service).NoContentType())
     }
 }
+#endif

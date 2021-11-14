@@ -177,6 +177,7 @@ extension Service {
 }
 #endif
 
+#if swift(>=5.5)
 extension Service {
     /**
      Make a request asyncrhonously
@@ -186,7 +187,7 @@ extension Service {
      - Returns: A tuple containing the request, response, and data.
      - Throws: A `RequestError` of the error which occurred.
     */
-    @available(iOS 15.0.0, macOS 12.0.0, *)
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
     public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) async throws -> AsyncResponse {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
             throw RequestError.urlError(request: URLRequest(url: baseURL), error: URLError(.badURL))
@@ -218,3 +219,4 @@ extension Service {
         
     }
 }
+#endif
