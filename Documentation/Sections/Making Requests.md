@@ -15,8 +15,8 @@ Requests can be customized with:
 
 #### Making Requests
 
-To make a request, simply call the `request()` method on the `Service`. There are two versions of this method, one using a completion closure,
-and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see `Service.request(_:session:autoResumeTask:completion:)` or `Service.request(_:session:)`. 
+To make a request, simply call the `request()` method on the `Service`. There are three versions of this method- one using a completion closure,
+another which returns a Combine publisher (available on platforms where Combine is supported), and a third which returns a tuple and is async throwing. For more details, see `Service.request(_:session:autoResumeTask:completion:)` or `Service.request(_:session:)`. 
 
 
 ### Request Basics
@@ -33,9 +33,35 @@ struct ExampleService: Service {
    }
 }
 
-ExampleService().request(ExampleService.Get()) { response in
+let getRequest = ExampleService.Get()
+
+// Completion handler
+ExampleService().request(getRequest) { response in
    ...
 }
+
+// Combine publisher
+let cancellable = ExampleService().request(getRequest)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Failed - \(error)")
+        case .finished:
+            print("Finished")
+        }
+    }, receiveCalue: { received in
+        ...
+    })
+}
+
+// Async/await
+do {
+    let (request, response, data) = try await ExampleService().request(getRequest)
+    ...
+} catch {
+    print("Request failed with error- \(error)")
+}
+
 ```
 This will make a GET request at the URL _https://example.com/api/_, with the _Content-Type_ header set to _application/json_.
 
