@@ -118,9 +118,35 @@ struct ExampleService: Service {
    }
 }
 
-ExampleService().request(ExampleService.Get()) { response in
+let getRequest = ExampleService.Get()
+
+// Completion handler
+ExampleService().request(getRequest) { response in
    ...
 }
+
+// Combine publisher
+let cancellable = ExampleService().request(getRequest)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Failed - \(error)")
+        case .finished:
+            print("Finished")
+        }
+    }, receiveCalue: { received in
+        ...
+    })
+}
+
+// Async/await
+do {
+    let (request, response, data) = try await ExampleService().request(getRequest)
+    ...
+} catch {
+    print("Request failed with error- \(error)")
+}
+
 ```
 
 ### Dynamic Base URLs

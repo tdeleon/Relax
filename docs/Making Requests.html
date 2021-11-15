@@ -8,6 +8,9 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a name="//apple_ref/swift/Section/Making Requests" class="dashAnchor"></a>
@@ -15,13 +18,18 @@
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Relax Docs</a></p>
-        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png" alt="GitHub"/>View on GitHub</a></p>
+        <div class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </div>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="index.html">Relax Reference</a>
-        <img id="carat" src="img/carat.png" />
+        <img id="carat" src="img/carat.png" alt=""/>
         Making Requests  Reference
       </p>
     </div>
@@ -78,8 +86,8 @@ is the only property that you must provide a value for- all others provide a def
 </ul>
 <h4 id='making-requests' class='heading'>Making Requests</h4>
 
-<p>To make a request, simply call the <code>request()</code> method on the <code><a href="Protocols/Service.html">Service</a></code>. There are two versions of this method, one using a completion closure,
-and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">Service.request(_:session:)</a></code>. </p>
+<p>To make a request, simply call the <code>request()</code> method on the <code><a href="Protocols/Service.html">Service</a></code>. There are three versions of this method- one using a completion closure,
+another which returns a Combine publisher (available on platforms where Combine is supported), and a third which returns a tuple and is async throwing. For more details, see <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">Service.request(_:session:)</a></code>. </p>
 <h3 id='request-basics' class='heading'>Request Basics</h3>
 <h4 id='simple-request' class='heading'>Simple Request</h4>
 
@@ -92,9 +100,35 @@ and another which returns a Combine publisher (available on platforms where Comb
    }
 }
 
-ExampleService().request(ExampleService.Get()) { response in
+let getRequest = ExampleService.Get()
+
+// Completion handler
+ExampleService().request(getRequest) { response in
    ...
 }
+
+// Combine publisher
+let cancellable = ExampleService().request(getRequest)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Failed - \(error)")
+        case .finished:
+            print("Finished")
+        }
+    }, receiveCalue: { received in
+        ...
+    })
+}
+
+// Async/await
+do {
+    let (request, response, data) = try await ExampleService().request(getRequest)
+    ...
+} catch {
+    print("Request failed with error- \(error)")
+}
+
 </code></pre>
 
 <p>This will make a GET request at the URL <em><a href="https://example.com/api/">https://example.com/api/</a></em>, with the <em>Content-Type</em> header set to <em>application/json</em>.</p>
@@ -241,7 +275,7 @@ ExampleService().request(ExampleService.Customers.Get(customerID: "123")) { resp
                 <a name="//apple_ref/swift/Section/Defining Requests" class="dashAnchor"></a>
                 <div class="section-name-container">
                   <a class="section-name-link" href="#/Defining%20Requests"></a>
-                  <h3 class="section-name"><p>Defining Requests</p>
+                  <h3 class="section-name"><span>Defining Requests</span>
 </h3>
                 </div>
               </div>
@@ -356,7 +390,7 @@ and another which returns a Combine publisher (available on platforms where Comb
                 <a name="//apple_ref/swift/Section/Handling Errors" class="dashAnchor"></a>
                 <div class="section-name-container">
                   <a class="section-name-link" href="#/Handling%20Errors"></a>
-                  <h3 class="section-name"><p>Handling Errors</p>
+                  <h3 class="section-name"><span>Handling Errors</span>
 </h3>
                 </div>
               </div>
@@ -395,10 +429,9 @@ and another which returns a Combine publisher (available on platforms where Comb
         </section>
         <section id="footer">
           <p>© 2020 Thomas De Leon, all rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
   </body>
-</div>
 </html>
