@@ -12,15 +12,17 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
+extension ServiceRequest {
+    var urlRequest: URLRequest {
+        URLRequest(request: self, baseURL: ExampleService().baseURL)!
+    }
+}
+
 struct ExampleService: Service {
     let baseURL: URL = URL(string: "https://www.example.com")!
     
     struct Get: ServiceRequest {
         let httpMethod: HTTPRequestMethod = .get
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
     }
     
     struct Put: ServiceRequest {
