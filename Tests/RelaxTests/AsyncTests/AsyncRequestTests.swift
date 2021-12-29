@@ -31,7 +31,7 @@ final class AsyncRequestTests: XCTestCase {
     private func makeSuccess<Request: ServiceRequest>(request: Request) async throws {
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
         
-        let result = try await service.request(request)
+        let result = try await service.request(request, session: session)
         service.checkSuccess(request: request, received: result.request)
     }
     
@@ -40,22 +40,26 @@ final class AsyncRequestTests: XCTestCase {
     }
     
     func testPost() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: type(of: self.service).Post())
     }
     
     func testPatch() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: type(of: self.service).Patch())
     }
     
     func testPut() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: type(of: self.service).Put())
     }
     
     func testDelete() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: type(of: self.service).Delete())
     }
     
     func testComplexRequest() async throws {
+        try await makeSuccess(request: type(of: self.service).Complex())
+    }
+    
+    func testNoContentType() async throws {
         try await makeSuccess(request: type(of: self.service).NoContentType())
     }
 }
