@@ -105,10 +105,8 @@ public extension Service {
                 if let urlError = error as? URLError {
                     return completion(.failure(.urlError(request: urlRequest, error: urlError)))
                 }
-                // Check for any other error
-                else {
-                    return completion(.failure(.other(request: urlRequest, message: error!.localizedDescription)))
-                }
+                // Any other error
+                return completion(.failure(.other(request: urlRequest, message: error!.localizedDescription)))
             }
             
             // Check for an HTTPURLResponse
