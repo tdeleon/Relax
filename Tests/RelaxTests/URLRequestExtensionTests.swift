@@ -70,7 +70,7 @@ final class URLRequestExtensionTests : XCTestCase {
     func testInitHeadersDefaultContentType() {
         let defaultContentTypeHeader = [URLRequest.contentTypeHeaderField: RequestContentType.applicationJSON.rawValue]
         let url = URL(string: "https://example.com")!
-        let headers = ["header1": "value1"]
+        let headers = ["Header1": "value1"]
         let request = URLRequest(type: .get, baseURL: url, headers: headers)
         XCTAssertEqual(request?.allHTTPHeaderFields, headers.merging(defaultContentTypeHeader, uniquingKeysWith: { (current, _) in current }))
     }
