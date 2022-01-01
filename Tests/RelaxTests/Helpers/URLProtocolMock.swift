@@ -13,7 +13,7 @@ import FoundationNetworking
 @testable import Relax
 
 class URLProtocolMock: URLProtocol {
-    typealias MockHandler = ((URLRequest) -> (HTTPURLResponse, Data?, Error?, TimeInterval))
+    typealias MockHandler = ((URLRequest) -> (URLResponse?, Data?, Error?, TimeInterval))
     
     static var mock: MockHandler?
     
@@ -39,7 +39,9 @@ class URLProtocolMock: URLProtocol {
         
         sleep(UInt32(delay))
         
-        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        if let response = response {
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        }
         
         if let data = data {
             client?.urlProtocol(self, didLoad: data)

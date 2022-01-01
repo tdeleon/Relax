@@ -108,10 +108,8 @@ public extension Service {
                 if let urlError = error as? URLError {
                     return completion(.failure(.urlError(request: urlRequest, error: urlError)))
                 }
-                // Check for any other error
-                else {
-                    return completion(.failure(.other(request: urlRequest, message: error!.localizedDescription)))
-                }
+                // Any other error
+                return completion(.failure(.other(request: urlRequest, message: error!.localizedDescription)))
             }
             
             // Check for an HTTPURLResponse
@@ -143,16 +141,17 @@ extension Service {
         - request: The request to execute
         - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
      - Returns: A Combine publisher of type `PublisherResponse`.
-    */
+     */
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
         guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            return Fail(outputType: PublisherResponse.self, failure: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
+            return Fail<PublisherResponse, RequestError>(error: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
                 .eraseToAnyPublisher()
         }
         // Create a data task publisher
         return session.dataTaskPublisher(for: urlRequest)
-            // Convert the output to `RelaxPublisherResponse`, check for http errors
+        // Convert the output to `RelaxPublisherResponse`, check for http errors
+            .mapError { RequestError.urlError(request: urlRequest, error: $0) }
             .tryMap { output -> PublisherResponse in
                 let response = output.response as! HTTPURLResponse
                 
@@ -161,18 +160,9 @@ extension Service {
                 }
                 
                 return (urlRequest, response, output.data)
-        }
-            // Convert errors to `RelaxRequestError`
-        .mapError { error in
-            if let relaxError = error as? RequestError {
-                return relaxError
             }
-            if let urlError = error as? URLError {
-                return .urlError(request: urlRequest, error: urlError)
-            }
-            return .other(request: urlRequest, message: error.localizedDescription)
-        }
-        .eraseToAnyPublisher()
+            .mapError { $0 as? RequestError ?? RequestError.other(request: urlRequest, message: $0.localizedDescription) }
+            .eraseToAnyPublisher()
     }
 }
 #endif

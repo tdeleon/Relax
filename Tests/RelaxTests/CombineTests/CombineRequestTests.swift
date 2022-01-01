@@ -36,9 +36,8 @@ final class CombineRequestTests: XCTestCase {
                 case .failure(let error):
                     XCTFail("Request failed with error - \(error)")
                 case .finished:
-                    break
+                    expectation.fulfill()
                 }
-                expectation.fulfill()
             }, receiveValue: { (received) in
                 service.checkSuccess(request: request, received: received.request)
             })

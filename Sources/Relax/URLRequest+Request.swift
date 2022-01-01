@@ -11,6 +11,8 @@ import FoundationNetworking
 #endif
 
 internal extension URLRequest {
+    static let contentTypeHeaderField = "Content-Type"
+    
     init?<Request: ServiceRequest>(request: Request, baseURL: URL) {
         guard let urlRequest = URLRequest(type: request.httpMethod,
                                           baseURL: baseURL,
@@ -40,21 +42,18 @@ internal extension URLRequest {
             pathString += "/\(pathParameterString)"
         }
         
-        var url = baseURL
-        
-        if !pathString.isEmpty {
-            guard let endpointURL = URL(string: pathString, relativeTo: baseURL) else {
-                return nil
-            }
-            url = endpointURL
-        }
-        
-        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        guard var components = URLComponents(url: baseURL, resolvingAgainstBaseURL: true) else {
             return nil
         }
         
+        components.path += pathString
+        
         if queryParameters.count > 0 {
-            components.queryItems = queryParameters
+            var queryToAdd = queryParameters
+            if let existingQuery = components.queryItems {
+                queryToAdd = existingQuery + queryToAdd
+            }
+            components.queryItems = queryToAdd
         }
         
         guard let fullURL = components.url else {
@@ -66,10 +65,10 @@ internal extension URLRequest {
         self.httpMethod = type.rawValue
         
         if let contentType = contentType {
-            self.addValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
+            self.addValue(contentType.rawValue, forHTTPHeaderField: Self.contentTypeHeaderField)
         }
         
-        headers.forEach { self.addValue($0.value, forHTTPHeaderField: $0.key)}
+        headers.forEach { self.addValue($0.value, forHTTPHeaderField: $0.key) }
         
         self.httpBody = body
     }
