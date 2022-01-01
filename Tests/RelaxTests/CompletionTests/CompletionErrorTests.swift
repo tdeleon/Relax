@@ -30,7 +30,7 @@ final class CompletionErrorTests: XCTestCase {
         ExampleService().request(ExampleService.Get(), session: session) { result in
             switch result {
             case .failure(let receivedError):
-                XCTAssertEqual(error, receivedError)
+                XCTAssertEqual(receivedError, error)
             case .success(_):
                 XCTFail("Expected to fail with error")
             }
@@ -96,6 +96,24 @@ final class CompletionErrorTests: XCTestCase {
             case .failure(let requestError):
                 if case let .urlError(_, error) = requestError {
                     XCTAssertEqual(error.code, expectedError.code)
+                } else {
+                    XCTFail("Wrong error type")
+                }
+            case .success:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testBadURL() throws {
+        let expectation = self.expectation(description: "Bad URL")
+        BadURLService().request(BadURLService.Get()) { result in
+            switch result {
+            case .failure(let requestError):
+                if case let .urlError(_, error) = requestError {
+                    XCTAssertEqual(error.code, URLError.badURL)
                 } else {
                     XCTFail("Wrong error type")
                 }

@@ -38,7 +38,7 @@ final class CombineErrorTests: XCTestCase {
                     break
                 }
                 expectation.fulfill()
-            }, receiveValue: { received in
+            }, receiveValue: { _ in
                 XCTFail("Expected to fail with an error")
             })
         
@@ -82,7 +82,28 @@ final class CombineErrorTests: XCTestCase {
                     break
                 }
                 expectation.fulfill()
-            }, receiveValue: { received in
+            }, receiveValue: { _ in
+                XCTFail("Expected failure")
+            })
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testBadURL() throws {
+        let expectation = self.expectation(description: "Bad URL")
+        cancellable = BadURLService().request(BadURLService.Get())
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let requestError):
+                    if case let .urlError(_, urlError) = requestError {
+                        XCTAssertEqual(urlError.code, URLError.badURL)
+                    } else {
+                        XCTFail("Wrong error type")
+                    }
+                case .finished:
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { _ in
                 XCTFail("Expected failure")
             })
         waitForExpectations(timeout: 1)

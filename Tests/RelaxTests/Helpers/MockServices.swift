@@ -74,4 +74,12 @@ struct ExampleService: Service {
     
 }
 
+struct BadURLService: Service {
+    let baseURL: URL = URL(string: "a://@@")!
+    
+    struct Get: ServiceRequest {
+        let httpMethod: HTTPRequestMethod = .get
+    }
+}
+
 #endif
