@@ -63,7 +63,7 @@ public protocol Service {
      */
     typealias PublisherResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
     
-    typealias AsyncResponse = PublisherResponse
+    typealias AsyncResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
     
     /**
      Completion handler for requests made
@@ -132,81 +132,3 @@ public extension Service {
         return task
     }
 }
-
-#if canImport(Combine)
-extension Service {
-    /**
-     Make a request using a Combine publisher.
-     - Parameters:
-        - request: The request to execute
-        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-     - Returns: A Combine publisher of type `PublisherResponse`.
-     */
-    @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
-        guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            return Fail<PublisherResponse, RequestError>(error: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
-                .eraseToAnyPublisher()
-        }
-        // Create a data task publisher
-        return session.dataTaskPublisher(for: urlRequest)
-        // Convert the output to `RelaxPublisherResponse`, check for http errors
-            .mapError { RequestError.urlError(request: urlRequest, error: $0) }
-            .tryMap { output -> PublisherResponse in
-                let response = output.response as! HTTPURLResponse
-                
-                if let httpError = RequestError(httpStatusCode: response.statusCode, request: urlRequest) {
-                    throw httpError
-                }
-                
-                return (urlRequest, response, output.data)
-            }
-            .mapError { $0 as? RequestError ?? RequestError.other(request: urlRequest, message: $0.localizedDescription) }
-            .eraseToAnyPublisher()
-    }
-}
-#endif
-
-#if !canImport(FoundationNetworking) && swift(>=5.5) // Async has not been implemented in FoundationNetworking (Linux/Windows) yet
-extension Service {
-    /**
-     Make a request asyncrhonously
-     - Parameters:
-        - request: The request to execute
-        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-     - Returns: A tuple containing the request, response, and data.
-     - Throws: A `RequestError` of the error which occurred.
-    */
-    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
-    public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) async throws -> AsyncResponse {
-        guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            throw RequestError.urlError(request: URLRequest(url: baseURL), error: URLError(.badURL))
-        }
-        
-        do {
-            let result = try await session.data(for: urlRequest)
-            
-            guard let httpResponse = result.1 as? HTTPURLResponse else {
-                throw RequestError.urlError(request: urlRequest, error: URLError(.unknown))
-            }
-            
-            if let httpError = RequestError(httpStatusCode: httpResponse.statusCode, request: urlRequest) {
-                throw httpError
-            } else {
-                return (urlRequest, httpResponse, result.0)
-            }
-            
-        } catch {
-            switch error {
-            case let requestError as RequestError:
-                throw requestError
-            case let urlError as URLError:
-                throw RequestError.urlError(request: urlRequest, error: urlError)
-            default:
-                throw RequestError.other(request: urlRequest, message: error.localizedDescription)
-            }
-        }
-        
-    }
-}
-#endif
