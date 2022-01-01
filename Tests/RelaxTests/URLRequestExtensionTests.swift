@@ -5,7 +5,11 @@
 //  Created by Thomas De Leon on 12/28/21.
 //
 
+#if !os(watchOS)
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 @testable import Relax
 
 final class URLRequestExtensionTests : XCTestCase {
@@ -90,3 +94,4 @@ final class URLRequestExtensionTests : XCTestCase {
     }
     
 }
+#endif
