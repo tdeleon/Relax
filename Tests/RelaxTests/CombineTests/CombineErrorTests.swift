@@ -29,7 +29,7 @@ final class CombineErrorTests: XCTestCase {
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
-        cancellable = ExampleService().request(ExampleService.Get(), session: session)
+        cancellable = ExampleService().requestPublisher(ExampleService.Get(), session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let receivedError):
@@ -69,7 +69,7 @@ final class CombineErrorTests: XCTestCase {
         let expectation = self.expectation(description: "URLError")
         let expectedError = URLError(.badURL)
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: ExampleService.Get().urlRequest, error: expectedError))
-        cancellable = ExampleService().request(ExampleService.Get(), session: session)
+        cancellable = ExampleService().requestPublisher(ExampleService.Get(), session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let requestError):
@@ -90,7 +90,7 @@ final class CombineErrorTests: XCTestCase {
     
     func testBadURL() throws {
         let expectation = self.expectation(description: "Bad URL")
-        cancellable = BadURLService().request(BadURLService.Get())
+        cancellable = BadURLService().requestPublisher(BadURLService.Get())
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let requestError):

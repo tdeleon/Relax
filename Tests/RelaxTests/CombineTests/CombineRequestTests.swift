@@ -30,7 +30,7 @@ final class CombineRequestTests: XCTestCase {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
         let service = ExampleService()
-        cancellable = service.request(request, session: session)
+        cancellable = service.requestPublisher(request, session: session)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
