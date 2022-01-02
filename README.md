@@ -321,7 +321,7 @@ struct ExampleService: Service {
 #### Making a Request
 
 ```
-cancellable = ExampleService().request(ExampleService.Customer.Get())
+cancellable = ExampleService().requestPublisher(ExampleService.Customer.Get())
     .map { $0.data }
     .decode(type: ExampleService.Customer.Response.self, decoder: JSONDecoder())
     .sink(receiveCompletion: { completion in
