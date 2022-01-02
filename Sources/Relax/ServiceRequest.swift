@@ -25,8 +25,12 @@ import FoundationNetworking
  * Content type (this value will be added to the `URLRequest.allHTTPHeaders` field) - see `ServiceRequest.contentType`.
  * Request body - see `ServiceRequest.body`.
  
- To make a request, simply call the `request()` method on the `Service`. There are two versions of this method, one using a completion closure,
- and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see `Service.request(_:session:autoResumeTask:completion:)` or `Service.request(_:session:)`. 
+ To make a request, simply call the `request()` method on the `Service`. There are three versions of this method:
+ 
+ 1. A closure based method which executes the closure on completion of the request - `Service.request(_:session:autoResumeTask:completion:)`.
+ 2. An asynchronous throwing method using [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) (Available when using Swift 5.5 or greater on Linux, iOS 13+, watchOS 8+ macOS12+, tvOS 15+) - `Service.request(_:session:)`.
+ 3. A method which returns a [Combine](https://developer.apple.com/documentation/combine) publisher (iOS 13+, watchOS 6+, tvOS 13+, macOS 10.15) - `Service.requestPublisher(_:session:)`.
+ 
  */
 public protocol ServiceRequest {
     

@@ -12,7 +12,7 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
-@available(iOS 15.0, macOS 12.0, tvOS 15.0, *)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class AsyncErrorTests: XCTestCase {
     var session: URLSession!
     

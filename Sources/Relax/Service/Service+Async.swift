@@ -12,6 +12,7 @@ import FoundationNetworking
 #endif
 
 extension Service {
+    //MARK: - Making Requests
     /**
      Make a request asyncrhonously
      - Parameters:
@@ -20,7 +21,7 @@ extension Service {
      - Returns: A tuple containing the request, response, and data.
      - Throws: A `RequestError` of the error which occurred.
     */
-    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
     public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) async throws -> AsyncResponse {
         try await withCheckedThrowingContinuation { continuation in
             self.request(request, session: session) { result in
