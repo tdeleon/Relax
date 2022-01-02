@@ -5,8 +5,11 @@
 //  Created by Thomas De Leon on 1/1/22.
 //
 
-#if !canImport(FoundationNetworking) && swift(>=5.5) // Async has not been implemented in FoundationNetworking (Linux/Windows) yet
+#if swift(>=5.5)
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 extension Service {
     /**
@@ -19,34 +22,20 @@ extension Service {
     */
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
     public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) async throws -> AsyncResponse {
-        guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            throw RequestError.urlError(request: URLRequest(url: baseURL), error: URLError(.badURL))
-        }
-        
-        do {
-            let result = try await session.data(for: urlRequest)
-            
-            guard let httpResponse = result.1 as? HTTPURLResponse else {
-                throw RequestError.urlError(request: urlRequest, error: URLError(.unknown))
-            }
-            
-            if let httpError = RequestError(httpStatusCode: httpResponse.statusCode, request: urlRequest) {
-                throw httpError
-            } else {
-                return (urlRequest, httpResponse, result.0)
-            }
-            
-        } catch {
-            switch error {
-            case let requestError as RequestError:
-                throw requestError
-            case let urlError as URLError:
-                throw RequestError.urlError(request: urlRequest, error: urlError)
-            default:
-                throw RequestError.other(request: urlRequest, message: error.localizedDescription)
+        try await withCheckedThrowingContinuation { continuation in
+            self.request(request, session: session) { result in
+                switch result {
+                case .success(let successResponse):
+                    guard let data = successResponse.data else {
+                        continuation.resume(throwing: RequestError.other(request: URLRequest(url: baseURL), message: "No data was returned"))
+                        return
+                    }
+                    continuation.resume(returning: (successResponse.request, successResponse.response, data))
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             }
         }
-        
     }
 }
 #endif

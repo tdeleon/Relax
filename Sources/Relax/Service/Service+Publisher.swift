@@ -19,25 +19,22 @@ extension Service {
      */
     @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {
-        guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-            return Fail<PublisherResponse, RequestError>(error: .urlError(request: URLRequest(url: baseURL), error: URLError(.badURL)))
-                .eraseToAnyPublisher()
-        }
-        // Create a data task publisher
-        return session.dataTaskPublisher(for: urlRequest)
-        // Convert the output to `RelaxPublisherResponse`, check for http errors
-            .mapError { RequestError.urlError(request: urlRequest, error: $0) }
-            .tryMap { output -> PublisherResponse in
-                let response = output.response as! HTTPURLResponse
-                
-                if let httpError = RequestError(httpStatusCode: response.statusCode, request: urlRequest) {
-                    throw httpError
+        
+        return Future<PublisherResponse, RequestError> { promise in
+            self.request(request, session: session) { result in
+                switch result {
+                case .success(let successResponse):
+                    guard let data = successResponse.data else {
+                        promise(.failure(.other(request: URLRequest(url: baseURL), message: "No data was returned")))
+                        return
+                    }
+                    promise(.success((successResponse.request, successResponse.response, data)))
+                case .failure(let failure):
+                    promise(.failure(failure))
                 }
-                
-                return (urlRequest, response, output.data)
             }
-            .mapError { $0 as? RequestError ?? RequestError.other(request: urlRequest, message: $0.localizedDescription) }
-            .eraseToAnyPublisher()
+        }
+        .eraseToAnyPublisher()
     }
 }
 #endif

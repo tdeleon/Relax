@@ -54,6 +54,7 @@ public protocol Service {
      - `data`: The data received, if any
      */
     typealias Response = (request: URLRequest, response: HTTPURLResponse, data: Data?)
+    
     /**
      Response for an HTTP request using a Combine publisher
      
@@ -63,6 +64,13 @@ public protocol Service {
      */
     typealias PublisherResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
     
+    /**
+     Response for an async HTTP request
+     
+        - `request`: The request made
+        - `response`: The response received
+        - `data`: Data received
+     */
     typealias AsyncResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
     
     /**
