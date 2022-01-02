@@ -28,8 +28,8 @@ import FoundationNetworking
  To make a request, simply call the `request()` method on the `Service`. There are three versions of this method:
  
  1. A closure based method which executes the closure on completion of the request - `Service.request(_:session:autoResumeTask:completion:)`.
- 2. An asynchronous throwing method using [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) (Available when using Swift 5.5 or greater on Linux, iOS 13+, watchOS 8+ macOS12+, tvOS 15+) - `Service.request(_:session:)`.
- 3. A method which returns a [Combine](https://developer.apple.com/documentation/combine) publisher (iOS 13+, watchOS 6+, tvOS 13+, macOS 10.15) - `Service.requestPublisher(_:session:)`.
+ 2. An asynchronous throwing method using [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) (_Available when using Swift 5.5 or greater on **Linux**, **iOS 13+**, **watchOS 6+**, **macOS10.15+**, **tvOS 13+**_) - `Service.request(_:session:)`.
+ 3. A method which returns a [Combine](https://developer.apple.com/documentation/combine) publisher (_available on **iOS 13+**, **watchOS 6+**, **tvOS 13+**, **macOS 10.15**_) - `Service.requestPublisher(_:session:)`.
  
  */
 public protocol ServiceRequest {

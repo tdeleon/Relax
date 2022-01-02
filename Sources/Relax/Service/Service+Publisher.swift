@@ -11,14 +11,8 @@ import Combine
 
 extension Service {
     //MARK: - Making Requests
-    /*
-     Make a request using a Combine publisher.
-     - Attention: This method has been renamed `Service.requestPublisher(_:session:)`.
-     - Parameters:
-     - request: The request to execute
-     - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-     - Returns: A Combine publisher of type `PublisherResponse`.
-     */
+    
+    // Renamed
     /// :nodoc:
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     @available(*, deprecated, renamed: "requestPublisher(_:session:)")
@@ -29,9 +23,9 @@ extension Service {
     /**
      Make a request using a Combine publisher.
      - Parameters:
-     - request: The request to execute
-     - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-     - Returns: A Combine publisher of type `PublisherResponse`.
+        - request: The request to execute
+        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
+        - Returns: A Combine publisher of type `PublisherResponse`.
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
     public func requestPublisher<Request: ServiceRequest>(_ request: Request, session: URLSession=session) -> AnyPublisher<PublisherResponse, RequestError> {

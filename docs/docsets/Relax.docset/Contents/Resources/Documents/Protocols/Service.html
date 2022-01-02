@@ -330,6 +330,19 @@ is provided to a given request.</p>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Making%20Requests"></a>
+                <a name="//apple_ref/swift/Section/Making Requests" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Making%20Requests"></a>
+                  <h3 class="section-name"><span>Making Requests</span>
+</h3>
+                </div>
+              </div>
+              <ul>
                 <li class="item">
                   <div>
                     <code>
@@ -358,7 +371,7 @@ is provided to a given request.</p>
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">15.0</span><span class="p">,</span> <span class="n">macOS</span> <span class="mf">12.0</span><span class="p">,</span> <span class="n">tvOS</span> <span class="mf">15.0</span><span class="p">,</span> <span class="n">watchOS</span> <span class="mf">8.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
+                          <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">iOS</span> <span class="mf">13.0</span><span class="p">,</span> <span class="n">macOS</span> <span class="mf">10.15</span><span class="p">,</span> <span class="n">tvOS</span> <span class="mf">13.0</span><span class="p">,</span> <span class="n">watchOS</span> <span class="mf">6.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
 <span class="kd">public</span> <span class="kd">func</span> <span class="n">request</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">)</span> <span class="k">async</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Protocols/Service.html#/s:5Relax7ServiceP13AsyncResponsea">AsyncResponse</a></span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
 
                         </div>
@@ -397,73 +410,6 @@ is provided to a given request.</p>
                       <div>
                         <h4>Return Value</h4>
                         <p>A tuple containing the request, response, and data.</p>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF"></a>
-                    <a name="//apple_ref/swift/Method/request(_:session:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">request(_:<wbr>session:<wbr>)</a>
-                    </code>
-                      <span class="declaration-note">
-                        Extension method
-                      </span>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Make a request using a Combine publisher.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@available</span><span class="p">(</span><span class="n">macOS</span> <span class="mf">10.15</span><span class="p">,</span> <span class="n">iOS</span> <span class="mf">13.0</span><span class="p">,</span> <span class="n">tvOS</span> <span class="mf">13.0</span><span class="p">,</span> <span class="n">watchOS</span> <span class="mf">6.0</span><span class="p">,</span> <span class="o">*</span><span class="p">)</span>
-<span class="kd">@available</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">deprecated</span><span class="p">,</span> <span class="nv">renamed</span><span class="p">:</span> <span class="s">"requestPublisher"</span><span class="p">)</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="n">request</span><span class="o">&lt;</span><span class="kt">Request</span><span class="o">&gt;</span><span class="p">(</span><span class="n">_</span> <span class="nv">request</span><span class="p">:</span> <span class="kt">Request</span><span class="p">,</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">URLSession</span> <span class="o">=</span> <span class="n"><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">AnyPublisher</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/Service.html#/s:5Relax7ServiceP17PublisherResponsea">PublisherResponse</a></span><span class="p">,</span> <span class="kt"><a href="../Enums/RequestError.html">RequestError</a></span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">Request</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/ServiceRequest.html">ServiceRequest</a></span></code></pre>
-
-                        </div>
-                      </div>
-                      <div>
-                        <h4>Parameters</h4>
-                        <table class="graybox">
-                          <tbody>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>request</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The request to execute</p>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <code>
-                                <em>session</em>
-                                </code>
-                              </td>
-                              <td>
-                                <div>
-                                  <p>The session to use. If not specified, the default provided by the <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">session</a></code> property of the <code>Service</code> will be used</p>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                      <div>
-                        <h4>Return Value</h4>
-                        <p>A Combine publisher of type <code><a href="../Protocols/Service.html#/s:5Relax7ServiceP17PublisherResponsea">PublisherResponse</a></code>.</p>
                       </div>
                     </section>
                   </div>
@@ -534,19 +480,6 @@ is provided to a given request.</p>
                     </section>
                   </div>
                 </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Making%20Requests"></a>
-                <a name="//apple_ref/swift/Section/Making Requests" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Making%20Requests"></a>
-                  <h3 class="section-name"><span>Making Requests</span>
-</h3>
-                </div>
-              </div>
-              <ul>
                 <li class="item">
                   <div>
                     <code>
@@ -568,7 +501,7 @@ is provided to a given request.</p>
 <p>Call this method to create a <code>URLSessionDataTask</code> for a given request. By default, the <code>resume()</code> will be called on the task, executing the request immediately.</p>
 <div class="aside aside-warning">
     <p class="aside-title">Warning</p>
-    When <code>autoResumeTask</code> is <code>true</code>, calling <code>resume()</code> on the returned task will cause the request to be executed again.
+    When <code>autoResumeTask</code> is <code>true</code> (this is the default value), calling <code>resume()</code> on the returned task will cause the request to be executed again.
 
 </div>
 
@@ -649,7 +582,7 @@ is provided to a given request.</p>
           </section>
         </section>
         <section id="footer">
-          <p>© 2020 Thomas De Leon, all rights reserved.</p>
+          <p>© 2022 Thomas De Leon, all rights reserved.</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

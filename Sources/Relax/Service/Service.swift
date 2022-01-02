@@ -100,7 +100,7 @@ public extension Service {
     
      Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
      
-     - Warning: When `autoResumeTask` is `true`, calling `resume()` on the returned task will cause the request to be executed again.
+     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
     */
     @discardableResult func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session, autoResumeTask: Bool=true, completion: @escaping RequestCompletion) -> URLSessionDataTask? {
         // Create the URLRequest

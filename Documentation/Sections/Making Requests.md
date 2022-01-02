@@ -16,7 +16,7 @@ Requests can be customized with:
 #### Making Requests
 
 To make a request, simply call the `request()` method on the `Service`. There are three versions of this method- one using a completion closure,
-another which returns a Combine publisher (available on platforms where Combine is supported), and a third which returns a tuple and is async throwing. For more details, see `Service.request(_:session:autoResumeTask:completion:)` or `Service.request(_:session:)`. 
+another which returns a Combine publisher (available on platforms where Combine is supported), and a third which returns a tuple and is async throwing. For more details, see `Service.request(_:session:autoResumeTask:completion:)`, `Service.request(_:session:)`, or `Service.requestPublisher(_:session:)`. 
 
 
 ### Request Basics
