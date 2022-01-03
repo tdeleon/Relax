@@ -15,7 +15,7 @@ _A Protocol-Oriented Swift library for building REST client requests_
 ## Overview
 
 Relax is a client library for defining REST services and requests, built on the concept of [_Protocol Oriented Programming_](https://developer.apple.com/videos/play/wwdc2015/408/). This means that it is largely built with protocols, allowing
-for a great deal of flexibility in it's use.
+for a great deal of flexibility in its use.
 
 ### Reference Documentation
 [https://tdeleon.github.io/Relax/](https://tdeleon.github.io/Relax/)
@@ -25,16 +25,18 @@ for a great deal of flexibility in it's use.
 - **Lightweight & Simple**:  based on protocols, works directly on URLSession for best performance and low overhead
 - **Customizable**: Allows for customization when desired (specify your own URLSession; manually `resume()` or `cancel()` URLSessionTasks as needed)
 - **Structured**: Helps organize complex REST API requests
-- Support for Combine (on available platforms)
+- Support for Combine and Swift Concurrency (where available)
 
-### Platforms
+### Supported Platforms
 
-Relax is available on all Swift supported platforms, including:
+Relax is available on all Swift (5.2+) supported platforms, including:
 - macOS
 - iOS
 - tvOS
 - watchOS
 - Linux
+
+>**Note:** Relax _may_ work on Windows, however it is currently not tested or officially supported.
 
 ## Getting Started
 
@@ -118,9 +120,35 @@ struct ExampleService: Service {
    }
 }
 
-ExampleService().request(ExampleService.Get()) { response in
+let getRequest = ExampleService.Get()
+
+// Completion handler
+ExampleService().request(getRequest) { response in
    ...
 }
+
+// Combine publisher
+let cancellable = ExampleService().request(getRequest)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Failed - \(error)")
+        case .finished:
+            print("Finished")
+        }
+    }, receiveCalue: { received in
+        ...
+    })
+}
+
+// Async/await
+do {
+    let (request, response, data) = try await ExampleService().request(getRequest)
+    ...
+} catch {
+    print("Request failed with error- \(error)")
+}
+
 ```
 
 ### Dynamic Base URLs
@@ -295,7 +323,7 @@ struct ExampleService: Service {
 #### Making a Request
 
 ```
-cancellable = ExampleService().request(ExampleService.Customer.Get())
+cancellable = ExampleService().requestPublisher(ExampleService.Customer.Get())
     .map { $0.data }
     .decode(type: ExampleService.Customer.Response.self, decoder: JSONDecoder())
     .sink(receiveCompletion: { completion in

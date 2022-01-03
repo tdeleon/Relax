@@ -8,19 +8,27 @@
     <script src="js/jquery.min.js" defer></script>
     <script src="js/jazzy.js" defer></script>
     
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a title="Relax  Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="index.html">Relax Docs</a></p>
-        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="https://github.com/tdeleon/Relax"><img src="img/gh.png" alt="GitHub"/>View on GitHub</a></p>
+        <div class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </div>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="index.html">Relax Reference</a>
-        <img id="carat" src="img/carat.png" />
+        <img id="carat" src="img/carat.png" alt=""/>
         Relax  Reference
       </p>
     </div>
@@ -72,7 +80,7 @@
 <h2 id='overview' class='heading'>Overview</h2>
 
 <p>Relax is a client library for defining REST services and requests, built on the concept of <a href="https://developer.apple.com/videos/play/wwdc2015/408/"><em>Protocol Oriented Programming</em></a>. This means that it is largely built with protocols, allowing
-for a great deal of flexibility in it&rsquo;s use.</p>
+for a great deal of flexibility in its use.</p>
 <h3 id='reference-documentation' class='heading'>Reference Documentation</h3>
 
 <p><a href="https://tdeleon.github.io/Relax/">https://tdeleon.github.io/Relax/</a></p>
@@ -82,11 +90,11 @@ for a great deal of flexibility in it&rsquo;s use.</p>
 <li><strong>Lightweight &amp; Simple</strong>:  based on protocols, works directly on URLSession for best performance and low overhead</li>
 <li><strong>Customizable</strong>: Allows for customization when desired (specify your own URLSession; manually <code>resume()</code> or <code>cancel()</code> URLSessionTasks as needed)</li>
 <li><strong>Structured</strong>: Helps organize complex REST API requests</li>
-<li>Support for Combine (on available platforms)</li>
+<li>Support for Combine and Swift Concurrency (where available)</li>
 </ul>
-<h3 id='platforms' class='heading'>Platforms</h3>
+<h3 id='supported-platforms' class='heading'>Supported Platforms</h3>
 
-<p>Relax is available on all Swift supported platforms, including:</p>
+<p>Relax is available on all Swift (5.2+) supported platforms, including:</p>
 
 <ul>
 <li>macOS</li>
@@ -95,6 +103,10 @@ for a great deal of flexibility in it&rsquo;s use.</p>
 <li>watchOS</li>
 <li>Linux</li>
 </ul>
+
+<blockquote>
+<p><strong>Note:</strong> Relax <em>may</em> work on Windows, however it is currently not tested or officially supported.</p>
+</blockquote>
 <h2 id='getting-started' class='heading'>Getting Started</h2>
 <h3 id='adding-to-a-project' class='heading'>Adding to a Project</h3>
 
@@ -157,7 +169,7 @@ The <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP10htt
 </ul>
 
 <p>To make a request, simply call the <code>request()</code> method on the <code><a href="Protocols/Service.html">Service</a></code>. There are two versions of this method, one using a completion closure,
-and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session7Combine12AnyPublisherVy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAI4DataV4datatAA12RequestErrorOGqd___So12NSURLSessionCtAA0bN0Rd__lF">Service.request(_:session:)</a></code>. </p>
+and another which returns a Combine publisher (available on platforms where Combine is supported). For more details, see <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session14autoResumeTask10completionSo016NSURLSessionDataG0CSgqd___So0I0CSbys6ResultOy10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAO0J0VSg4datatAA12RequestErrorOGctAA0bQ0Rd__lF">Service.request(_:session:autoResumeTask:completion:)</a></code> or <code><a href="Protocols/Service.html#/s:5Relax7ServicePAAE7request_7session10Foundation10URLRequestVAD_So17NSHTTPURLResponseC8responseAF4DataV4datatqd___So12NSURLSessionCtYaKAA0B7RequestRd__lF">Service.request(_:session:)</a></code>. </p>
 <h2 id='examples' class='heading'>Examples</h2>
 <h3 id='basic' class='heading'>Basic</h3>
 
@@ -170,9 +182,35 @@ and another which returns a Combine publisher (available on platforms where Comb
    }
 }
 
-ExampleService().request(ExampleService.Get()) { response in
+let getRequest = ExampleService.Get()
+
+// Completion handler
+ExampleService().request(getRequest) { response in
    ...
 }
+
+// Combine publisher
+let cancellable = ExampleService().request(getRequest)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Failed - \(error)")
+        case .finished:
+            print("Finished")
+        }
+    }, receiveCalue: { received in
+        ...
+    })
+}
+
+// Async/await
+do {
+    let (request, response, data) = try await ExampleService().request(getRequest)
+    ...
+} catch {
+    print("Request failed with error- \(error)")
+}
+
 </code></pre>
 <h3 id='dynamic-base-urls' class='heading'>Dynamic Base URLs</h3>
 <pre class="highlight plaintext"><code>struct ExampleService: Service {
@@ -329,7 +367,7 @@ ExampleService.Customer.add(id: "123, name: "First Last")
 }
 </code></pre>
 <h4 id='making-a-request' class='heading'>Making a Request</h4>
-<pre class="highlight plaintext"><code>cancellable = ExampleService().request(ExampleService.Customer.Get())
+<pre class="highlight plaintext"><code>cancellable = ExampleService().requestPublisher(ExampleService.Customer.Get())
     .map { $0.data }
     .decode(type: ExampleService.Customer.Response.self, decoder: JSONDecoder())
     .sink(receiveCompletion: { completion in
@@ -348,11 +386,10 @@ ExampleService.Customer.add(id: "123, name: "First Last")
           </section>
         </section>
         <section id="footer">
-          <p>© 2020 Thomas De Leon, all rights reserved.</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>© 2022 Thomas De Leon, all rights reserved.</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
   </body>
-</div>
 </html>

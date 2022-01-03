@@ -27,17 +27,17 @@ final class CompletionErrorTests: XCTestCase {
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
-        ExampleService().request(ExampleService.Get(), session: session) { (result) in
+        ExampleService().request(ExampleService.Get(), session: session) { result in
             switch result {
             case .failure(let receivedError):
-                XCTAssertEqual(error, receivedError)
+                XCTAssertEqual(receivedError, error)
             case .success(_):
                 XCTFail("Expected to fail with error")
             }
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 3)
+        waitForExpectations(timeout: 1)
     }
     
     func testBadRequestError() throws {
@@ -60,13 +60,69 @@ final class CompletionErrorTests: XCTestCase {
         try requestError(error: RequestError.otherHTTPError(request: ExampleService.Get().urlRequest, httpStatus: 999))
     }
     
-    func testURLError() throws {
-        try requestError(error: RequestError.urlError(request: ExampleService.Get().urlRequest, error: URLError(.badURL)))
-    }
-    
     func testOtherError() throws {
         try requestError(error: RequestError.other(request: ExampleService.Get().urlRequest, message: "Other error occurred"))
     }
     
+    func testURLError() throws {
+        let expectation = self.expectation(description: "expect")
+        let expectedError = URLError(.badURL)
+        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: ExampleService.Get().urlRequest, error: expectedError))
+        
+        ExampleService().request(ExampleService.Get(), session: session) { result in
+            switch result {
+            case .failure(let requestError):
+                if case let .urlError(_, error) = requestError {
+                    XCTAssertEqual(error.code, expectedError.code)
+                } else {
+                    XCTFail("Wrong error type")
+                }
+            case .success:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testNonHTTPURLResponse() throws {
+        let expectation = self.expectation(description: "expect")
+        let expectedError = URLError(.unknown)
+        let response = URLResponse(url: URL(string: "https://example.com/")!, mimeType: nil, expectedContentLength: -1, textEncodingName: nil)
+        URLProtocolMock.mock = { request in (response, nil, nil, 0) }
+        
+        ExampleService().request(ExampleService.Get(), session: session) { result in
+            switch result {
+            case .failure(let requestError):
+                if case let .urlError(_, error) = requestError {
+                    XCTAssertEqual(error.code, expectedError.code)
+                } else {
+                    XCTFail("Wrong error type")
+                }
+            case .success:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testBadURL() throws {
+        let expectation = self.expectation(description: "Bad URL")
+        BadURLService().request(BadURLService.Get()) { result in
+            switch result {
+            case .failure(let requestError):
+                if case let .urlError(_, error) = requestError {
+                    XCTAssertEqual(error.code, URLError.badURL)
+                } else {
+                    XCTFail("Wrong error type")
+                }
+            case .success:
+                XCTFail()
+            }
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+    }
 }
 #endif

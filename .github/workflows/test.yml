@@ -1,10 +1,6 @@
 name: Test
 
-on:
-  push:
-    branches: [ master, develop, release/** ]
-  pull_request:
-    branches: [ master, develop, release/** ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -12,12 +8,15 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-11, ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
+    - name: Setup Xcode
+      if: runner.os == 'macOS'
+      run: sudo xcode-select -switch /Applications/Xcode_13.2.app
     - name: Build
       run: swift build -v
-    - name: Run tests
+    - name: Test
       run: swift test -v --enable-test-discovery

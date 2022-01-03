@@ -26,19 +26,18 @@ final class CombineRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) throws {
+    private func makeSuccess<Request: ServiceRequest>(request: Request) {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
         let service = ExampleService()
-        cancellable = service.request(request, session: session)
+        cancellable = service.requestPublisher(request, session: session)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
                     XCTFail("Request failed with error - \(error)")
                 case .finished:
-                    break
+                    expectation.fulfill()
                 }
-                expectation.fulfill()
             }, receiveValue: { (received) in
                 service.checkSuccess(request: request, received: received.request)
             })
@@ -47,31 +46,73 @@ final class CombineRequestTests: XCTestCase {
     }
     
     func testGet() throws {
-        try makeSuccess(request: ExampleService.Get())
+        makeSuccess(request: ExampleService.Get())
     }
     
     func testPost() throws {
-        try makeSuccess(request: ExampleService.Post())
+        makeSuccess(request: ExampleService.Post())
     }
     
     func testPatch() throws {
-        try makeSuccess(request: ExampleService.Patch())
+        makeSuccess(request: ExampleService.Patch())
     }
     
     func testPut() throws {
-        try makeSuccess(request: ExampleService.Put())
+        makeSuccess(request: ExampleService.Put())
     }
     
     func testDelete() throws {
-        try makeSuccess(request: ExampleService.Delete())
+        makeSuccess(request: ExampleService.Delete())
     }
     
     func testComplexRequest() throws {
-        try makeSuccess(request: ExampleService.Complex())
+        makeSuccess(request: ExampleService.Complex())
     }
     
     func testNoContentType() throws {
-        try makeSuccess(request: ExampleService.NoContentType())
+        makeSuccess(request: ExampleService.NoContentType())
+    }
+    
+    func testGetPerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Get())
+        }
+    }
+    
+    func testPostPerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Post())
+        }
+    }
+    
+    func testPatchPerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Patch())
+        }
+    }
+    
+    func testPutPerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Put())
+        }
+    }
+    
+    func testDeletePerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Delete())
+        }
+    }
+    
+    func testComplexRequestPerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.Complex())
+        }
+    }
+    
+    func testNoContentTypePerformance() throws {
+        measure {
+            makeSuccess(request: ExampleService.NoContentType())
+        }
     }
 }
 #endif
