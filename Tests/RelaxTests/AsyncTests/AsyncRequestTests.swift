@@ -55,7 +55,7 @@ final class AsyncRequestTests: XCTestCase {
     }
     
     func testComplexRequest() async throws {
-        try await makeSuccess(request: type(of: self.service).Complex())
+        try await makeSuccess(request: type(of: self.service).ExampleEndpoint.Complex())
     }
     
     func testNoContentType() async throws {

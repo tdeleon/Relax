@@ -36,6 +36,8 @@ public protocol ServiceRequest {
     
     //MARK: - Properties
     
+    var endpoint: Endpoint.Type? { get }
+    
     /// The type of request
     var httpMethod: HTTPRequestMethod { get }
     /**
@@ -66,6 +68,10 @@ public protocol ServiceRequest {
 
 public extension ServiceRequest {
     
+    var endpoint: Endpoint.Type? {
+        return nil
+    }
+    
     /// No path components (only the `Service.baseURL` will be used).
     var pathComponents: [String] {
         return [String]()
@@ -91,6 +97,16 @@ public extension ServiceRequest {
         return nil
     }
     
+}
+
+/// Used to group multiple requests with a common path
+public protocol Endpoint {
+    /// Common end path for all requests
+    ///
+    /// This component is to be appended to the `Service.baseURL`. For example,
+    /// _https://example/com/api/customers_, where _customers_ is the
+    /// endpoint path, and _https://example.com/api_ is the base URL.
+    static var path: String { get }
 }
 
 /// A struct representing request content types
