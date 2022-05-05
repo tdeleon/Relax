@@ -8,14 +8,11 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        os: [macos-11, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup Xcode
-      if: runner.os == 'macOS'
-      run: sudo xcode-select -switch /Applications/Xcode_13.2.app
     - name: Build
       run: swift build -v
     - name: Test
