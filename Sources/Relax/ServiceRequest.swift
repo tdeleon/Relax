@@ -11,6 +11,87 @@ import FoundationNetworking
 #endif
 
 //MARK: - Defining Requests
+
+/**
+ A protocol used to group `ServiceRequest`s with a common path.
+ 
+ If you have multiple requests which share a common path (or other properties), use an `Endpoint` to group them.
+ When you set the `ServiceRequest.endpoint` property to the endpoint type, the `Endpoint.path`
+ property will automatically be used as the base path for the request (without needing to include it in the
+ `ServiceRequest.pathComponents` property).
+ 
+ For example, if you have an endpoint `/users`, with a full url of `https://example.com/api/users`,
+ you can define your API as follows:
+ 
+```
+ struct Example: Service {
+    static let baseURL = URL(string: "https://example.com/api")!
+    enum Users: Endpoint {
+        static let path = "users"
+ 
+        struct Get: ServiceRequest {
+            let endpoint = Users.self
+            let httpMethod = .get
+
+            var userID: String?
+            // The endpoint path "users" does not need to be specified here
+            var pathComponents: [String] {
+                [userID].compactMap { $0 }
+            }
+        }
+
+        struct Add: ServiceRequest {
+            let endpoint = Users.self
+            let httpMethod = .post
+
+            let userID: String
+            let name: String
+
+            var body: Data? {
+                // Create JSON from arguments
+                let dictionary = ["id": userID, "name": name]
+                return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
+            }
+        }
+    }
+ }
+```
+ Note how the endpoint path of `users` does not need to be specified in the Get requests `pathComponents` property.
+
+ The above allows get requests to be made by specifying a specific userID, or fetching all users:
+ ```
+ do {
+    // Fetch all users
+    // GET: https://example.com/api/users
+    let allUsers: (request, response, data) = try await Example().request(Example.Users.Get())
+    // Fetch user 123
+    // GET: https://example.com/api/users/123
+    let user123: (request, response, data) = try await Example().request(Example.Users.Get(userID: "123"))
+ } catch {
+     print("Request failed with error- \(error)")
+ }
+ ```
+ We have defined the POST method on the `users` endpoint for adding users:
+ ```
+ do {
+    // Fetch all users
+    // POST: https://example.com/api/users
+    try await Example().request(Example.Users.Add(userID: "456", name: "Someone"))
+ } catch {
+     print("Request failed with error- \(error)")
+ }
+ ```
+ 
+ */
+public protocol Endpoint {
+    /// Common end path for all requests within an `Endpoint`
+    ///
+    /// This component is to be appended to the `Service.baseURL`. For example,
+    /// _https://example/com/api/customers_, where _customers_ is the
+    /// endpoint path, and _https://example.com/api_ is the base URL.
+    static var path: String { get }
+}
+
 /**
  A protocol for requests to be made on a `Service`.
  
@@ -19,6 +100,7 @@ import FoundationNetworking
  
  Requests can be customized with:
  
+ * Grouping in an Endpoint - see `ServiceRequest.endpoint`
  * Path components - see `ServiceRequest.pathComponents`.
  * Query parameters - see `ServiceRequest.queryParameters`.
  * Headers - see `ServiceRequest.headers`.
@@ -36,6 +118,10 @@ public protocol ServiceRequest {
     
     //MARK: - Properties
     
+    /// The endpoint this request is associated with
+    /// - SeeAlso: `Endpoint.path`
+    var endpoint: Endpoint.Type? { get }
+    
     /// The type of request
     var httpMethod: HTTPRequestMethod { get }
     /**
@@ -43,8 +129,11 @@ public protocol ServiceRequest {
     
      Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).
     
-     #### See Also
-     `Service.baseURL`
+     - Note: If an `endpoint` is specified, the `Endpoint.path` value will be automatically set as the first path item
+            before any values specified here. In this case, do not add the endpoint path to the `pathComponents`
+            or it will be duplicated.
+    
+     - SeeAlso: `Service.baseURL`, `endpoint`
      */
     var pathComponents: [String] { get }
     /// Query parameters of the request. Default is an empty array (no parameters)
@@ -65,6 +154,10 @@ public protocol ServiceRequest {
 }
 
 public extension ServiceRequest {
+    
+    var endpoint: Endpoint.Type? {
+        return nil
+    }
     
     /// No path components (only the `Service.baseURL` will be used).
     var pathComponents: [String] {

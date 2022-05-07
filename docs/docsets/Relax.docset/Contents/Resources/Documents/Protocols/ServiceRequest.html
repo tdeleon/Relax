@@ -42,6 +42,9 @@
               <li class="nav-group-task">
                 <a href="../Protocols/Service.html">Service</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Endpoint.html">Endpoint</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -82,6 +85,7 @@ is the only property that you must provide a value for- all others provide a def
 <p>Requests can be customized with:</p>
 
 <ul>
+<li>Grouping in an Endpoint - see <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp">ServiceRequest.endpoint</a></code></li>
 <li>Path components - see <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP14pathComponentsSaySSGvp">ServiceRequest.pathComponents</a></code>.</li>
 <li>Query parameters - see <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP15queryParametersSay10Foundation12URLQueryItemVGvp">ServiceRequest.queryParameters</a></code>.</li>
 <li>Headers - see <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP7headersSDyS2SGvp">ServiceRequest.headers</a></code>.</li>
@@ -110,6 +114,45 @@ is the only property that you must provide a value for- all others provide a def
                 </div>
               </div>
               <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp"></a>
+                    <a name="//apple_ref/swift/Property/endpoint" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp">endpoint</a>
+                    </code>
+                      <span class="declaration-note">
+                        Default implementation
+                      </span>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The endpoint this request is associated with</p>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="../Protocols/Endpoint.html#/s:5Relax8EndpointP4pathSSvpZ">Endpoint.path</a></code>
+
+</div>
+
+                      </div>
+                      <h4>Default Implementation</h4>
+                      <div class="default_impl abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">endpoint</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Endpoint.html">Endpoint</a></span><span class="o">.</span><span class="k">Type</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -156,9 +199,17 @@ is the only property that you must provide a value for- all others provide a def
                         <p>Path components of the request will be appended to the base URL.</p>
 
 <p>Array elements are separated by a <code>/</code> in the final request URL. Defaults to an empty array (no parameters).</p>
-<h4 id='see-also' class='heading'>See Also</h4>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    <p>If an <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp">endpoint</a></code> is specified, the <code><a href="../Protocols/Endpoint.html#/s:5Relax8EndpointP4pathSSvpZ">Endpoint.path</a></code> value will be automatically set as the first path item
+   before any values specified here. In this case, do not add the endpoint path to the <code>pathComponents</code>
+   or it will be duplicated.</p>
 
-<p><code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code></p>
+</div><div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <p><code><a href="../Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code>, <code><a href="../Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp">endpoint</a></code></p>
+
+</div>
 
                       </div>
                       <h4>Default Implementation</h4>

@@ -35,11 +35,36 @@ final class URLRequestExtensionTests : XCTestCase {
         XCTAssertEqual(request?.url, url)
     }
     
+    func testEndpointPath() throws {
+        let url = URL(string: "https://example.com/api")!
+        let endpoint = "/example/second"
+        let request = URLRequest(type: .get, baseURL: url, endpointPath: endpoint)
+        let expectedURL = url.appendingPathComponent(endpoint)
+        XCTAssertEqual(request?.url, expectedURL)
+    }
+    
+    func testEndpointPathTrailingSlash() throws {
+        let url = URL(string: "https://example.com/api/")!
+        let endpoint = "/example/second"
+        let request = URLRequest(type: .get, baseURL: url, endpointPath: endpoint)
+        let expectedURL = url.appendingPathComponent(String(endpoint.dropFirst()))
+        XCTAssertEqual(request?.url, expectedURL)
+    }
+    
     func testInitAppendPath() throws {
         let url = URL(string: "https://example.com/path1")!
         let pathToAdd = ["path2", "path3"]
         let request = URLRequest(type: .get, baseURL: url, pathComponents: pathToAdd)
         let expectedURL = url.appendingPathComponent(pathToAdd.joined(separator: "/"))
+        XCTAssertEqual(request?.url, expectedURL)
+    }
+    
+    func testEndpointAndPathComponents() throws {
+        let url = URL(string: "https://example.com/path1")!
+        let endpoint = "endpoint"
+        let pathToAdd = ["path2", "path3"]
+        let request = URLRequest(type: .get, baseURL: url, endpointPath: endpoint, pathComponents: pathToAdd)
+        let expectedURL = url.appendingPathComponent(([endpoint]+pathToAdd).joined(separator: "/"))
         XCTAssertEqual(request?.url, expectedURL)
     }
     

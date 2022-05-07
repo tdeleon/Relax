@@ -57,13 +57,21 @@ struct ExampleService: Service {
         }
     }
     
-    struct Complex: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .get
+    enum ExampleEndpoint: Endpoint {
+        static let path = "example"
+        enum Keys {
+            static let key = "key"
+        }
         
-        var pathComponents: [String] = ["path", "components"]
-        var queryParameters: [URLQueryItem] = [URLQueryItem(name: "first", value: "firstValue")]
-        var headers: [String : String] = ["key": "value"]
-        var body: Data? = try? JSONSerialization.data(withJSONObject: ["body"], options: [])
+        struct Complex: ServiceRequest {
+            let endpoint = ExampleEndpoint.self
+            let httpMethod: HTTPRequestMethod = .get
+            
+            let pathComponents = ["path", "components"]
+            let queryParameters: [URLQueryItem] = [URLQueryItem(name: "first", value: "firstValue")]
+            let headers: [String : String] = [Keys.key: "value"]
+            let body: Data? = try? JSONSerialization.data(withJSONObject: ["body"], options: [])
+        }
     }
     
     struct NoContentType: ServiceRequest {

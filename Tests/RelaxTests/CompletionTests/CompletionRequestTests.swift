@@ -66,7 +66,7 @@ final class CompletionRequestTests: XCTestCase {
     }
     
     func testComplexRequest() throws {
-        makeSuccess(request: ExampleService.Complex())
+        makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
     }
     
     func testNoContentType() throws {
@@ -105,7 +105,7 @@ final class CompletionRequestTests: XCTestCase {
     
     func testComplexRequestPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Complex())
+            makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
         }
     }
     

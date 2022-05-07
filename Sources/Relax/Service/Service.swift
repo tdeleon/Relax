@@ -20,8 +20,7 @@ import Combine
  to the service will use this base URL. Use services to logically group requests together for better organization and code
  reusability.
 
- > **Note:** For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc),
- > it is not necessary to define multiple services.
+ - Note: For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc), it is not necessary to define multiple services.
 
  #### About the protocol
  This protocol only has two properties- `Service.baseURL` and `Service.session`. The `baseURL` property is required to be implemented, and provides
@@ -29,8 +28,7 @@ import Combine
  `URLSession` instance that requests are made using. This property has a default implementation of `URLSession.shared`, but you can override this
  with your own. Additionally, when making requests,  a session may be passed in per request.
  
- #### See Also
- `ServiceRequest`
+ - SeeAlso: `Endpoint`, `ServiceRequest`
  
 */
 public protocol Service {

@@ -66,7 +66,7 @@ final class CombineRequestTests: XCTestCase {
     }
     
     func testComplexRequest() throws {
-        makeSuccess(request: ExampleService.Complex())
+        makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
     }
     
     func testNoContentType() throws {
@@ -105,7 +105,7 @@ final class CombineRequestTests: XCTestCase {
     
     func testComplexRequestPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Complex())
+            makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
         }
     }
     

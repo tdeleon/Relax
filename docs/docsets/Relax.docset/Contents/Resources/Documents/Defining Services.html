@@ -42,6 +42,9 @@
               <li class="nav-group-task">
                 <a href="Protocols/Service.html">Service</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Endpoint.html">Endpoint</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -272,20 +275,22 @@ associated <code>URLRequest</code> that was used will be returned as an associat
 <p>To define a service, implement the <code>Service</code> protocol. Each service has a distinct base URL, and all requests made
 to the service will use this base URL. Use services to logically group requests together for better organization and code
 reusability.</p>
+<div class="aside aside-note">
+    <p class="aside-title">Note</p>
+    For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc), it is not necessary to define multiple services.
 
-<blockquote>
-<p><strong>Note:</strong> For implementing dynamic base URLs (such as with different environments like Dev, Stage, Prod, etc),
-it is not necessary to define multiple services.</p>
-</blockquote>
+</div>
 <h4 id='about-the-protocol' class='heading'>About the protocol</h4>
 
 <p>This protocol only has two properties- <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7baseURL10Foundation0D0Vvp">Service.baseURL</a></code> and <code><a href="Protocols/Service.html#/s:5Relax7ServiceP7sessionSo12NSURLSessionCvpZ">Service.session</a></code>. The <code>baseURL</code> property is required to be implemented, and provides
 the base URL used for all requests (see <a href="Making%20Requests.html">Making Requests</a> for more on requests). The <code>session</code> property is a
 <code>URLSession</code> instance that requests are made using. This property has a default implementation of <code>URLSession.shared</code>, but you can override this
 with your own. Additionally, when making requests,  a session may be passed in per request.</p>
-<h4 id='see-also' class='heading'>See Also</h4>
+<div class="aside aside-see-also">
+    <p class="aside-title">See also</p>
+    <code><a href="Protocols/Endpoint.html">Endpoint</a></code>, <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code>
 
-<p><code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code></p>
+</div>
 
                         <a href="Protocols/Service.html" class="slightly-smaller">See more</a>
                       </div>
@@ -294,6 +299,112 @@ with your own. Additionally, when making requests,  a session may be passed in p
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Service</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Defining%20Requests"></a>
+                <a name="//apple_ref/swift/Section/Defining Requests" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Defining%20Requests"></a>
+                  <h3 class="section-name"><span>Defining Requests</span>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:5Relax8EndpointP"></a>
+                    <a name="//apple_ref/swift/Protocol/Endpoint" class="dashAnchor"></a>
+                    <a class="token" href="#/s:5Relax8EndpointP">Endpoint</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A protocol used to group <code><a href="Protocols/ServiceRequest.html">ServiceRequest</a></code>s with a common path.</p>
+
+<p>If you have multiple requests which share a common path (or other properties), use an <code>Endpoint</code> to group them.
+ When you set the <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP8endpointAA8Endpoint_pXpSgvp">ServiceRequest.endpoint</a></code> property to the endpoint type, the <code><a href="Protocols/Endpoint.html#/s:5Relax8EndpointP4pathSSvpZ">Endpoint.path</a></code>
+ property will automatically be used as the base path for the request (without needing to include it in the
+ <code><a href="Protocols/ServiceRequest.html#/s:5Relax14ServiceRequestP14pathComponentsSaySSGvp">ServiceRequest.pathComponents</a></code> property).</p>
+
+<p>For example, if you have an endpoint <code>/users</code>, with a full url of <code>https://example.com/api/users</code>,
+ you can define your API as follows:</p>
+<pre class="highlight swift"><code> <span class="kd">struct</span> <span class="kt">Example</span><span class="p">:</span> <span class="kt">Service</span> <span class="p">{</span>
+    <span class="kd">static</span> <span class="k">let</span> <span class="nv">baseURL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://example.com/api"</span><span class="p">)</span><span class="o">!</span>
+    <span class="kd">enum</span> <span class="kt">Users</span><span class="p">:</span> <span class="kt">Endpoint</span> <span class="p">{</span>
+        <span class="kd">static</span> <span class="k">let</span> <span class="nv">path</span> <span class="o">=</span> <span class="s">"users"</span>
+
+        <span class="kd">struct</span> <span class="kt">Get</span><span class="p">:</span> <span class="kt">ServiceRequest</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">Users</span><span class="o">.</span><span class="k">self</span>
+            <span class="k">let</span> <span class="nv">httpMethod</span> <span class="o">=</span> <span class="o">.</span><span class="k">get</span>
+
+            <span class="k">var</span> <span class="nv">userID</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span>
+            <span class="c1">// The endpoint path "users" does not need to be specified here</span>
+            <span class="k">var</span> <span class="nv">pathComponents</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span><span class="p">]</span> <span class="p">{</span>
+                <span class="p">[</span><span class="n">userID</span><span class="p">]</span><span class="o">.</span><span class="n">compactMap</span> <span class="p">{</span> <span class="nv">$0</span> <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="kd">struct</span> <span class="kt">Add</span><span class="p">:</span> <span class="kt">ServiceRequest</span> <span class="p">{</span>
+            <span class="k">let</span> <span class="nv">endpoint</span> <span class="o">=</span> <span class="kt">Users</span><span class="o">.</span><span class="k">self</span>
+            <span class="k">let</span> <span class="nv">httpMethod</span> <span class="o">=</span> <span class="o">.</span><span class="n">post</span>
+
+            <span class="k">let</span> <span class="nv">userID</span><span class="p">:</span> <span class="kt">String</span>
+            <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>
+
+            <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span> <span class="p">{</span>
+                <span class="c1">// Create JSON from arguments</span>
+                <span class="k">let</span> <span class="nv">dictionary</span> <span class="o">=</span> <span class="p">[</span><span class="s">"id"</span><span class="p">:</span> <span class="n">userID</span><span class="p">,</span> <span class="s">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">]</span>
+                <span class="k">return</span> <span class="k">try</span><span class="p">?</span> <span class="kt">JSONSerialization</span><span class="o">.</span><span class="nf">data</span><span class="p">(</span><span class="nv">withJSONObject</span><span class="p">:</span> <span class="n">dictionary</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="p">[])</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+ <span class="p">}</span>
+</code></pre>
+
+<p>Note how the endpoint path of <code>users</code> does not need to be specified in the Get requests <code>pathComponents</code> property.</p>
+
+<p>The above allows get requests to be made by specifying a specific userID, or fetching all users:</p>
+<pre class="highlight swift"><code> <span class="k">do</span> <span class="p">{</span>
+    <span class="c1">// Fetch all users</span>
+    <span class="c1">// GET: https://example.com/api/users</span>
+    <span class="k">let</span> <span class="nv">allUsers</span><span class="p">:</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="k">try</span> <span class="k">await</span> <span class="kt">Example</span><span class="p">()</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="kt">Example</span><span class="o">.</span><span class="kt">Users</span><span class="o">.</span><span class="kt">Get</span><span class="p">())</span>
+    <span class="c1">// Fetch user 123</span>
+    <span class="c1">// GET: https://example.com/api/users/123</span>
+    <span class="k">let</span> <span class="nv">user123</span><span class="p">:</span> <span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="k">try</span> <span class="k">await</span> <span class="kt">Example</span><span class="p">()</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="kt">Example</span><span class="o">.</span><span class="kt">Users</span><span class="o">.</span><span class="kt">Get</span><span class="p">(</span><span class="nv">userID</span><span class="p">:</span> <span class="s">"123"</span><span class="p">))</span>
+ <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+     <span class="nf">print</span><span class="p">(</span><span class="s">"Request failed with error- </span><span class="se">\(</span><span class="n">error</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+ <span class="p">}</span>
+</code></pre>
+
+<p>We have defined the POST method on the <code>users</code> endpoint for adding users:</p>
+<pre class="highlight swift"><code> <span class="k">do</span> <span class="p">{</span>
+    <span class="c1">// Fetch all users</span>
+    <span class="c1">// POST: https://example.com/api/users</span>
+    <span class="k">try</span> <span class="k">await</span> <span class="kt">Example</span><span class="p">()</span><span class="o">.</span><span class="nf">request</span><span class="p">(</span><span class="kt">Example</span><span class="o">.</span><span class="kt">Users</span><span class="o">.</span><span class="kt">Add</span><span class="p">(</span><span class="nv">userID</span><span class="p">:</span> <span class="s">"456"</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"Someone"</span><span class="p">))</span>
+ <span class="p">}</span> <span class="k">catch</span> <span class="p">{</span>
+     <span class="nf">print</span><span class="p">(</span><span class="s">"Request failed with error- </span><span class="se">\(</span><span class="n">error</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+ <span class="p">}</span>
+</code></pre>
+
+                        <a href="Protocols/Endpoint.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">Endpoint</span></code></pre>
 
                         </div>
                       </div>
