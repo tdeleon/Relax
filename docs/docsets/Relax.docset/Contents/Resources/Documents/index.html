@@ -41,6 +41,9 @@
               <li class="nav-group-task">
                 <a href="Protocols/Service.html">Service</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Protocols/Endpoint.html">Endpoint</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -235,7 +238,7 @@ ExampleService(baseURL: devURL).request(MyRequest()) { response in
     struct GetProducts: ServiceRequest {
        let httpMethod: HTTPRequestMethod = .get
        var productID: String
-       var queryParameters: [String] {
+       var pathComponents: [String] {
           return ["products", productID]
        }
     }
@@ -250,37 +253,40 @@ ExampleService().request(ExampleService.GetProducts(productID: "123")) { respons
 <pre class="highlight plaintext"><code>struct ExampleService: Service {
     let baseURL: URL = URL(string: "https://example.com/api/")!
 
-    struct Customer {
-        static let basePath = "customer"
+    struct Customer: Endpoint {
+        static let path = "customer"
+
+        enum Keys: String {
+            static let id = "id"
+            static let name = "name"
+        }
 
         // Get customer by customer ID
         struct Get: ServiceRequest {
+            let endpoint = Customer.self
             let httpMethod: HTTPRequestMethod = .get
 
             var customerID: String
-            var pathComponents: [String] {
-                return [Customer.basePath, customerID]
-            }
         }
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
+            let endpoint = Customer.self
             let httpMethod: HTTPRequestMethod = .post
-            let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String
             var name: String
 
             var body: Data? {
                 // Create JSON from arguments
-                let dictionary = ["id": customerID, "name": name]
+                let dictionary = [Keys.id: customerID, Keys.name: name]
                 return try? JSONSerialization.data(withJSONObject: dictionary, options: [])
             }
         }
     }
 }
 
-// Add customer with name "First Last" and ID "123"
+// Add customer with name "First Last" and ID "123", provided in JSON body
 ExampleService().request(ExampleService.Customer.Add(customerID: "123", name: "First Last")) { response in
     ...
 }
@@ -294,8 +300,8 @@ ExampleService().request(ExampleService.Customer.Get(customerID: "123")) { respo
 <pre class="highlight plaintext"><code>struct ExampleService: Service {
     let baseURL: URL = URL(string: "https://example.com/api/")!
 
-    struct Customer {
-        static let basePath = "customer"
+    struct Customer: Endpoint {
+        static let path = "customer"
 
         // Convenience method to add customer
         static func add(id: String, name: String) {
@@ -308,8 +314,8 @@ ExampleService().request(ExampleService.Customer.Get(customerID: "123")) { respo
 
         // Add new customer with customer ID, name
         struct Add: ServiceRequest {
+            let endpoint = Customer.self
             let httpMethod: HTTPRequestMethod = .post
-            let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String
             var name: String
@@ -323,7 +329,15 @@ ExampleService().request(ExampleService.Customer.Get(customerID: "123")) { respo
     }
 }
 
-// Add customer with name "First Last" and ID "123"
+/*
+ Add customer with name "First Last" and ID "123"
+ POST: https://example.com/api/customer
+ BODY:
+    {
+        "name: "First Last",
+        "id": "123"
+    }
+*/
 ExampleService.Customer.add(id: "123, name: "First Last")
 </code></pre>
 <h3 id='using-combine' class='heading'>Using Combine</h3>
@@ -331,8 +345,8 @@ ExampleService.Customer.add(id: "123, name: "First Last")
 <pre class="highlight plaintext"><code>struct ExampleService: Service {
     let baseURL: URL = URL(string: "https://example.com/api/")!
 
-    struct Customer {
-        static let basePath = "customer"
+    struct Customer: Endpoint {
+        static let path = "customer"
 
         struct Response: Codable {
             let name: String
@@ -340,19 +354,21 @@ ExampleService.Customer.add(id: "123, name: "First Last")
         }
 
         // Get customer by customer ID
+        // GET: https://example.com/api/customer/123
         struct Get: ServiceRequest {
+            let endpoint = Customer.self
             let httpMethod: HTTPRequestMethod = .get
 
             var customerID: String
-            var pathComponents: [String] {
-                return [Customer.basePath, customerID]
-            }
+            // Since the endpoint is set, "customer" is already added to the path
+            var pathComponents: [String] { [customerID] }
         }
 
         // Add new customer with customer ID, name
+        // POST: https://example.com/api/customer
         struct Add: ServiceRequest {
+            let endpoint = Customer.self
             let httpMethod: HTTPRequestMethod = .post
-            let pathComponents: [String] = [Customer.basePath]
 
             var customerID: String
             var name: String
