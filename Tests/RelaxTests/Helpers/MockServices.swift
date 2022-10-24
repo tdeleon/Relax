@@ -12,69 +12,106 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
-extension ServiceRequest {
-    var urlRequest: URLRequest {
-        URLRequest(request: self, baseURL: ExampleService().baseURL)!
+//extension ServiceRequest {
+//    var urlRequest: URLRequest {
+//        URLRequest(request: self, baseURL: ExampleService().baseURL)!
+//    }
+//}
+
+struct CoinCap: Service {
+    static let baseURL = URL(string: "https://api.coincap.io/v2")!
+    
+    enum Assets: Endpoint {
+        typealias Parent = CoinCap
+        static let path = "assets"
+        
+        func getAll() async throws -> GetAll.Response {
+            try await GetAll().send()
+        }
+        
+        struct Get: Request {
+            typealias Parent = Assets
+            let httpMethod: HTTPRequestMethod = .get
+            @PathComponent var ID: String
+        }
+        
+        struct GetAll: Request {
+            typealias Parent = Assets
+            let httpMethod: HTTPRequestMethod = .get
+            
+            @QueryItem("search") var search: String?
+            @QueryItem("ids") var IDs: String?
+            @QueryItem("limit") var limit: Int?
+            @QueryItem("offset") var offset: Int?
+            
+            init(search: String? = nil, IDs: String? = nil, limit: Int? = nil, offset: Int? = nil) {
+                self.search = search
+                self.IDs = IDs
+                self.limit = limit
+                self.offset = offset
+            }
+            
+            struct Response: Codable {
+                let id: String
+                let symbol: String
+            }
+        }
     }
 }
 
-struct ExampleService: Service {
-    let baseURL: URL = URL(string: "https://www.example.com")!
+enum ExampleService: Service {
+    static let baseURL: URL = URL(string: "https://www.example.com")!
     
-    struct Get: ServiceRequest {
+    struct Get: Request {
+        typealias Parent = ExampleService
+        
         let httpMethod: HTTPRequestMethod = .get
     }
     
-    struct Put: ServiceRequest {
+    struct Put: Request {
+        typealias Parent = ExampleService
         let httpMethod: HTTPRequestMethod = .put
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
     }
     
-    struct Post: ServiceRequest {
+    struct Post: Request {
+        typealias Parent = ExampleService
         let httpMethod: HTTPRequestMethod = .post
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
     }
     
-    struct Patch: ServiceRequest {
+    struct Patch: Request {
+        typealias Parent = ExampleService
         let httpMethod: HTTPRequestMethod = .patch
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
     }
     
-    struct Delete: ServiceRequest {
+    struct Delete: Request {
+        typealias Parent = ExampleService
         let httpMethod: HTTPRequestMethod = .delete
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
     }
     
     enum ExampleEndpoint: Endpoint {
+        typealias Parent = ExampleService
         static let path = "example"
         enum Keys {
             static let key = "key"
         }
         
-        struct Complex: ServiceRequest {
+        struct Complex: Request {
+            typealias Parent = ExampleService
+            
             let endpoint = ExampleEndpoint.self
             let httpMethod: HTTPRequestMethod = .get
-            
-            let pathComponents = ["path", "components"]
-            let queryParameters: [URLQueryItem] = [URLQueryItem(name: "first", value: "firstValue")]
+            let pathPrefix: String = "prefix"
+            let pathSuffix: String = "suffix"
             let headers: [String : String] = [Keys.key: "value"]
             let body: Data? = try? JSONSerialization.data(withJSONObject: ["body"], options: [])
         }
     }
     
-    struct NoContentType: ServiceRequest {
+    struct NoContentType: Request {
+        typealias Parent = ExampleService
+        
+        static var baseURL: URL = URL(string: "https://example.com/")!
+        
         let httpMethod: HTTPRequestMethod = .get
         
         var contentType: RequestContentType? = nil
@@ -83,11 +120,16 @@ struct ExampleService: Service {
 }
 
 struct BadURLService: Service {
-    let baseURL: URL = URL(string: "a://@@")!
+    static let baseURL: URL = URL(string: "a://@@")!
     
-    struct Get: ServiceRequest {
+    struct Get: Request {
+        typealias Parent = BadURLService
         let httpMethod: HTTPRequestMethod = .get
     }
+}
+
+struct User: Codable, Hashable {
+    let name: String
 }
 
 #endif

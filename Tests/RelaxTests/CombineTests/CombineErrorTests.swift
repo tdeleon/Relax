@@ -29,7 +29,7 @@ final class CombineErrorTests: XCTestCase {
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
-        cancellable = ExampleService().requestPublisher(ExampleService.Get(), session: session)
+        cancellable = ExampleService.Get().send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let receivedError):
@@ -46,7 +46,7 @@ final class CombineErrorTests: XCTestCase {
     }
     
     func testBadRequestError() throws {
-        try requestError(error: RequestError.httpBadRequest(request: URLRequest(request: ExampleService.Get(), baseURL: ExampleService().baseURL)!))
+        try requestError(error: .httpBadRequest(request: ExampleService.Get().urlRequest))
     }
     
     func testUnauthorizedError() throws {
@@ -69,7 +69,7 @@ final class CombineErrorTests: XCTestCase {
         let expectation = self.expectation(description: "URLError")
         let expectedError = URLError(.badURL)
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: ExampleService.Get().urlRequest, error: expectedError))
-        cancellable = ExampleService().requestPublisher(ExampleService.Get(), session: session)
+        cancellable = ExampleService.Get().send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let requestError):
@@ -90,7 +90,7 @@ final class CombineErrorTests: XCTestCase {
     
     func testBadURL() throws {
         let expectation = self.expectation(description: "Bad URL")
-        cancellable = BadURLService().requestPublisher(BadURLService.Get())
+        cancellable = BadURLService.Get().send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let requestError):

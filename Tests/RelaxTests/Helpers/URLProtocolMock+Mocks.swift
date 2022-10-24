@@ -24,6 +24,10 @@ extension URLProtocolMock {
         return mockResponse(data: data, response: response, error: error, delay: delay)
     }
     
+    static func mockResponse<Model: Encodable>(model: Model, httpStatus: Int=200, delay: TimeInterval=0) -> MockHandler {
+        mockResponse(data: try? JSONEncoder().encode(model), httpStatus: httpStatus, error: nil, delay: delay)
+    }
+    
     static func mockError(requestError: RequestError) -> MockHandler {
         switch requestError {
         case .httpBadRequest(_):
@@ -40,6 +44,9 @@ extension URLProtocolMock {
             return mockResponse(httpStatus: 401)
         case .urlError(_, let error):
             return mockResponse(error: error)
+        case .decoding:
+            let bad = ["": ""]
+            return mockResponse(data: try! JSONSerialization.data(withJSONObject: bad, options: []))
         }
     }
 }

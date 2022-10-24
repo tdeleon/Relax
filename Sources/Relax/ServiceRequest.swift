@@ -82,15 +82,39 @@ import FoundationNetworking
  }
  ```
  
+ //TODO: remove
  */
-public protocol Endpoint {
-    /// Common end path for all requests within an `Endpoint`
-    ///
-    /// This component is to be appended to the `Service.baseURL`. For example,
-    /// _https://example/com/api/customers_, where _customers_ is the
-    /// endpoint path, and _https://example.com/api_ is the base URL.
-    static var path: String { get }
-}
+//public protocol Endpoint {
+//    /// Common end path for all requests within an `Endpoint`
+//    ///
+//    /// This component is to be appended to the `Service.baseURL`. For example,
+//    /// _https://example/com/api/customers_, where _customers_ is the
+//    /// endpoint path, and _https://example.com/api_ is the base URL.
+//    static var path: String { get }
+//}
+
+//public protocol ServiceRequestDecodable: ServiceRequest {
+//    associatedtype ResponseModel: Decodable
+//    var decoder: JSONDecoder { get }
+//}
+//
+//extension ServiceRequestDecodable {
+//    public var decoder: JSONDecoder { JSONDecoder() }
+//}
+//
+//public protocol ServiceRequestEncodable: ServiceRequest {
+//    associatedtype RequestModel: Encodable
+//    var encoder: JSONEncoder { get }
+//    var requestModel: RequestModel { get }
+//}
+//
+//extension ServiceRequestEncodable {
+//    public var body: Data? {
+//        try? encoder.encode(requestModel)
+//    }
+//}
+//
+//public protocol ServiceRequestCodable: ServiceRequestDecodable, ServiceRequestEncodable {}
 
 /**
  A protocol for requests to be made on a `Service`.
@@ -114,77 +138,77 @@ public protocol Endpoint {
  3. A method which returns a [Combine](https://developer.apple.com/documentation/combine) publisher (_available on **iOS 13+**, **watchOS 6+**, **tvOS 13+**, **macOS 10.15**_) - `Service.requestPublisher(_:session:)`.
  
  */
-public protocol ServiceRequest {
-    
-    //MARK: - Properties
-    
-    /// The endpoint this request is associated with
-    /// - SeeAlso: `Endpoint.path`
-    var endpoint: Endpoint.Type? { get }
-    
-    /// The type of request
-    var httpMethod: HTTPRequestMethod { get }
-    /**
-     Path components of the request will be appended to the base URL.
-    
-     Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).
-    
-     - Note: If an `endpoint` is specified, the `Endpoint.path` value will be automatically set as the first path item
-            before any values specified here. In this case, do not add the endpoint path to the `pathComponents`
-            or it will be duplicated.
-    
-     - SeeAlso: `Service.baseURL`, `endpoint`
-     */
-    var pathComponents: [String] { get }
-    /// Query parameters of the request. Default is an empty array (no parameters)
-    var queryParameters: [URLQueryItem] { get }
-    /**
-     HTTP headers of the request. Default is an empty array (no headers)
-     
-     - Note: Do not set `Content-Type` header field values here; instead use the `contentType` property. The contents of that
-     property will be added to the `URLRequest.allHTTPHeaderFields` property.
-    */
-    var headers: [String: String] { get }
-    /// The content type of the request. The default is `application/json`.
-    /// - Note: This value is added as an HTTP header on the URLRequest.
-    var contentType: RequestContentType? { get }
-    /// Body of the request
-    var body: Data? { get }
-    
-}
-
-public extension ServiceRequest {
-    
-    var endpoint: Endpoint.Type? {
-        return nil
-    }
-    
-    /// No path components (only the `Service.baseURL` will be used).
-    var pathComponents: [String] {
-        return [String]()
-    }
-    
-    /// No query parameters
-    var queryParameters: [URLQueryItem] {
-        return [URLQueryItem]()
-    }
-    
-    /// An empty dictionary
-    var headers: [String: String] {
-        return [String: String]()
-    }
-    
-    /// Returns `RequestContentType.applicationJSON`
-    var contentType: RequestContentType? {
-        return .applicationJSON
-    }
-    
-    /// Returns `nil`.
-    var body: Data? {
-        return nil
-    }
-    
-}
+//public protocol ServiceRequest {
+//    
+//    //MARK: - Properties
+//    
+//    /// The endpoint this request is associated with
+//    /// - SeeAlso: `Endpoint.path`
+//    var endpoint: Endpoint.Type? { get }
+//    
+//    /// The type of request
+//    var httpMethod: HTTPRequestMethod { get }
+//    /**
+//     Path components of the request will be appended to the base URL.
+//    
+//     Array elements are separated by a `/` in the final request URL. Defaults to an empty array (no parameters).
+//    
+//     - Note: If an `endpoint` is specified, the `Endpoint.path` value will be automatically set as the first path item
+//            before any values specified here. In this case, do not add the endpoint path to the `pathComponents`
+//            or it will be duplicated.
+//    
+//     - SeeAlso: `Service.baseURL`, `endpoint`
+//     */
+//    var pathComponents: [String] { get }
+//    /// Query parameters of the request. Default is an empty array (no parameters)
+//    var queryParameters: [URLQueryItem] { get }
+//    /**
+//     HTTP headers of the request. Default is an empty array (no headers)
+//     
+//     - Note: Do not set `Content-Type` header field values here; instead use the `contentType` property. The contents of that
+//     property will be added to the `URLRequest.allHTTPHeaderFields` property.
+//    */
+//    var headers: [String: String] { get }
+//    /// The content type of the request. The default is `application/json`.
+//    /// - Note: This value is added as an HTTP header on the URLRequest.
+//    var contentType: RequestContentType? { get }
+//    /// Body of the request
+//    var body: Data? { get }
+//    
+//}
+//
+//public extension ServiceRequest {
+//    
+//    var endpoint: Endpoint.Type? {
+//        return nil
+//    }
+//    
+//    /// No path components (only the `Service.baseURL` will be used).
+//    var pathComponents: [String] {
+//        return [String]()
+//    }
+//    
+//    /// No query parameters
+//    var queryParameters: [URLQueryItem] {
+//        return [URLQueryItem]()
+//    }
+//    
+//    /// An empty dictionary
+//    var headers: [String: String] {
+//        return [String: String]()
+//    }
+//    
+//    /// Returns `RequestContentType.applicationJSON`
+//    var contentType: RequestContentType? {
+//        return .applicationJSON
+//    }
+//    
+//    /// Returns `nil`.
+//    var body: Data? {
+//        return nil
+//    }
+//    
+//}
 
 /// A struct representing request content types
 ///

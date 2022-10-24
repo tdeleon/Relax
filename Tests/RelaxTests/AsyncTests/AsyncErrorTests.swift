@@ -13,6 +13,7 @@ import FoundationNetworking
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+
 final class AsyncErrorTests: XCTestCase {
     var session: URLSession!
     
@@ -31,7 +32,7 @@ final class AsyncErrorTests: XCTestCase {
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
         
         do {
-            _ = try await ExampleService().request(ExampleService.Get(), session: session)
+            _ = try await ExampleService.Get().send(session: session)
             XCTFail("Should fail")
         } catch {
             XCTAssertEqual(error as? RequestError, expected)
@@ -39,7 +40,7 @@ final class AsyncErrorTests: XCTestCase {
     }
     
     func testBadRequestError() async {
-        await requestError(expected: .httpBadRequest(request: URLRequest(request: method, baseURL: ExampleService().baseURL)!))
+        await requestError(expected: .httpBadRequest(request: method.urlRequest))
     }
     
     func testUnauthorizedError() async {
@@ -63,7 +64,7 @@ final class AsyncErrorTests: XCTestCase {
         let testRequest = ExampleService.Get()
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: testRequest.urlRequest, error: expectedError))
         do {
-            _ = try await ExampleService().request(testRequest, session: session)
+            _ = try await testRequest.send(session: session)
             XCTFail("Should fail")
         } catch {
             if case let .urlError(_, urlError) = error as? RequestError {

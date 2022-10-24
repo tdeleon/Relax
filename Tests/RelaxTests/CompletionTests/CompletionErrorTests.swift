@@ -27,7 +27,7 @@ final class CompletionErrorTests: XCTestCase {
     private func requestError(error: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: error)
-        ExampleService().request(ExampleService.Get(), session: session) { result in
+        ExampleService.Get().send(session: session) { result in
             switch result {
             case .failure(let receivedError):
                 XCTAssertEqual(receivedError, error)
@@ -69,7 +69,7 @@ final class CompletionErrorTests: XCTestCase {
         let expectedError = URLError(.badURL)
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: ExampleService.Get().urlRequest, error: expectedError))
         
-        ExampleService().request(ExampleService.Get(), session: session) { result in
+        ExampleService.Get().send(session: session) { result in
             switch result {
             case .failure(let requestError):
                 if case let .urlError(_, error) = requestError {
@@ -91,7 +91,7 @@ final class CompletionErrorTests: XCTestCase {
         let response = URLResponse(url: URL(string: "https://example.com/")!, mimeType: nil, expectedContentLength: -1, textEncodingName: nil)
         URLProtocolMock.mock = { request in (response, nil, nil, 0) }
         
-        ExampleService().request(ExampleService.Get(), session: session) { result in
+        ExampleService.Get().send(session: session) { result in
             switch result {
             case .failure(let requestError):
                 if case let .urlError(_, error) = requestError {
@@ -109,7 +109,7 @@ final class CompletionErrorTests: XCTestCase {
     
     func testBadURL() throws {
         let expectation = self.expectation(description: "Bad URL")
-        BadURLService().request(BadURLService.Get()) { result in
+        BadURLService.Get().send { result in
             switch result {
             case .failure(let requestError):
                 if case let .urlError(_, error) = requestError {

@@ -13,30 +13,68 @@ import FoundationNetworking
 
 extension Service {
     //MARK: - Making Requests
-    /**
-     Make a request asyncrhonously
-     - Parameters:
-        - request: The request to execute
-        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
-     - Returns: A tuple containing the request, response, and data.
-     - Throws: A `RequestError` of the error which occurred.
-    */
-    @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-    public func request<Request: ServiceRequest>(_ request: Request, session: URLSession=session) async throws -> AsyncResponse {
-        try await withCheckedThrowingContinuation { continuation in
-            self.request(request, session: session) { result in
-                switch result {
-                case .success(let successResponse):
-                    guard let data = successResponse.data else {
-                        continuation.resume(throwing: RequestError.other(request: URLRequest(url: baseURL), message: "No data was returned"))
-                        return
-                    }
-                    continuation.resume(returning: (successResponse.request, successResponse.response, data))
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
+    
+//    public func requestModel<Request: ServiceRequestCodable>(
+//        _ request: Request,
+//        session: URLSession = session
+//    ) async throws -> AsyncModelResponse<Request.ResponseModel> {
+//        do {
+//            var requestWithModel = request
+//            requestWithModel.body = try request.encoder.encode(request.requestModel)
+//            return try await self.requestModel(requestWithModel, session: session)
+//        } catch let error as EncodingError {
+//            throw RequestError.encoding(request: URLRequest(request: request, baseURL: baseURL)!, error: error)
+//        } catch {
+//            throw error as! RequestError
+//        }
+//    }
+//    
+//    public func requestModel<Request: ServiceRequestDecodable>(
+//        _ request: Request,
+//        session: URLSession = session
+//    ) async throws -> AsyncModelResponse<Request.ResponseModel> {
+//        try await self.request(request, model: Request.ResponseModel.self, decoder: request.decoder, session: session)
+//    }
+//    
+//    public func request<Request: ServiceRequest, Model: Decodable>(
+//        _ request: Request,
+//        model: Model.Type,
+//        decoder: JSONDecoder = JSONDecoder(),
+//        session: URLSession = session
+//    ) async throws -> AsyncModelResponse<Model> {
+//        let response: AsyncResponse = try await self.request(request, session: session)
+//        return (response.request, response.response, try decoder.decode(Model.self, from: response.data))
+//    }
+//    
+//    /**
+//     Make a request asyncrhonously
+//     - Parameters:
+//        - request: The request to execute
+//        - session: The session to use. If not specified, the default provided by the `session` property of the `Service` will be used
+//     - Returns: A tuple containing the request, response, and data.
+//     - Throws: A `RequestError` of the error which occurred.
+//     */
+//    @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+//    @discardableResult
+//    public func request<Request: ServiceRequest>(
+//        _ request: Request,
+//        session: URLSession = session
+//    ) async throws -> AsyncResponse {
+//        try await withCheckedThrowingContinuation { continuation in
+//            self.request(request, session: session) { result in
+//                switch result {
+//                case .success(let successResponse):
+//                    guard let data = successResponse.data else {
+//                        continuation.resume(throwing: RequestError.other(request: URLRequest(url: baseURL),
+//                                                                         message: "No data was returned"))
+//                        return
+//                    }
+//                    continuation.resume(returning: (successResponse.request, successResponse.response, data))
+//                case .failure(let error):
+//                    continuation.resume(throwing: error)
+//                }
+//            }
+//        }
+//    }
 }
 #endif

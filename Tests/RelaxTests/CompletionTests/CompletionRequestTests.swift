@@ -26,19 +26,19 @@ final class CompletionRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) {
+    private func makeSuccess(request: some Request) {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = { request in
             let response = HTTPURLResponse(url: URL(string: "http://example.com/")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
             return (response, nil, nil,0)
         }
-        let service = ExampleService()
-        service.request(request, session: session) { (result) in
+        
+        request.send(session: session) { result in
             switch result {
             case .failure(let error):
                 XCTFail("Request failed with error - \(error)")
             case .success(let received):
-                service.checkSuccess(request: request, received: received.request)
+                XCTAssertEqual(request.urlRequest, received.request)
             }
             expectation.fulfill()
         }

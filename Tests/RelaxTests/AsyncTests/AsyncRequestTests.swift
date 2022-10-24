@@ -25,41 +25,41 @@ final class AsyncRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    let service = ExampleService()
+    let service = ExampleService.self
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) async throws {
+    private func makeSuccess(request: some Request) async throws {
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
         
-        let result = try await service.request(request, session: session)
-        service.checkSuccess(request: request, received: result.request)
+        let result = try await request.send(session: session)
+        XCTAssertEqual(request.urlRequest, result.request)
     }
     
     func testGet() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: self.service.Get())
     }
     
     func testPost() async throws {
-        try await makeSuccess(request: type(of: self.service).Post())
+        try await makeSuccess(request: self.service.Post())
     }
     
     func testPatch() async throws {
-        try await makeSuccess(request: type(of: self.service).Patch())
+        try await makeSuccess(request: self.service.Patch())
     }
     
     func testPut() async throws {
-        try await makeSuccess(request: type(of: self.service).Put())
+        try await makeSuccess(request: self.service.Put())
     }
     
     func testDelete() async throws {
-        try await makeSuccess(request: type(of: self.service).Delete())
+        try await makeSuccess(request: self.service.Delete())
     }
     
     func testComplexRequest() async throws {
-        try await makeSuccess(request: type(of: self.service).ExampleEndpoint.Complex())
+        try await makeSuccess(request: self.service.ExampleEndpoint.Complex())
     }
     
     func testNoContentType() async throws {
-        try await makeSuccess(request: type(of: self.service).NoContentType())
+        try await makeSuccess(request: self.service.NoContentType())
     }
 }
 #endif
