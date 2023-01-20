@@ -12,124 +12,118 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
-//extension ServiceRequest {
-//    var urlRequest: URLRequest {
-//        URLRequest(request: self, baseURL: ExampleService().baseURL)!
-//    }
-//}
-
-struct CoinCap: Service {
-    static let baseURL = URL(string: "https://api.coincap.io/v2")!
-    
-    enum Assets: Endpoint {
-        typealias Parent = CoinCap
-        static let path = "assets"
-        
-        func getAll() async throws -> GetAll.Response {
-            try await GetAll().send()
-        }
-        
-        struct Get: Request {
-            typealias Parent = Assets
-            let httpMethod: HTTPRequestMethod = .get
-            @PathComponent var ID: String
-        }
-        
-        struct GetAll: Request {
-            typealias Parent = Assets
-            let httpMethod: HTTPRequestMethod = .get
-            
-            @QueryItem("search") var search: String?
-            @QueryItem("ids") var IDs: String?
-            @QueryItem("limit") var limit: Int?
-            @QueryItem("offset") var offset: Int?
-            
-            init(search: String? = nil, IDs: String? = nil, limit: Int? = nil, offset: Int? = nil) {
-                self.search = search
-                self.IDs = IDs
-                self.limit = limit
-                self.offset = offset
-            }
-            
-            struct Response: Codable {
-                let id: String
-                let symbol: String
-            }
-        }
-    }
-}
-
 enum ExampleService: Service {
     static let baseURL: URL = URL(string: "https://www.example.com")!
     
-    struct Get: Request {
+    static var session: URLSession = .shared
+    
+    @RequestBuilder<ExampleService>
+    static var get: Request {
+        Request.HTTPMethod.get
+    }
+    
+    enum BasicRequests: Endpoint {
         typealias Parent = ExampleService
         
-        let httpMethod: HTTPRequestMethod = .get
-    }
-    
-    struct Put: Request {
-        typealias Parent = ExampleService
-        let httpMethod: HTTPRequestMethod = .put
-    }
-    
-    struct Post: Request {
-        typealias Parent = ExampleService
-        let httpMethod: HTTPRequestMethod = .post
-    }
-    
-    struct Patch: Request {
-        typealias Parent = ExampleService
-        let httpMethod: HTTPRequestMethod = .patch
-    }
-    
-    struct Delete: Request {
-        typealias Parent = ExampleService
-        let httpMethod: HTTPRequestMethod = .delete
-    }
-    
-    enum ExampleEndpoint: Endpoint {
-        typealias Parent = ExampleService
-        static let path = "example"
-        enum Keys {
-            static let key = "key"
+        static let path = "basic"
+        
+        @RequestBuilder<BasicRequests>
+        static var get: Request {
+            Request.HTTPMethod.get
         }
         
-        struct Complex: Request {
-            typealias Parent = ExampleService
-            
-            let endpoint = ExampleEndpoint.self
-            let httpMethod: HTTPRequestMethod = .get
-            let pathPrefix: String = "prefix"
-            let pathSuffix: String = "suffix"
-            let headers: [String : String] = [Keys.key: "value"]
-            let body: Data? = try? JSONSerialization.data(withJSONObject: ["body"], options: [])
+        @RequestBuilder<BasicRequests>
+        static var put: Request {
+            Request.HTTPMethod.put
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var post: Request {
+            Request.HTTPMethod.post
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var patch: Request {
+            Request.HTTPMethod.patch
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var delete: Request {
+            Request.HTTPMethod.delete
         }
     }
     
-    struct NoContentType: Request {
+    enum ComplexRequests: Endpoint {
         typealias Parent = ExampleService
+        static let path = "complex"
         
-        static var baseURL: URL = URL(string: "https://example.com/")!
+        static var sharedProperties: [any RequestProperty] {
+            Headers {
+                Header.authorization(.basic, value: "secret")
+                Header.contentType("application/json")
+            }
+        }
         
-        let httpMethod: HTTPRequestMethod = .get
-        
-        var contentType: RequestContentType? = nil
+        @RequestBuilder<ComplexRequests>
+        static var complex: Request {
+            Request.HTTPMethod.get
+            PathComponents {
+                "suffix"
+            }
+        }
     }
     
+    enum Users: Endpoint {
+        typealias Parent = ExampleService
+        static let path = "users"
+        
+        struct User: Codable, Hashable {
+            var name: String
+        }
+        
+        static let getRequest = Request(.get, parent: Users.self)
+
+        static func get() async throws -> [User] {
+            try await getRequest
+                .send(session: Parent.session)
+        }
+        
+        static func get(_ name: String) async throws -> User? {
+            try await Request(.get, parent: Users.self) {
+                PathComponents { name }
+            }
+            .send(session: Parent.session)
+        }
+        
+        static func add(_ user: User) async throws {
+            try await Request(.put, parent: Users.self) {
+                Body(user)
+            }
+            .send(session: Parent.session)
+        }
+        
+        static func add(_ name: String) async throws {
+            try await add(User(name: name))
+        }
+    }
 }
 
 struct BadURLService: Service {
     static let baseURL: URL = URL(string: "a://@@")!
     
-    struct Get: Request {
-        typealias Parent = BadURLService
-        let httpMethod: HTTPRequestMethod = .get
+    @RequestBuilder<BadURLService>
+    static var get: Request {
+        Request.HTTPMethod.get
     }
-}
-
-struct User: Codable, Hashable {
-    let name: String
+    
+    @RequestBuilder<BadURLService>
+    static var request: Request {
+        Request.HTTPMethod.get
+        Headers {
+            Header.authorization(.basic, value: "a")
+            Header.contentType("ab")
+        }
+    }
 }
 
 #endif

@@ -10,20 +10,26 @@ import Foundation
 import Combine
 
 extension Request {
-    public typealias PublisherResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
+    /**
+     Response for an HTTP request using a Combine publisher
+     
+        - `request`: The request made
+        - `response`: The response received
+        - `data`: Data received
+     */
+    public typealias PublisherResponse = (request: Request, response: HTTPURLResponse, data: Data)
     
-    public typealias PublisherModelResponse<Model: Decodable> = (request: URLRequest, response: HTTPURLResponse, responseModel: Model)
+    public typealias PublisherModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
     
     public func send(
         session: URLSession = .shared,
-        timeout: TimeInterval? = nil,
-        cachePolicy: URLRequest.CachePolicy? = nil
+        parseHTTPStatusErrors: Bool = false
     ) -> AnyPublisher<PublisherResponse, RequestError> {
         Future<PublisherResponse, RequestError> { promise in
             send(
                 session: session,
-                timeout: timeout,
-                autoResumeTask: true) { result in
+                autoResumeTask: true,
+                parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
                     switch result {
                     case .success(let successResponse):
                         promise(.success(successResponse))
@@ -38,15 +44,13 @@ extension Request {
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
-        timeout: TimeInterval? = nil,
-        cachePolicy: URLRequest.CachePolicy? = nil
+        parseHTTPStatusErrors: Bool = false
     ) -> AnyPublisher<ResponseModel, RequestError> {
-        send(session: session, timeout: timeout, cachePolicy: cachePolicy)
+        send(session: session, parseHTTPStatusErrors: parseHTTPStatusErrors)
             .map(\.data)
             .decode(type: ResponseModel.self, decoder: decoder)
-            .mapError { RequestError.decoding(request: urlRequest, error: $0 as! DecodingError) }
+            .mapError { RequestError.decoding(request: self, error: $0 as! DecodingError) }
             .eraseToAnyPublisher()
     }
 }
-
 #endif

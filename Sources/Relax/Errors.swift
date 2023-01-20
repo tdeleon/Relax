@@ -13,7 +13,7 @@ import FoundationNetworking
 //MARK: - Handling Errors
 /// An error that occurs when making a `ServiceRequest`
 ///
-/// This encapsulates errors while actually making a request (i.e. network connection issues), and does not include HTTP status code errors.
+/// This encapsulates errors while making a request (i.e. network connection issues), and does not include HTTP status  errors.
 public enum RequestError: Error, Hashable {
     public static func == (lhs: RequestError, rhs: RequestError) -> Bool {
         switch (lhs, rhs) {
@@ -22,7 +22,7 @@ public enum RequestError: Error, Hashable {
         case (.decoding, _), (_, .decoding):
             return false
         default:
-            return lhs == rhs
+            return lhs.hashValue == rhs.hashValue
         }
     }
     
@@ -31,11 +31,13 @@ public enum RequestError: Error, Hashable {
     }
 
     /// A   `URLError` occurred with the request
-    case urlError(request: URLRequest, error: URLError)
+    case urlError(request: Request, error: URLError)
     /// A `DecodingError` occurred when decoding data from the request
-    case decoding(request: URLRequest, error: DecodingError)
+    case decoding(request: Request, error: DecodingError)
     /// Other error occurred
-    case other(request: URLRequest, message: String)
+    case other(request: Request, message: String)
+    /// HTTP status code error
+    case httpStatus(request: Request, error: HTTPError)
     
     public var localizedDescription: String {
         switch self {
@@ -43,13 +45,17 @@ public enum RequestError: Error, Hashable {
             return error.localizedDescription
         case .decoding(_, let error):
             return error.localizedDescription
+        case .httpStatus(_, let error):
+            return error.localizedDescription
         case .other(_, let message):
             return message
         }
     }
 }
 
-/// An HTTP error
+/// An HTTP status code error
+///
+/// Any HTTP status code which is considered an error- i.e. 3xx-5xx range
 public struct HTTPError: Error, Hashable {
     public static func == (lhs: HTTPError, rhs: HTTPError) -> Bool {
         lhs.statusCode == rhs.statusCode
@@ -64,6 +70,8 @@ public struct HTTPError: Error, Hashable {
         case badRequest
         /// 401 Unauthorized
         case unauthorized
+        /// 403 Forbidden
+        case forbidden
         /// 404 Not found
         case notFound
         /// 429 Too many requests
@@ -77,7 +85,7 @@ public struct HTTPError: Error, Hashable {
     /// The status code returned
     public let statusCode: Int
     /// The http error type
-    public let status: HTTPErrorType
+    public let type: HTTPErrorType
     /// The response received
     public let response: Request.Response
     /// A localized description of the error
@@ -93,22 +101,24 @@ public struct HTTPError: Error, Hashable {
         self.init(statusCode: response.response.statusCode, response: response)
     }
     
-    init?(statusCode: Int, response: Request.Response) {
+    internal init?(statusCode: Int, response: Request.Response) {
         switch statusCode {
         case 100...399:
             return nil
         case 400:
-            self.status = .badRequest
+            self.type = .badRequest
         case 401:
-            self.status = .unauthorized
+            self.type = .unauthorized
+        case 403:
+            self.type = .forbidden
         case 404:
-            self.status = .notFound
+            self.type = .notFound
         case 429:
-            self.status = .tooManyRequests
+            self.type = .tooManyRequests
         case 500...599:
-            self.status = .server
+            self.type = .server
         default:
-            self.status = .other
+            self.type = .other
         }
         
         self.statusCode = statusCode

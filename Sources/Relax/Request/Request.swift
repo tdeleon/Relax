@@ -7,217 +7,327 @@
 
 import Foundation
 
-public protocol Request: URLSubPath {
-    typealias Response = (request: URLRequest, response: HTTPURLResponse, data: Data)
-    
-    typealias RequestCompletion = (_ result: Result<Response, RequestError>) -> Void
-    
-    typealias RequestModelCompletion<ResponseModel: Decodable> = (_ result: Result<ResponseModel, RequestError>) -> Void
-    
-    var httpMethod: HTTPRequestMethod { get }
-    
-    var path: String { get }
-    
-    var pathPrefix: String { get }
-    var pathSuffix: String { get }
-    var queryParameters: [URLQueryItem] { get }
-    var headers: [String: String] { get }
-    var contentType: RequestContentType? { get }
-    var body: Data? { get }
-    var timeout: TimeInterval { get }
-    var cachePolicy: URLRequest.CachePolicy { get }
-}
 
-public protocol RequestEncodable: Request {
-    associatedtype RequestBodyType: Encodable
-    var requestModel: RequestBodyType { get }
-    var encoder: JSONEncoder { get }
-}
-
-extension RequestEncodable {
-    public var encoder: JSONEncoder {
-        JSONEncoder()
-    }
-    public var body: Data? {
-        try? encoder.encode(requestModel)
-    }
-}
-
-extension Mirror {
-    static func childValues<C>(of subject: Any, matching: C.Type) -> [C] {
-        return Mirror(reflecting: subject).children.map(\.value).compactMap { $0 as? C }
-    }
-}
-
-public protocol Configurable {
-    var timeout: TimeInterval { get }
-    var cachePolicy: URLRequest.CachePolicy { get }
-    var checkHTTPStatus: Bool { get }
+public struct Request {
+    /**
+     Completion handler based response for an HTTP request
     
-}
-
-extension Request {
-    public var timeout: TimeInterval { 60 }
-    public var cachePolicy: URLRequest.CachePolicy { .useProtocolCachePolicy }
-    public var pathPrefix: String { "" }
-    public var pathSuffix: String { "" }
-    public var path: String { pathPrefix + pathParameters.joined(separator: "/") + pathSuffix }
+     - `request`: The request made
+     - `response`: The response received
+     - `data`: The data received, if any
+     */
+    public typealias Response = (request: Request, response: HTTPURLResponse, data: Data)
     
-    public var url: URL { Parent.url.appendingPathComponent(path) }
-    public var queryParameters: [URLQueryItem] {
-        Mirror.childValues(of: self, matching: QueryItemProviding.self).compactMap(\.queryItem)
-    }
-    public var headers: [String: String] { [:] }
-    public var contentType: RequestContentType? { .applicationJSON }
-    public var body: Data? { nil }
+    public typealias ResponseModel<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
     
-    public var pathParameters: [String] {
-        Mirror.childValues(of: self, matching: PathComponent.self).map(\.wrappedValue)
+    /**
+     Completion handler for requests made
+     
+     - Parameter result: Result receieved
+     
+     */
+    public typealias Completion = (_ result: Result<Response, RequestError>) -> Void
+    
+    public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
+    
+    public var httpMethod: HTTPMethod
+    public var headers: [String: String] = [:]
+    public var queryItems: [URLQueryItem] = []
+    public var pathParameters: [String] = []
+    public var body: Data?
+    public var configuration: Configuration
+    
+    internal var _url: URL
+    
+    public var url: URL? {
+        var fullURL = _url
+        pathParameters.forEach { fullURL.appendPathComponent($0) }
+        guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return nil }
+        queryItems.forEach { components.queryItems?.append($0) }
+        return components.url
     }
     
-    public var urlRequest: URLRequest {
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-        
-        queryParameters.forEach { components?.queryItems?.append($0) }
+    public var urlRequest: URLRequest? {
+        guard let url = url else { return nil }
         
         var request = URLRequest(url: url)
-        
         request.httpMethod = httpMethod.rawValue
-        
-        if let contentType = contentType {
-            request.addValue(contentType.rawValue, forHTTPHeaderField: "Content-Type")
-        }
-        
         headers.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
-        
         request.httpBody = body
         
-        request.timeoutInterval = timeout
-        request.cachePolicy = cachePolicy
+        request.allowsCellularAccess = configuration.allowsCellularAccess
+        request.cachePolicy = configuration.cachePolicy
+        request.httpShouldUsePipelining = configuration.httpShouldUsePipelining
+        request.networkServiceType = configuration.networkServiceType
+        request.timeoutInterval = configuration.timeoutInterval
+        request.httpShouldHandleCookies = configuration.httpShouldHandleCookies
         
         return request
     }
     
+    public init(
+        _ httpMethod: HTTPMethod,
+        url: URL,
+        configuration: Configuration = .default,
+        @RequestPropertyBuilder properties: () -> [any RequestProperty] = { [any RequestProperty]() }
+    ) {
+        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
+    }
+    
+    public init(
+        _ httpMethod: HTTPMethod,
+        parent: APIComponent.Type,
+        configuration: Configuration = .default,
+        @RequestPropertyBuilder properties: () -> [any RequestProperty] = { [any RequestProperty]() }
+    ) {
+        self.init(
+            httpMethod: httpMethod,
+            url: parent.baseURL,
+            configuration: configuration,
+            properties: parent._sharedProperties + properties()
+        )
+    }
+    
+    public init(_ httpMethod: HTTPMethod, url: URL, configuration: Configuration = .default) {
+        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: [])
+    }
+    
+    internal init(
+        httpMethod: HTTPMethod,
+        url: URL,
+        configuration: Configuration,
+        properties: [any RequestProperty]
+    ) {
+        self._url = url
+        
+        self.httpMethod = httpMethod
+        self.configuration = configuration
+        
+        properties.forEach { set($0) }
+    }
+}
+
+extension Request {
+    
+    /// <#Description#>
+    /// - Parameter property: <#property description#>
+    mutating func set(_ property: some RequestProperty) {
+        property.append(to: &self[keyPath: property.requestKeyPath])
+    }
+    
+    /// <#Description#>
+    /// - Parameter property: <#property description#>
+    /// - Returns: <#description#>
+    public func setting(_ property: some RequestProperty) -> Request {
+        var request = self
+        request.set(property)
+        return request
+    }
+    
+    /// <#Description#>
+    /// - Parameter property: <#property description#>
+    mutating func append(_ property: some RequestProperty) {
+        property.append(to: &self[keyPath: property.requestKeyPath])
+    }
+    
+    /// <#Description#>
+    /// - Parameter property: <#property description#>
+    /// - Returns: <#description#>
+    public func appending(_ property: some RequestProperty) -> Request {
+        var request = self
+        request.append(property)
+        return request
+    }
+    
+    /// <#Description#>
+    /// - Parameter configuration: <#configuration description#>
+    /// - Returns: <#description#>
+    public func updating(_ configuration: Configuration) -> Request {
+        var request = self
+        request.configuration = configuration
+        return request
+    }
+}
+
+extension Request {
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - value: <#value description#>
+    /// - Returns: <#description#>
+    public func settingHeader(name: String, value: String?) -> Request {
+        var request = self
+        request.headers[name] = value
+        return request
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - value: <#value description#>
+    /// - Returns: <#description#>
+    public func settingHeader(name: Header.Name, value: String?) -> Request {
+        settingHeader(name: name.rawValue, value: value)
+    }
+    
+    /// <#Description#>
+    /// - Parameter header: <#header description#>
+    /// - Returns: <#description#>
+    public func appending(header: Header) -> Request {
+        appendingHeader(name: header.name, value: header.value)
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - value: <#value description#>
+    /// - Returns: <#description#>
+    public func appendingHeader(name: String, value: String) -> Request {
+        var request = self
+        request.headers = request.headers.mergingCommaSeparatedValues([name: value])
+        return request
+    }
+    
+    /// <#Description#>
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - value: <#value description#>
+    /// - Returns: <#description#>
+    public func appendingHeader(name: Header.Name, value: String) -> Request {
+        appendingHeader(name: name.rawValue, value: value)
+    }
+    
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
+    public func removingHeader(_ name: String) -> Request {
+        settingHeader(name: name, value: nil)
+    }
+    
+    /// <#Description#>
+    /// - Parameter name: <#name description#>
+    /// - Returns: <#description#>
+    public func removingHeader(_ name: Header.Name) -> Request {
+        removingHeader(name.rawValue)
+    }
+}
+
+extension Request {
     @discardableResult
-    public func send(
-        session: URLSession = URLSession.shared,
-        timeout: TimeInterval? = nil,
+    func send(
+        session: URLSession = .shared,
         autoResumeTask: Bool = true,
-        completion: @escaping RequestCompletion
+        parseHTTPStatusErrors: Bool = false,
+        completion: @escaping Request.Completion
     ) -> URLSessionDataTask? {
-        var request = urlRequest
-        if let timeout = timeout {
-            request.timeoutInterval = timeout
-        }
-        // Create the task
-        let task = session.dataTask(with: request) { (data, response, error) in
+        guard let urlRequest else { return nil }
+        let task = session.dataTask(with: urlRequest) { data, response, error in
             guard error == nil,
-            let data = data else {
+                  let data = data else {
                 // Check for URLErrors
                 if let urlError = error as? URLError {
-                    return completion(.failure(.urlError(request: request, error: urlError)))
+                    return completion(.failure(.urlError(request: self, error: urlError)))
                 }
                 // Any other error
-                return completion(.failure(.other(request: request, message: error!.localizedDescription)))
+                return completion(.failure(.other(request: self, message: error!.localizedDescription)))
             }
             
             // Check for an HTTPURLResponse
             guard let response = response,
-                let httpResponse = response as? HTTPURLResponse else {
-                    return completion(.failure(.urlError(request: request, error: URLError(.unknown))))
+                  let httpResponse = response as? HTTPURLResponse else {
+                return completion(.failure(.urlError(request: self, error: URLError(.unknown))))
             }
+            
+            let requestResponse = (self, httpResponse, data)
+            
             // Check for http status code errors (4xx-5xx series)
-            if let httpError = RequestError(httpStatusCode: httpResponse.statusCode, request: request) {
-                completion(.failure(httpError))
+            if parseHTTPStatusErrors,
+               let httpError = HTTPError(response: requestResponse) {
+                completion(.failure(RequestError.httpStatus(request: self, error: httpError)))
             }
             // Success
             else {
-                completion(.success((request, httpResponse, data)))
+                completion(.success(requestResponse))
             }
         }
+        
         if autoResumeTask {
             task.resume()
         }
+        
         return task
     }
     
-    @discardableResult
-    public func send<ResponseModel: Decodable>(
+    func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = URLSession.shared,
-        timeout: TimeInterval? = nil,
+        session: URLSession = .shared,
         autoResumeTask: Bool = true,
-        completion: @escaping RequestModelCompletion<ResponseModel>
-    ) -> URLSessionDataTask? {
+        parseHTTPStatusErrors: Bool = false,
+        completion: @escaping Request.ModelCompletion<ResponseModel>
+    ) {
         send(
             session: session,
-            timeout: timeout,
-            autoResumeTask: autoResumeTask) { result in
-                do {
-                    let success = try result.get()
-                    let decoded = try decoder.decode(ResponseModel.self, from: success.data)
-                    completion(.success(decoded))
-                } catch let error as DecodingError {
-                    return completion(.failure(.decoding(request: urlRequest, error: error)))
-                } catch let error as RequestError {
-                    return completion(.failure(error))
-                } catch {
-                    return completion(.failure(.other(request: urlRequest, message: error.localizedDescription)))
-                }
+            autoResumeTask: autoResumeTask,
+            parseHTTPStatusErrors: parseHTTPStatusErrors
+        ) { result in
+            do {
+                let success = try result.get()
+                let decoded = try decoder.decode(ResponseModel.self, from: success.data)
+                completion(.success((self, success.response, decoded)))
+            } catch let error as DecodingError {
+                completion(.failure(.decoding(request: self, error: error)))
+            } catch let error as RequestError {
+                completion(.failure(error))
+            } catch {
+                completion(.failure(.other(request: self, message: error.localizedDescription)))
             }
+        }
     }
 }
 
-internal struct RequestGroup<Container: URLProviding>: Request {
-    
-    typealias Parent = Container
-    
-    let requests: [any Request]
-    
-    var httpMethod: HTTPRequestMethod {
-        requests.map(\.httpMethod).first ?? .get
+extension Request {
+    /// HTTP Request type
+    public struct HTTPMethod: RawRepresentable, Hashable {
+        public var rawValue: String
+        
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+        
+        public init(_ rawValue: String) {
+            self.init(rawValue: rawValue)
+        }
+        
+        /// `GET` request type
+        public static let get = HTTPMethod("GET")
+        /// `POST` request type
+        public static let post = HTTPMethod("POST")
+        /// `PUT` request type
+        public static let put = HTTPMethod("PUT")
+        /// `PATCH` request type
+        public static let patch = HTTPMethod("PATCH")
+        /// `DELETE` request type
+        public static let delete = HTTPMethod("DELETE")
     }
-    
-    var headers: [String : String] {
-        Dictionary(
-            requests
-                .map(\.headers)
-                .flatMap { $0 },
-            uniquingKeysWith: +
+}
+
+
+@resultBuilder
+/// <#Description#>
+public enum RequestBuilder<Parent: APIComponent> {
+    static func buildBlock(_ httpMethod: Request.HTTPMethod, _ components: any RequestProperty...) -> Request {
+        Request(
+            httpMethod: httpMethod,
+            url: Parent.baseURL,
+            configuration: Parent.configuration,
+            properties: components
         )
     }
     
-    var queryParameters: [URLQueryItem] {
-        requests.flatMap(\.queryParameters)
+    @available(*, unavailable, message: "First statement of Request.NestedBuilder must be the HTTPMethod type")
+    static func buildBlock(_ components: any RequestProperty...) -> Request {
+        fatalError()
     }
     
-    var body: Data? {
-        let allData = requests.map(\.body).compactMap { $0 }
-        guard !allData.isEmpty else { return nil }
-        return allData.reduce(Data(), +)
-    }
-    
-    var timeout: TimeInterval {
-        requests.map(\.timeout).first ?? 60
-    }
-    
-    var cachePolicy: URLRequest.CachePolicy {
-        requests.map(\.cachePolicy).first ?? .useProtocolCachePolicy
-    }
 }
 
-struct QueryParameter<U: URLProviding>: Request {
-    typealias Parent = U
-
-    var httpMethod: HTTPRequestMethod
-    
-    
-    var queryParameters: [URLQueryItem]
-}
-
-@resultBuilder
-struct RequestBuilder<Container: URLProviding> {
-    static func buildBlock(_ components: any Request...) -> any Request {
-        RequestGroup<Container>(requests: components)
-    }
-}

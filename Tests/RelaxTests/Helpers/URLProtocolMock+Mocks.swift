@@ -30,24 +30,35 @@ extension URLProtocolMock {
     
     static func mockError(requestError: RequestError) -> MockHandler {
         switch requestError {
-        case .httpBadRequest(_):
-            return mockResponse(httpStatus: 400)
-        case .httpNotFound(_):
-            return mockResponse(httpStatus: 404)
-        case .other(_, let message):
-            return mockResponse(error: NSError(domain: "com.relax.test", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
-        case .otherHTTPError(_, let status):
-            return mockResponse(httpStatus: status)
-        case .httpServerError(_, let status):
-            return mockResponse(httpStatus: status)
-        case .httpUnauthorized(_):
-            return mockResponse(httpStatus: 401)
+        case .httpStatus(_, let error):
+            return mockResponse(httpStatus: error.statusCode)
+        case .decoding(_, _):
+            return mockResponse(data: Data())
         case .urlError(_, let error):
             return mockResponse(error: error)
-        case .decoding:
-            let bad = ["": ""]
-            return mockResponse(data: try! JSONSerialization.data(withJSONObject: bad, options: []))
+        case .other(_, let message):
+            return mockResponse(error: NSError(domain: "com.relax.test", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
         }
+        
+//        switch requestError {
+//        case .httpBadRequest(_):
+//            return mockResponse(httpStatus: 400)
+//        case .httpNotFound(_):
+//            return mockResponse(httpStatus: 404)
+//        case .other(_, let message):
+//            return mockResponse(error: NSError(domain: "com.relax.test", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
+//        case .otherHTTPError(_, let status):
+//            return mockResponse(httpStatus: status)
+//        case .httpServerError(_, let status):
+//            return mockResponse(httpStatus: status)
+//        case .httpUnauthorized(_):
+//            return mockResponse(httpStatus: 401)
+//        case .urlError(_, let error):
+//            return mockResponse(error: error)
+//        case .decoding:
+//            let bad = ["": ""]
+//            return mockResponse(data: try! JSONSerialization.data(withJSONObject: bad, options: []))
+//        }
     }
 }
 #endif

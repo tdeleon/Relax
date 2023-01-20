@@ -10,42 +10,62 @@ import Foundation
 import FoundationNetworking
 #endif
 
+
 extension Request {
-    public typealias AsyncResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
     
-    public typealias AsyncModelResponse<Model: Decodable> = (responseModel: Model, response: HTTPURLResponse)
+    /**
+     Response for an async HTTP request
+     
+        - `request`: The request made
+        - `response`: The response received
+        - `data`: Data received
+     */
+    public typealias AsyncResponse = (request: Request, response: HTTPURLResponse, data: Data)
     
-    public func send(session: URLSession = .shared, timeout: TimeInterval? = nil) async throws -> AsyncResponse {
+    public typealias AsyncModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
+    
+    @discardableResult
+    public func send(
+        session: URLSession = .shared,
+        parseHTTPStatusErrors: Bool = false
+    ) async throws -> AsyncResponse {
         var task: URLSessionDataTask?
         let onCancel = { task?.cancel() }
         
         return try await withTaskCancellationHandler {
-            onCancel()
-        } operation: {
             try Task.checkCancellation()
             
             return try await withCheckedThrowingContinuation { continuation in
                 task = send(
                     session: session,
-                    timeout: timeout,
-                    autoResumeTask: true) { result in
+                    autoResumeTask: true,
+                    parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
                         switch result {
-                        case .success(let successResponse):
-                            continuation.resume(returning: successResponse)
-                        case .failure(let error):
-                            continuation.resume(throwing: error)
+                        case .success(let success):
+                            continuation.resume(returning: success)
+                        case .failure(let failure):
+                            continuation.resume(throwing: failure)
                         }
                     }
             }
+        } onCancel: {
+            onCancel()
         }
     }
     
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
-        timeout: TimeInterval? = nil
+        parseHTTPStatusErrors: Bool = false
     ) async throws -> ResponseModel {
-        let response: AsyncResponse = try await send(session: session, timeout: timeout)
-        return try decoder.decode(ResponseModel.self, from: response.data)
+        let response: AsyncResponse = try await send(
+            session: session,
+            parseHTTPStatusErrors: parseHTTPStatusErrors
+        )
+        do {
+            return try decoder.decode(ResponseModel.self, from: response.data)
+        } catch {
+            throw RequestError.decoding(request: self, error: error as! DecodingError)
+        }
     }
 }

@@ -13,12 +13,49 @@ import FoundationNetworking
 import Combine
 #endif
 
-public protocol URLProviding {
-    static var url: URL { get }
+public protocol BaseURLProviding {
+    /// The base URL to use for requests.
+    ///
+    /// This value is only a base and does not include any values provided by RequestProperties, such as `URLQueryItem`.
+    static var baseURL: URL { get }
 }
 
-public protocol URLSubPath {
-    associatedtype Parent: URLProviding
+public protocol RequestPropertyProviding {
+    /// Properties to be used by all child Requests.
+    ///
+    /// Any properties defined on an `APIComponentSubItem` or `Request` will override, or, if the property is an `AppendableRequestProperty`,
+    /// append to those defined here.
+    @RequestPropertyBuilder static var sharedProperties: [any RequestProperty] { get }
+}
+
+public protocol RequestConfigurationProviding {
+    static var configuration: Request.Configuration { get }
+}
+
+extension RequestConfigurationProviding {
+    static var configuration: Request.Configuration { .default }
+}
+
+/// A component of an API
+public protocol APIComponent: BaseURLProviding, RequestPropertyProviding, RequestConfigurationProviding {}
+
+extension RequestPropertyProviding {
+    @RequestPropertyBuilder
+    public static var sharedProperties: [any RequestProperty] { EmptyRequestProperty() }
+    
+    internal static var _sharedProperties: [any RequestProperty] { sharedProperties }
+}
+
+/// A nested component of an API, which inherits properties and a base URL from it's Parent.
+public protocol APIComponentSubItem<Parent>: APIComponent {
+    /// The parent component for this item
+    associatedtype Parent: APIComponent
+}
+
+extension APIComponentSubItem {
+    internal static var _sharedProperties: [any RequestProperty] {
+        Parent._sharedProperties + sharedProperties
+    }
 }
 
 /**
@@ -39,7 +76,7 @@ public protocol URLSubPath {
  - SeeAlso: `Endpoint`, `ServiceRequest`
  
 */
-public protocol Service: URLProviding {
+public protocol Service: APIComponent {
     //MARK: - Properties
     /// The base URL of the service. This value is shared among all endpoints on the service.
     static var baseURL: URL { get }
@@ -96,199 +133,20 @@ public protocol Service: URLProviding {
     typealias RequestModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
 }
 
-protocol Endpoint: URLProviding, URLSubPath {
+protocol Endpoint: APIComponent, APIComponentSubItem {
     static var path: String { get }
 }
 
 extension Endpoint {
-    public static var url: URL {
-        Parent.url.appendingPathComponent(path)
+    public static var baseURL: URL {
+        Parent.baseURL.appendingPathComponent(path)
     }
 }
 
 //MARK: - Making Requests
 public extension Service {
-    static var url: URL { baseURL }
+    static var baseURL: URL { baseURL }
     
     ///  Returns `URLSession.shared`.
-    static var session: URLSession {
-        return URLSession.shared
-    }
-    
-//    /**
-//     Make a request using the given `ServiceRequest` and parameters
-//     - Parameters:
-//        - request: The `ServiceRequest` to use
-//        - model: Expected model type in response
-//        - decoder: Pass in if a custom decoder is to be used. Uses `JSONDecoder()` by default.
-//        - session: The session to use. If none is provided, the default `session` property on the service will be used.
-//        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-//        - completion: A `RequestCompletion` handler which is executed when the task is completed.
-//     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-//
-//     Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
-//
-//     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
-//    */
-//    @discardableResult
-//    func request<Request: ServiceRequestEncodable>(
-//        _ request: Request,
-//        session: URLSession = session,
-//        autoResumeTask: Bool = true,
-//        completion: @escaping RequestCompletion
-//    ) -> URLSessionDataTask? {
-//        self.requ
-//    }
-//
-//    /**
-//     Make a request using the given `ServiceRequestDecodable`
-//     - Parameters:
-//        - request: The `ServiceRequestDecodable` to use
-//        - session: The session to use. If none is provided, the default `session` property on the service will be used.
-//        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-//        - completion: A `RequestCompletion` handler which is executed when the task is completed.
-//     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-//
-//     Call this method to create a `URLSessionDataTask` for a given request, expecting a model of type `ServiceRequestDecodable.ResponseModel` to be in the response. By default, the `resume()` will be called on the task, executing the request immediately.
-//
-//     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
-//    */
-//    @discardableResult
-//    func requestModel<Request: ServiceRequestDecodable>(
-//        _ request: Request,
-//        session: URLSession = session,
-//        autoResumeTask: Bool = true,
-//        completion: @escaping RequestModelCompletion<Request.ResponseModel>
-//    ) -> URLSessionDataTask? {
-//        self.request(request, responseModel: Request.ResponseModel.self, decoder: request.decoder, session: session, autoResumeTask: autoResumeTask, completion: completion)
-//    }
-//
-//    /**
-//     Make a request using the given `ServiceRequest` and parameters
-//     - Parameters:
-//        - request: The `ServiceRequest` to use
-//        - decoder: Pass in if a custom decoder is to be used. Uses `JSONDecoder()` by default.
-//        - session: The session to use. If none is provided, the default `session` property on the service will be used.
-//        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-//        - completion: A `RequestCompletion` handler which is executed when the task is completed.
-//     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-//
-//     Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
-//
-//     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
-//    */
-//    @discardableResult
-//    func requestModel<Request: ServiceRequestCodable>(
-//        _ request: Request,
-//        session: URLSession = session,
-//        autoResumeTask: Bool = true,
-//        completion: @escaping RequestModelCompletion<Request.ResponseModel>
-//    ) -> URLSessionDataTask? {
-//        var requestWithModel = request
-//        do {
-//            requestWithModel.body = try request.encoder.encode(request.requestModel)
-//        } catch {
-//            completion(.failure(.encoding(request: URLRequest(request: request, baseURL: baseURL)!, error: error as! EncodingError)))
-//            return nil
-//        }
-//        return self.requestModel(requestWithModel, completion: completion)
-//    }
-//
-//    /**
-//     Make a request using the given `ServiceRequest` and parameters
-//     - Parameters:
-//        - request: The `ServiceRequest` to use
-//        - model: Expected model type in response
-//        - decoder: Pass in if a custom decoder is to be used. Uses `JSONDecoder()` by default.
-//        - session: The session to use. If none is provided, the default `session` property on the service will be used.
-//        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-//        - completion: A `RequestCompletion` handler which is executed when the task is completed.
-//     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-//
-//     Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
-//
-//     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
-//    */
-//    @discardableResult
-//    static func request<Request: ServiceRequest, Model: Decodable>(
-//        _ request: Request,
-//        responseModel: Model.Type,
-//        decoder: JSONDecoder = JSONDecoder(),
-//        session: URLSession = session,
-//        autoResumeTask: Bool = true,
-//        completion: @escaping RequestModelCompletion<Model>
-//    ) -> URLSessionDataTask? {
-//        self.request(request, session: session, autoResumeTask: autoResumeTask) { result in
-//            do {
-//                let success = try result.get()
-//                guard let data = success.data else {
-//                    throw RequestError.other(request: success.request, message: "No data")
-//                }
-//                completion(.success((success.request, success.response, try decoder.decode(Model.self, from: data))))
-//            } catch let error as DecodingError {
-//                completion(.failure(.decoding(request: URLRequest(request: request, baseURL: baseURL)!, error: error)))
-//            } catch let error as RequestError {
-//                completion(.failure(error))
-//            } catch {
-//                completion(.failure(.other(request: URLRequest(request: request, baseURL: baseURL)!, message: error.localizedDescription)))
-//            }
-//        }
-//    }
-//
-//    /**
-//     Make a request using the given `ServiceRequest` and parameters
-//     - Parameters:
-//        - request: The `ServiceRequest` to use
-//        - session: The session to use. If none is provided, the default `session` property on the service will be used.
-//        - autoResumeTask: If `true`, then `resume()` will be called automatically on the created `URLSessionDataTask`. Default value is `true`.
-//        - completion: A `RequestCompletion` handler which is executed when the task is completed.
-//     - Returns: A `URLSessionDataTask`, or `nil` if there was a failure in creating the task.
-//
-//     Call this method to create a `URLSessionDataTask` for a given request. By default, the `resume()` will be called on the task, executing the request immediately.
-//
-//     - Warning: When `autoResumeTask` is `true` (this is the default value), calling `resume()` on the returned task will cause the request to be executed again.
-//    */
-//    @discardableResult
-//    static func request<Request: ServiceRequest>(
-//        _ request: Request,
-//        session: URLSession = session,
-//        autoResumeTask: Bool = true,
-//        completion: @escaping RequestCompletion
-//    ) -> URLSessionDataTask? {
-//        // Create the URLRequest
-//        guard let urlRequest = URLRequest(request: request, baseURL: baseURL) else {
-//            completion(.failure(.urlError(request: URLRequest(request: request, baseURL: baseURL)!, error: URLError(.badURL))))
-//            return nil
-//        }
-//
-//        // Create the task
-//        let task = session.dataTask(with: urlRequest) { (data, response, error) in
-//            guard error == nil else {
-//                // Check for URLErrors
-//                if let urlError = error as? URLError {
-//                    return completion(.failure(.urlError(request: urlRequest, error: urlError)))
-//                }
-//                // Any other error
-//                return completion(.failure(.other(request: urlRequest, message: error!.localizedDescription)))
-//            }
-//
-//            // Check for an HTTPURLResponse
-//            guard let response = response,
-//                let httpResponse = response as? HTTPURLResponse else {
-//                    return completion(.failure(.urlError(request: urlRequest, error: URLError(.unknown))))
-//            }
-//            // Check for http status code errors (4xx-5xx series)
-//            if let httpError = RequestError(httpStatusCode: httpResponse.statusCode, request: urlRequest) {
-//                completion(.failure(httpError))
-//            }
-//            // Success
-//            else {
-//                completion(.success((urlRequest, httpResponse, data)))
-//            }
-//        }
-//        if autoResumeTask {
-//            task.resume()
-//        }
-//        return task
-//    }
+    static var session: URLSession { .shared }
 }
