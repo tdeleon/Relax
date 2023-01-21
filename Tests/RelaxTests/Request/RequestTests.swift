@@ -17,19 +17,50 @@ final class RequestTests: XCTestCase {
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    
+    let sampleURL = URL(string: "https://example.com/")!
 
     func testBasic() throws {
         let method = Request.HTTPMethod.post
-        let url = URL(string: "https://example.com/")!
         
-        let request = Request(method, url: url)
+        let request = Request(method, url: sampleURL)
         XCTAssertEqual(request.httpMethod, method)
-        XCTAssertEqual(request.url, url)
+        XCTAssertEqual(request.url, sampleURL)
         XCTAssertEqual(request.headers, [:])
         XCTAssertEqual(request.queryItems, [])
         XCTAssertEqual(request.pathParameters, [])
         XCTAssertNil(request.body)
         XCTAssertEqual(request.configuration, .default)
     }
+    
+    func testQueryParameters() {
+        let method = Request.HTTPMethod.patch
+        let query = URLQueryItem(name: "first", value: "value")
+        let request = Request(method, url: sampleURL) {
+            QueryItems {
+                query
+            }
+        }
+        XCTAssertEqual(request.queryItems, [query])
+    }
+    
+    func testURL() {
+        let pathComponent = "test"
+        let query = URLQueryItem(name: "first", value: "value")
+        let request = Request(.get, url: sampleURL) {
+            PathComponents {
+                pathComponent
+            }
+            QueryItems {
+                query
+            }
+        }
+        
+        var expectedComponents = URLComponents(url: sampleURL.appendingPathComponent(pathComponent), resolvingAgainstBaseURL: true)
+        expectedComponents?.queryItems = [query]
+        
+        XCTAssertEqual(request.url, expectedComponents?.url)
+    }
 
+    
 }

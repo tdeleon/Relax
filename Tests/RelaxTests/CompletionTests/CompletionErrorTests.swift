@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/21/20.
 //
 
-#if !os(watchOS)
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -59,4 +58,3 @@ final class CompletionErrorTests: ErrorTest {
         try requestError(expected: otherError)
     }
 }
-#endif

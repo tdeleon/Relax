@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/21/20.
 //
 
-#if !os(watchOS)
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -125,5 +124,3 @@ struct BadURLService: Service {
         }
     }
 }
-
-#endif

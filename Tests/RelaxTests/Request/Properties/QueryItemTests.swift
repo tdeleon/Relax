@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 1/18/23.
 //
 
-#if !os(watchOS)
 import XCTest
 @testable import Relax
 
@@ -103,4 +102,3 @@ final class QueryItemTests: XCTestCase {
         XCTAssertEqual(query.baseValue, [item])
     }
 }
-#endif

@@ -43,7 +43,10 @@ public struct Request {
         var fullURL = _url
         pathParameters.forEach { fullURL.appendPathComponent($0) }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return nil }
-        queryItems.forEach { components.queryItems?.append($0) }
+        if !queryItems.isEmpty {
+            components.queryItems = queryItems
+        }
+            
         return components.url
     }
     

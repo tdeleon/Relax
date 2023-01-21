@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/22/20.
 //
 
-#if !os(watchOS)
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -39,26 +38,5 @@ extension URLProtocolMock {
         case .other(_, let message):
             return mockResponse(error: NSError(domain: "com.relax.test", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
         }
-        
-//        switch requestError {
-//        case .httpBadRequest(_):
-//            return mockResponse(httpStatus: 400)
-//        case .httpNotFound(_):
-//            return mockResponse(httpStatus: 404)
-//        case .other(_, let message):
-//            return mockResponse(error: NSError(domain: "com.relax.test", code: -1, userInfo: [NSLocalizedDescriptionKey: message]))
-//        case .otherHTTPError(_, let status):
-//            return mockResponse(httpStatus: status)
-//        case .httpServerError(_, let status):
-//            return mockResponse(httpStatus: status)
-//        case .httpUnauthorized(_):
-//            return mockResponse(httpStatus: 401)
-//        case .urlError(_, let error):
-//            return mockResponse(error: error)
-//        case .decoding:
-//            let bad = ["": ""]
-//            return mockResponse(data: try! JSONSerialization.data(withJSONObject: bad, options: []))
-//        }
     }
 }
-#endif

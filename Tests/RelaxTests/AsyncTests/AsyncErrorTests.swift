@@ -5,7 +5,7 @@
 //  Created by Thomas De Leon on 11/11/21.
 //
 
-#if !os(watchOS) && swift(>=5.5)
+#if swift(>=5.5)
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking

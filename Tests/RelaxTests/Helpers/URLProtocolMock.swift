@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/22/20.
 //
 
-#if !os(watchOS)
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -62,4 +61,3 @@ extension URLSession {
         return URLSession(configuration: configuration)
     }
 }
-#endif
