@@ -6,7 +6,9 @@
 //
 
 import Foundation
-
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 public struct Request {
     /**
@@ -68,6 +70,12 @@ public struct Request {
         return request
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - httpMethod: <#httpMethod description#>
+    ///   - url: <#url description#>
+    ///   - configuration: <#configuration description#>
+    ///   - properties: <#properties description#>
     public init(
         _ httpMethod: HTTPMethod,
         url: URL,
@@ -77,16 +85,22 @@ public struct Request {
         self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - httpMethod: <#httpMethod description#>
+    ///   - parent: <#parent description#>
+    ///   - configuration: <#configuration description#>
+    ///   - properties: <#properties description#>
     public init(
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
-        configuration: Configuration = .default,
+        configuration: Configuration? = nil,
         @RequestPropertyBuilder properties: () -> [any RequestProperty] = { [any RequestProperty]() }
     ) {
         self.init(
             httpMethod: httpMethod,
             url: parent.baseURL,
-            configuration: configuration,
+            configuration: configuration ?? parent.configuration,
             properties: parent._sharedProperties + properties()
         )
     }
@@ -217,6 +231,13 @@ extension Request {
 
 extension Request {
     @discardableResult
+    /// <#Description#>
+    /// - Parameters:
+    ///   - session: <#session description#>
+    ///   - autoResumeTask: <#autoResumeTask description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    ///   - completion: <#completion description#>
+    /// - Returns: <#description#>
     func send(
         session: URLSession = .shared,
         autoResumeTask: Bool = true,
@@ -261,6 +282,13 @@ extension Request {
         return task
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - decoder: <#decoder description#>
+    ///   - session: <#session description#>
+    ///   - autoResumeTask: <#autoResumeTask description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    ///   - completion: <#completion description#>
     func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
