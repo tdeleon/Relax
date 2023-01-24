@@ -25,7 +25,7 @@ public protocol RequestPropertyProviding {
     ///
     /// Any properties defined on an `APIComponentSubItem` or `Request` will override, or, if the property is an `AppendableRequestProperty`,
     /// append to those defined here.
-    @RequestPropertyBuilder static var sharedProperties: [any RequestProperty] { get }
+    @RequestPropertiesBuilder static var sharedProperties: RequestProperties { get }
 }
 
 public protocol RequestConfigurationProviding {
@@ -40,10 +40,10 @@ extension RequestConfigurationProviding {
 public protocol APIComponent: BaseURLProviding, RequestPropertyProviding, RequestConfigurationProviding {}
 
 extension RequestPropertyProviding {
-    @RequestPropertyBuilder
-    public static var sharedProperties: [any RequestProperty] { EmptyRequestProperty() }
+    @RequestPropertiesBuilder
+    public static var sharedProperties: RequestProperties { RequestProperties.empty }
     
-    internal static var _sharedProperties: [any RequestProperty] { sharedProperties }
+    internal static var _sharedProperties: RequestProperties { sharedProperties }
 }
 
 /// A nested component of an API, which inherits properties and a base URL from it's Parent.
@@ -53,7 +53,7 @@ public protocol APIComponentSubItem<Parent>: APIComponent {
 }
 
 extension APIComponentSubItem {
-    internal static var _sharedProperties: [any RequestProperty] {
+    internal static var _sharedProperties: RequestProperties {
         Parent._sharedProperties + sharedProperties
     }
 }

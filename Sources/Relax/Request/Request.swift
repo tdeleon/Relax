@@ -33,17 +33,47 @@ public struct Request {
     public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
     
     public var httpMethod: HTTPMethod
-    public var headers: [String: String] = [:]
-    public var queryItems: [URLQueryItem] = []
-    public var pathParameters: [String] = []
-    public var body: Data?
+    
+    public var headers: [String: String] {
+        get {
+            _properties.headers.baseValue
+        }
+        set {
+            _properties.headers = .init(value: newValue)
+        }
+    }
+    public var queryItems: [URLQueryItem] {
+        get {
+            _properties.queryItems.baseValue
+        }
+        set {
+            _properties.queryItems = .init(value: newValue)
+        }
+    }
+    public var pathComponents: [String] {
+        get {
+            _properties.pathComponents.baseValue
+        }
+        set {
+            _properties.pathComponents = .init(value: newValue)
+        }
+    }
+    public var body: Data? {
+        get {
+            _properties.body.baseValue
+        }
+        set {
+            _properties.body = .init(value: newValue)
+        }
+    }
     public var configuration: Configuration
     
     internal var _url: URL
+    internal var _properties: RequestProperties
     
     public var url: URL? {
         var fullURL = _url
-        pathParameters.forEach { fullURL.appendPathComponent($0) }
+        pathComponents.forEach { fullURL.appendPathComponent($0) }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return nil }
         if !queryItems.isEmpty {
             components.queryItems = queryItems
@@ -80,7 +110,7 @@ public struct Request {
         _ httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration = .default,
-        @RequestPropertyBuilder properties: () -> [any RequestProperty] = { [any RequestProperty]() }
+        @RequestPropertiesBuilder properties: () -> RequestProperties = { .empty }
     ) {
         self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
     }
@@ -95,7 +125,7 @@ public struct Request {
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
         configuration: Configuration? = nil,
-        @RequestPropertyBuilder properties: () -> [any RequestProperty] = { [any RequestProperty]() }
+        @RequestPropertiesBuilder properties: () -> RequestProperties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
@@ -106,21 +136,21 @@ public struct Request {
     }
     
     public init(_ httpMethod: HTTPMethod, url: URL, configuration: Configuration = .default) {
-        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: [])
+        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: .empty)
     }
     
     internal init(
         httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration,
-        properties: [any RequestProperty]
+        properties: RequestProperties
     ) {
         self._url = url
         
         self.httpMethod = httpMethod
         self.configuration = configuration
         
-        properties.forEach { set($0) }
+        self._properties = properties
     }
 }
 
@@ -129,7 +159,7 @@ extension Request {
     /// <#Description#>
     /// - Parameter property: <#property description#>
     mutating func set(_ property: some RequestProperty) {
-        property.append(to: &self[keyPath: property.requestKeyPath])
+        _properties = _properties + .from(property)
     }
     
     /// <#Description#>
@@ -144,7 +174,7 @@ extension Request {
     /// <#Description#>
     /// - Parameter property: <#property description#>
     mutating func append(_ property: some RequestProperty) {
-        property.append(to: &self[keyPath: property.requestKeyPath])
+        _properties = _properties + .from(property)
     }
     
     /// <#Description#>
@@ -351,8 +381,20 @@ public enum RequestBuilder<Parent: APIComponent> {
             httpMethod: httpMethod,
             url: Parent.baseURL,
             configuration: Parent.configuration,
-            properties: components
+            properties: components.reduce(RequestProperties.empty, { $0 + RequestProperties.from($1) })
         )
+    }
+    
+    public static func buildOptional(_ component: Request?) -> Request {
+        component ?? Request(.get, parent: Parent.self) { .empty }
+    }
+    
+    public static func buildEither(first component: Request) -> Request {
+        component
+    }
+    
+    public static func buildEither(second component: Request) -> Request {
+        component
     }
     
     @available(*, unavailable, message: "First statement of Request.NestedBuilder must be the HTTPMethod type")

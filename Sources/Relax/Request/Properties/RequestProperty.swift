@@ -7,73 +7,108 @@
 
 import Foundation
 
-public protocol RequestProperty<PropertyType, SettableType>: Hashable {
+public protocol RequestProperty<PropertyType>: Hashable {
     associatedtype PropertyType
-    associatedtype SettableType
-
     var baseValue: PropertyType { get }
-    init(value: SettableType)
-    var requestKeyPath: WritableKeyPath<Request, PropertyType> { get }
-    func append(to base: inout PropertyType)
+    init(value: PropertyType)
+    func append(to property: Self) -> Self
 }
 
 extension RequestProperty {
-    public func set(on base: inout PropertyType) {
-        base = baseValue
+    public static func +(lhs: Self, rhs: Self) -> Self {
+        lhs.append(to: rhs)
+    }
+    static public func +=( left: inout Self, right: Self) {
+        left = left + right
     }
 }
 
-extension RequestProperty where PropertyType: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(baseValue)
+public struct RequestProperties: Hashable {
+    var headers: Headers = Headers(value: [:])
+    var queryItems: QueryItems = QueryItems(value: [])
+    var pathComponents: PathComponents = PathComponents(value: [])
+    var body: Body = Body(value: nil)
+    
+    public static func + (lhs: RequestProperties, rhs: RequestProperties) -> RequestProperties {
+        var new = rhs
+        new.headers = lhs.headers.append(to: new.headers)
+        new.queryItems = lhs.queryItems.append(to: new.queryItems)
+        new.pathComponents = lhs.pathComponents.append(to: new.pathComponents)
+        new.body = lhs.body.append(to: new.body)
+        return new
     }
+    
+    public static let empty: RequestProperties = .init()
+    
+    static func from(_ requestProperty: some RequestProperty) -> RequestProperties {
+        switch requestProperty {
+        case let headers as Headers:
+            return .init(headers: headers)
+        case let queryItems as QueryItems:
+            return .init(queryItems: queryItems)
+        case let pathComponents as PathComponents:
+            return .init(pathComponents: pathComponents)
+        case let body as Body:
+            return .init(body: body)
+        default:
+            return .init()
+        }
+    }
+    
 }
 
 //MARK: Result Builder
 @resultBuilder
-public enum RequestPropertyBuilder {
-    public static func buildBlock() -> [any RequestProperty] {
-        []
+public enum RequestPropertiesBuilder {
+    public static func buildBlock() -> RequestProperties {
+        .empty
     }
     
-    public static func buildBlock(_ components: [any RequestProperty]...) -> [any RequestProperty] {
-        components.flatMap { $0 }
+    public static func buildPartialBlock(first: RequestProperties) -> RequestProperties {
+        first
     }
     
-    public static func buildArray(_ components: [any RequestProperty]) -> [any RequestProperty] {
-        components
+    public static func buildPartialBlock(accumulated: RequestProperties, next: RequestProperties) -> RequestProperties {
+        next + accumulated
     }
     
-    public static func buildLimitedAvailability(_ component: [any RequestProperty]) -> [any RequestProperty] {
+    public static func buildOptional(_ component: RequestProperties?) -> RequestProperties {
+        component ?? .empty
+    }
+    
+    public static func buildEither(first component: RequestProperties) -> RequestProperties {
         component
     }
     
-    public static func buildOptional(_ component: [any RequestProperty]?) -> [any RequestProperty] {
-        component ?? []
-    }
-    
-    public static func buildEither(first component: [any RequestProperty]) -> [any RequestProperty] {
+    public static func buildEither(second component: RequestProperties) -> RequestProperties {
         component
     }
     
-    public static func buildEither(second component: [any RequestProperty]) -> [any RequestProperty] {
+    public static func buildArray(_ components: [RequestProperties]) -> RequestProperties {
+        components.reduce(.empty, +)
+    }
+    
+    public static func buildLimitedAvailability(_ component: RequestProperties) -> RequestProperties {
         component
     }
     
-    public static func buildArray(_ components: [[any RequestProperty]]) -> [any RequestProperty] {
-        components.flatMap { $0 }
+    public static func buildExpression(_ expression: RequestProperties) -> RequestProperties {
+        expression
     }
     
-    public static func buildExpression(_ expression: any RequestProperty) -> [any RequestProperty] {
-        [expression]
+    public static func buildExpression(_ expression: Headers) -> RequestProperties {
+        RequestProperties(headers: expression)
     }
-}
-
-//MARK: - Empty Request Property
-public struct EmptyRequestProperty: RequestProperty {
-    public let baseValue = [""]
-    public init(value: [String] = []) {}
-    public let requestKeyPath = \Request.pathParameters
-    public func append(to base: inout [String]) {}
-    public func set(on base: inout [String]) {}
+    
+    public static func buildExpression(_ expression: QueryItems) -> RequestProperties {
+        RequestProperties(queryItems: expression)
+    }
+    
+    public static func buildExpression(_ expression: PathComponents) -> RequestProperties {
+        RequestProperties(pathComponents: expression)
+    }
+    
+    public static func buildExpression(_ expression: Body) -> RequestProperties {
+        RequestProperties(body: expression)
+    }
 }

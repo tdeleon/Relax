@@ -26,10 +26,9 @@ final class HeaderTests: XCTestCase {
 
     func testAppend() {
         let original = ["first": "value1", "second": "value2"]
-        var headers = original
-        let new = Headers(value: ["second": "value3"])
-        new.append(to: &headers)
-        XCTAssertEqual(headers, original.mergingCommaSeparatedValues(new.baseValue))
+        let new = ["second": "value3"]
+
+        XCTAssertEqual(Headers(value: original) + Headers(value: new), Headers(value: original.mergingCommaSeparatedValues(new)))
     }
     
     func testBuildEmpty() {

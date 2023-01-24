@@ -9,7 +9,6 @@ import Foundation
 
 public struct PathComponents: RequestProperty {
     public var baseValue: [String]
-    public let requestKeyPath = \Request.pathParameters
     
     public init(value: [String]) {
         self.baseValue = value
@@ -17,6 +16,10 @@ public struct PathComponents: RequestProperty {
     
     public init(@Builder _ components: () -> PathComponents) {
         self.init(value: components().baseValue)
+    }
+    
+    public func append(to property: PathComponents) -> PathComponents {
+        .init(value: baseValue + property.baseValue)
     }
     
     public func append(to property: inout [String]) {

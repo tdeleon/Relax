@@ -24,11 +24,12 @@ final class RequestTests: XCTestCase {
         let method = Request.HTTPMethod.post
         
         let request = Request(method, url: sampleURL)
+        XCTAssertEqual(request._properties, .empty)
         XCTAssertEqual(request.httpMethod, method)
         XCTAssertEqual(request.url, sampleURL)
         XCTAssertEqual(request.headers, [:])
         XCTAssertEqual(request.queryItems, [])
-        XCTAssertEqual(request.pathParameters, [])
+        XCTAssertEqual(request.pathComponents, [])
         XCTAssertNil(request.body)
         XCTAssertEqual(request.configuration, .default)
     }

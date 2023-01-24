@@ -95,7 +95,6 @@ extension Header {
 
 public struct Headers: RequestProperty {
     public var baseValue: [String: String]
-    public let requestKeyPath = \Request.headers
     
     public init(value: [String: String]) {
         self.baseValue = value
@@ -115,8 +114,8 @@ public struct Headers: RequestProperty {
         )
     }
     
-    public func append(to property: inout [String : String]) {
-        property = property.mergingCommaSeparatedValues(baseValue)
+    public func append(to property: Headers) -> Headers {
+        Headers(value: baseValue.mergingCommaSeparatedValues(property.baseValue))
     }
 
     @resultBuilder

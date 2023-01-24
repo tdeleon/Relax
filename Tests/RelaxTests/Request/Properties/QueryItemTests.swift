@@ -25,17 +25,16 @@ final class QueryItemTests: XCTestCase {
         let queryItems = QueryItems(value: items)
         XCTAssertEqual(queryItems.baseValue, items)
         
-        let queryItems2 = QueryItems(items: [query, query2])
+        let queryItems2 = QueryItems(value: [query.urlQueryItem, query2.urlQueryItem])
         XCTAssertEqual(queryItems2.baseValue, [query.urlQueryItem, query2.urlQueryItem])
         
     }
     
     func testAppend() throws {
         let query = QueryItems(value: [item1])
-        
-        var queryItems = [URLQueryItem]()
-        query.append(to: &queryItems)
-        XCTAssertEqual(queryItems, [item1])
+        let other = QueryItems(value: [item2])
+
+        XCTAssertEqual((query + other), QueryItems(value: [item1, item2]))
     }
     
     func testName() throws {

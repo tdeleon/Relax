@@ -48,22 +48,17 @@ extension QueryItem {
 
 public struct QueryItems: RequestProperty {
     public var baseValue: [URLQueryItem]
-    public let requestKeyPath = \Request.queryItems
     
     public init(value: [URLQueryItem]) {
         self.baseValue = value
-    }
-    
-    public init(items: [QueryItem]) {
-        self.init(value: items.map(\.urlQueryItem))
     }
     
     public init(@Builder _ items: () -> QueryItems) {
         self.init(value: items().baseValue)
     }
     
-    public func append(to property: inout [URLQueryItem]) {
-        property.append(contentsOf: baseValue)
+    public func append(to property: QueryItems) -> QueryItems {
+        QueryItems(value: baseValue + property.baseValue)
     }
 }
 
@@ -108,7 +103,7 @@ extension QueryItems {
         }
         
         public static func buildFinalResult(_ component: [QueryItem]) -> QueryItems {
-            QueryItems(items: component)
+            QueryItems(value: component.map(\.urlQueryItem))
         }
     }
 }
