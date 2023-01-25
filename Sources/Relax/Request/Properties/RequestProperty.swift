@@ -18,7 +18,8 @@ extension RequestProperty {
     public static func +(lhs: Self, rhs: Self) -> Self {
         lhs.append(to: rhs)
     }
-    static public func +=(left: inout Self, right: Self) {
+    
+    public static func +=(left: inout Self, right: Self) {
         left = left + right
     }
 }
