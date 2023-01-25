@@ -34,7 +34,7 @@ final class CompletionRequestTests: XCTestCase {
                 httpVersion: nil,
                 headerFields: nil
             )!
-            return (response, nil, nil,0)
+            return (response, nil, nil)
         }
         
         request.send(session: session) { result in
