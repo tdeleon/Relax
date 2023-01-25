@@ -8,7 +8,7 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        os: [macos-latest,macos-12, macos-11, ubuntu-latest]
+        os: [macos-latest,macos-12, macos-11, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
