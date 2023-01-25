@@ -12,19 +12,19 @@ import FoundationNetworking
 @testable import Relax
 
 extension URLProtocolMock {
-    static func mockResponse(data: Data?=nil, response: HTTPURLResponse, error: Error?=nil, delay: TimeInterval=0) -> MockHandler {
+    static func mockResponse(data: Data?=nil, response: HTTPURLResponse, error: Error?=nil) -> MockHandler {
         return  { request in
-            return (response, data, error, delay)
+            return (response, data, error)
         }
     }
     
-    static func mockResponse(data: Data?=nil, httpStatus: Int=200, error: Error?=nil, delay: TimeInterval=0) -> MockHandler {
+    static func mockResponse(data: Data?=nil, httpStatus: Int=200, error: Error?=nil) -> MockHandler {
         let response = HTTPURLResponse(url: URL(string: "http://example.com/")!, statusCode: httpStatus, httpVersion: nil, headerFields: nil)!
-        return mockResponse(data: data, response: response, error: error, delay: delay)
+        return mockResponse(data: data, response: response, error: error)
     }
     
-    static func mockResponse<Model: Encodable>(model: Model, httpStatus: Int=200, delay: TimeInterval=0) -> MockHandler {
-        mockResponse(data: try? JSONEncoder().encode(model), httpStatus: httpStatus, error: nil, delay: delay)
+    static func mockResponse<Model: Encodable>(model: Model, httpStatus: Int=200) -> MockHandler {
+        mockResponse(data: try? JSONEncoder().encode(model), httpStatus: httpStatus, error: nil)
     }
     
     static func mockError(requestError: RequestError) -> MockHandler {
