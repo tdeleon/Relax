@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Header {
+public struct Header: CustomStringConvertible {
     public var name: String
     public var value: String
         
@@ -18,6 +18,10 @@ public struct Header {
     
     internal init(_ name: Header.Name, _ value: String) {
         self.init(name.rawValue, value)
+    }
+    
+    public var description: String {
+        "\(name):\(value)"
     }
 }
 
@@ -50,7 +54,7 @@ extension Header {
             self.init(rawValue: rawValue)
         }
         
-        public static let basic = AuthorizationType("basic")
+        public static let basic = AuthorizationType("Basic")
         public static let bearer = AuthorizationType("Bearer")
         public static let digest = AuthorizationType("Digest")
     }
@@ -78,6 +82,7 @@ extension Header {
     }
     
     public static func accept(_ value: String) -> Header { Header(.accept, value) }
+    public static func accept(_ contentType: ContentType) -> Header { Header(.accept, contentType.rawValue) }
     public static func acceptLanguage(_ value: String) -> Header { Header(.acceptLanguage, value) }
     public static func authorization(_ value: String) -> Header { Header(.authorization, value) }
     public static func authorization(_ type: AuthorizationType, value: String) -> Header {
