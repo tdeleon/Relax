@@ -106,7 +106,7 @@ extension QueryItems {
             .init(value: [expression.urlQueryItem])
         }
         
-        public static func buildLimitedAvailability(_ component: [QueryItem]) -> [QueryItem] {
+        public static func buildLimitedAvailability(_ component: QueryItems) -> QueryItems {
             component
         }
     }

@@ -79,5 +79,14 @@ final class PathComponentsTests: XCTestCase {
         }
         XCTAssertEqual(components.baseValue, [component1, component2, component2, component1, component2])
     }
+    
+    func testBuildLimitedAvailability() {
+        let components = PathComponents {
+            if #available(*) {
+                component1
+            }
+        }
+        XCTAssertEqual(components, PathComponents(value: [component1]))
+    }
 
 }

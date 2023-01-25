@@ -13,6 +13,13 @@ final class RequestPropertiesTests: XCTestCase {
     let queryItems = QueryItems(value: [.init(name: "name", value: "value")])
     let pathComponents = PathComponents(value: ["path"])
     let body = Body(value: "Test".data(using: .utf8))
+    
+    func testPropertyAdd() {
+        let otherPath = PathComponents(value: ["second"])
+        var updated = pathComponents
+        updated += otherPath
+        XCTAssertEqual(updated, pathComponents + otherPath)
+    }
 
     func testAddOperator() {
         let first = RequestProperties(headers: .init(value: ["first": "value"]))
@@ -22,6 +29,10 @@ final class RequestPropertiesTests: XCTestCase {
         
         XCTAssertEqual(combined.headers, first.headers)
         XCTAssertEqual(combined.queryItems, second.queryItems)
+        
+        var updated = first
+        updated += second
+        XCTAssertEqual(updated, first + second)
     }
     
     func testAdding() {

@@ -44,6 +44,12 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(body1 + bodyNil, Body(value: stringData1!))
         XCTAssertEqual(bodyNil + body2, Body(value: stringData2!))
         XCTAssertEqual(bodyNil + bodyNil, Body(value: nil))
+        
+        let bodyAppended = Body {
+            Body(value: stringData1)
+            Body(value: stringData2)
+        }
+        XCTAssertEqual(bodyAppended.baseValue, stringData1! + stringData2!)
     }
     
     func testBuildEmpty() {
@@ -103,6 +109,16 @@ final class BodyTests: XCTestCase {
         @Body.Builder
         var body: Body {
             model
+        }
+        XCTAssertEqual(body, Body(model))
+    }
+    
+    func testBuildLimitedAvailability() {
+        @Body.Builder
+        var body: Body {
+            if #available(*) {
+                model
+            }
         }
         XCTAssertEqual(body, Body(model))
     }

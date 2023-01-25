@@ -80,4 +80,14 @@ final class RequestPropertiesBuilderTests: XCTestCase {
         }
         XCTAssertEqual(properties, expectedProperties)
     }
+    
+    func testBuildLimitedAvailability() {
+        @RequestProperties.Builder
+        var properties: RequestProperties {
+            if #available(*) {
+                expectedProperties
+            }
+        }
+        XCTAssertEqual(properties, expectedProperties)
+    }
 }

@@ -103,4 +103,13 @@ final class QueryItemTests: XCTestCase {
         }
         XCTAssertEqual(query.baseValue, [item])
     }
+    
+    func testBuildLimitedAvailability() {
+        let items = QueryItems {
+            if #available(*) {
+                item1
+            }
+        }
+        XCTAssertEqual(items, QueryItems(value: [item1]))
+    }
 }

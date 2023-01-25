@@ -121,4 +121,14 @@ final class HeaderTests: XCTestCase {
         }
         XCTAssertEqual(headers, Headers(value: [key1: value1, key2: value2]))
     }
+    
+    func testBuildLimitedAvailability() {
+        let header = Header(.cacheControl, "abc")
+        let headers = Headers {
+            if #available(*) {
+                header
+            }
+        }
+        XCTAssertEqual(headers, Headers(headers: [header]))
+    }
 }
