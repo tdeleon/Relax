@@ -12,8 +12,18 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - if: runner.os == 'Windows'
+      name: Setup Swift
+      uses: compnerd/gha-setup-swift@main
+      with:
+        branch: swift-5.7-release
+        tag: 5.7-RELEASE
+        
+    - name: Checkout
+      uses: actions/checkout@v3
+      
     - name: Build
       run: swift build -v
+      
     - name: Test
       run: swift test -v
