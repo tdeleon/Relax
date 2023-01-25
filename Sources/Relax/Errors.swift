@@ -15,15 +15,8 @@ import FoundationNetworking
 ///
 /// This encapsulates errors while making a request (i.e. network connection issues), and does not include HTTP status  errors.
 public enum RequestError: Error, Hashable {
-    public static func == (lhs: RequestError, rhs: RequestError) -> Bool {
-        switch (lhs, rhs) {
-        case (.decoding(let lhsRequest, let lhsError), .decoding(let rhsRequest, let rhsError)):
-            return lhsRequest.url == rhsRequest.url && lhsError.localizedDescription == rhsError.localizedDescription
-        case (.decoding, _), (_, .decoding):
-            return false
-        default:
-            return lhs.hashValue == rhs.hashValue
-        }
+    public static func ==(lhs: RequestError, rhs: RequestError) -> Bool {
+        lhs.hashValue == rhs.hashValue
     }
     
     public func hash(into hasher: inout Hasher) {
@@ -57,8 +50,8 @@ public enum RequestError: Error, Hashable {
 ///
 /// Any HTTP status code which is considered an error- i.e. 3xx-5xx range
 public struct HTTPError: Error, Hashable {
-    public static func == (lhs: HTTPError, rhs: HTTPError) -> Bool {
-        lhs.statusCode == rhs.statusCode
+    public static func ==(lhs: HTTPError, rhs: HTTPError) -> Bool {
+        lhs.hashValue == rhs.hashValue
     }
     
     public func hash(into hasher: inout Hasher) {

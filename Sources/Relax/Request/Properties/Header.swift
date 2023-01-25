@@ -160,6 +160,10 @@ public struct Headers: RequestProperty {
             .init(value: expression)
         }
         
+        public static func buildExpression(_ expression: (String, String)) -> Headers {
+            .init(value: [expression.0: expression.1])
+        }
+        
         public static func buildLimitedAvailability(_ component: Headers) -> Headers {
             component
         }
@@ -168,6 +172,6 @@ public struct Headers: RequestProperty {
 
 extension Dictionary where Key == String, Value == String {
     internal func mergingCommaSeparatedValues(_ other: [String: String]) -> [String: String] {
-        self.merging(other, uniquingKeysWith: {"\($0), \($1)"})
+        self.merging(other, uniquingKeysWith: {"\($0),\($1)"})
     }
 }

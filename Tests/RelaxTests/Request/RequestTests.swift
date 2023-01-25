@@ -11,6 +11,17 @@ import XCTest
 final class RequestTests: XCTestCase {
     
     let sampleURL = URL(string: "https://example.com/")!
+    
+    let configurationNoExpensive = Request.Configuration(allowsExpensiveNetworkAccess: false)
+    
+    func testInit() {
+        let method = Request.HTTPMethod.post
+        let request1 = Request(.post, url: sampleURL, configuration: configurationNoExpensive)
+        XCTAssertEqual(request1.httpMethod, method)
+        XCTAssertEqual(request1._properties, .empty)
+        XCTAssertEqual(request1.configuration, configurationNoExpensive)
+        
+    }
 
     func testBasic() throws {
         let method = Request.HTTPMethod.post

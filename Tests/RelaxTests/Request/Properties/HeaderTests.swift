@@ -42,7 +42,7 @@ final class HeaderTests: XCTestCase {
             headers1
         }
         XCTAssertEqual(headers.baseValue, [header1.name: header1.value,
-                                           header2.name: "\(header2.value), \(header3.value)",
+                                           header2.name: "\(header2.value),\(header3.value)",
                                            header4.name: header4.value])
         
     }
@@ -91,7 +91,7 @@ final class HeaderTests: XCTestCase {
             }
         }
         XCTAssertEqual(headers.baseValue, [header1.name: header1.value,
-                                           header2.name: "\(header2.value), \(header3.value)"])
+                                           header2.name: "\(header2.value),\(header3.value)"])
     }
     
     func testBuildDictionary() {
@@ -107,5 +107,18 @@ final class HeaderTests: XCTestCase {
         let expected = header1.mergingCommaSeparatedValues(header2)
             .mergingCommaSeparatedValues(header3)
         XCTAssertEqual(headers.baseValue, expected)
+    }
+    
+    func testBuildTuple() {
+        let key1 = "key1"
+        let value1 = "value1"
+        let key2 = "key2"
+        let value2 = "value2"
+        
+        let headers = Headers {
+            (key1, value1)
+            [key2: value2]
+        }
+        XCTAssertEqual(headers, Headers(value: [key1: value1, key2: value2]))
     }
 }

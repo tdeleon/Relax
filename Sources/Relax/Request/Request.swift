@@ -10,7 +10,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public struct Request {
+public struct Request: Hashable {
     /**
      Completion handler based response for an HTTP request
     
