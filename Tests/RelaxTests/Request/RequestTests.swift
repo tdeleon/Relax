@@ -9,14 +9,6 @@ import XCTest
 @testable import Relax
 
 final class RequestTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
     
     let sampleURL = URL(string: "https://example.com/")!
 
@@ -62,6 +54,29 @@ final class RequestTests: XCTestCase {
         
         XCTAssertEqual(request.url, expectedComponents?.url)
     }
-
+    
+    func testBuilder() {
+        let properties = RequestProperties(
+            headers: .init(value: ["first": "second"]),
+            queryItems: .init(value: [.init(name: "name", value: "value")]),
+            pathComponents: .init(value: ["path"]),
+            body: .init(value: "test".data(using: .utf8))
+        )
+        
+        let method = Request.HTTPMethod.get
+        
+        @RequestBuilder<ExampleService>
+        var request: Request {
+            method
+            properties.headers
+            properties.queryItems
+            properties.pathComponents
+            properties.body
+        }
+        
+        XCTAssertEqual(request.configuration, ExampleService.configuration)
+        XCTAssertEqual(request.httpMethod, method)
+        XCTAssertEqual(request._properties, properties)
+    }
     
 }

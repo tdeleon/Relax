@@ -1,5 +1,5 @@
 //
-//  RequestConfiguration.swift
+//  Request+Configuration.swift
 //  
 //
 //  Created by Thomas De Leon on 10/22/22.

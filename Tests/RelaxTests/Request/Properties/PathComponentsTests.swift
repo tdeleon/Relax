@@ -13,16 +13,19 @@ final class PathComponentsTests: XCTestCase {
     let component1 = "first"
     let component2 = "second"
     let componentEmpty = ""
+    
+    func testAddOperator() {
+        let path1 = PathComponents(value: [component1])
+        let path2 = PathComponents(value: [component2])
+        
+        XCTAssertEqual((path1 + path2).baseValue, (path1.baseValue + path2.baseValue))
+    }
 
     func testAppend() {
-        let components = PathComponents {
-            component2
-        }
+        let components1 = PathComponents { component1 }
+        let components2 = PathComponents { component2 }
         
-        var final = [component1]
-        components.append(to: &final)
-        
-        XCTAssertEqual(final, [component1, component2])
+        XCTAssertEqual(components1 + components2, PathComponents(value: [component1, component2]))
     }
     
     func testBuildEmpty() {
@@ -66,12 +69,15 @@ final class PathComponentsTests: XCTestCase {
     }
 
     func testBuilder() {
+        let path = PathComponents(value: [component2])
         let components = PathComponents {
             component1
             component2
             componentEmpty
+            path
+            [component1, component2]
         }
-        XCTAssertEqual(components.baseValue, [component1, component2])
+        XCTAssertEqual(components.baseValue, [component1, component2, component2, component1, component2])
     }
 
 }

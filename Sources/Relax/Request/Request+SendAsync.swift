@@ -1,5 +1,5 @@
 //
-//  Request+Async.swift
+//  Request+SendAsync.swift
 //  
 //
 //  Created by Thomas De Leon on 7/25/22.
@@ -12,7 +12,6 @@ import FoundationNetworking
 
 
 extension Request {
-    
     /**
      Response for an async HTTP request
      
@@ -25,6 +24,11 @@ extension Request {
     public typealias AsyncModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
     
     @discardableResult
+    /// <#Description#>
+    /// - Parameters:
+    ///   - session: <#session description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    /// - Returns: <#description#>
     public func send(
         session: URLSession = .shared,
         parseHTTPStatusErrors: Bool = false
@@ -53,6 +57,12 @@ extension Request {
         }
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - decoder: <#decoder description#>
+    ///   - session: <#session description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    /// - Returns: <#description#>
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,

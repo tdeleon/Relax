@@ -120,44 +120,48 @@ public struct Headers: RequestProperty {
 
     @resultBuilder
     public enum Builder {
-        public static func buildBlock() -> [Header] {
-            []
+        public static func buildBlock() -> Headers {
+            .init(value: [:])
         }
         
-        public static func buildBlock(_ components: [Header]...) -> [Header] {
-            components.flatMap { $0 }
+        public static func buildPartialBlock(first: Headers) -> Headers {
+            first
         }
         
-        public static func buildOptional(_ component: [Header]?) -> [Header] {
-            component ?? []
+        public static func buildPartialBlock(accumulated: Headers, next: Headers) -> Headers {
+            accumulated + next
         }
         
-        public static func buildEither(first component: [Header]) -> [Header] {
+        public static func buildOptional(_ component: Headers?) -> Headers {
+            component ?? .init(value: [:])
+        }
+        
+        public static func buildEither(first component: Headers) -> Headers {
             component
         }
         
-        public static func buildEither(second component: [Header]) -> [Header] {
+        public static func buildEither(second component: Headers) -> Headers {
             component
         }
         
-        public static func buildArray(_ components: [[Header]]) -> [Header] {
-            components.flatMap { $0 }
+        public static func buildArray(_ components: [Headers]) -> Headers {
+            components.reduce(.init(value: [:]), +)
         }
         
-        public static func buildExpression(_ expression: Header) -> [Header] {
-            [expression]
+        public static func buildExpression(_ expression: Headers) -> Headers {
+            expression
         }
         
-        public static func buildExpression(_ expression: [String: String]) -> [Header] {
-            expression.map { Header($0.key, $0.value) }
+        public static func buildExpression(_ expression: Header) -> Headers {
+            .init(headers: [expression])
         }
         
-        public static func buildLimitedAvailability(_ component: [Header]) -> [Header] {
+        public static func buildExpression(_ expression: [String: String]) -> Headers {
+            .init(value: expression)
+        }
+        
+        public static func buildLimitedAvailability(_ component: Headers) -> Headers {
             component
-        }
-        
-        public static func buildFinalResult(_ component: [Header]) -> Headers {
-            Headers(headers: component)
         }
     }
 }

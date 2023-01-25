@@ -9,14 +9,6 @@ import XCTest
 @testable import Relax
 
 final class HeaderTests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
     
     func testInitName() {
         let name = Header.Name("name")
@@ -40,14 +32,18 @@ final class HeaderTests: XCTestCase {
         let header1 = Header("first", "value1")
         let header2 = Header("second", "value2")
         let header3 = Header("second", "value3")
+        let header4 = Header("fourth", "value4")
+        let headers1 = Headers(headers: [header4])
         
         let headers = Headers {
             header1
             header2
             header3
+            headers1
         }
         XCTAssertEqual(headers.baseValue, [header1.name: header1.value,
-                                           header2.name: "\(header2.value), \(header3.value)"])
+                                           header2.name: "\(header2.value), \(header3.value)",
+                                           header4.name: header4.value])
         
     }
     

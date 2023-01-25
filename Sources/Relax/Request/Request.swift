@@ -110,7 +110,7 @@ public struct Request {
         _ httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration = .default,
-        @RequestPropertiesBuilder properties: () -> RequestProperties = { .empty }
+        @RequestProperties.Builder properties: () -> RequestProperties = { .empty }
     ) {
         self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
     }
@@ -125,7 +125,7 @@ public struct Request {
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
         configuration: Configuration? = nil,
-        @RequestPropertiesBuilder properties: () -> RequestProperties = { .empty }
+        @RequestProperties.Builder properties: () -> RequestProperties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
@@ -154,197 +154,7 @@ public struct Request {
     }
 }
 
-extension Request {
-    
-    /// <#Description#>
-    /// - Parameter property: <#property description#>
-    mutating func set(_ property: some RequestProperty) {
-        _properties = _properties + .from(property)
-    }
-    
-    /// <#Description#>
-    /// - Parameter property: <#property description#>
-    /// - Returns: <#description#>
-    public func setting(_ property: some RequestProperty) -> Request {
-        var request = self
-        request.set(property)
-        return request
-    }
-    
-    /// <#Description#>
-    /// - Parameter property: <#property description#>
-    mutating func append(_ property: some RequestProperty) {
-        _properties = _properties + .from(property)
-    }
-    
-    /// <#Description#>
-    /// - Parameter property: <#property description#>
-    /// - Returns: <#description#>
-    public func appending(_ property: some RequestProperty) -> Request {
-        var request = self
-        request.append(property)
-        return request
-    }
-    
-    /// <#Description#>
-    /// - Parameter configuration: <#configuration description#>
-    /// - Returns: <#description#>
-    public func updating(_ configuration: Configuration) -> Request {
-        var request = self
-        request.configuration = configuration
-        return request
-    }
-}
 
-extension Request {
-    /// <#Description#>
-    /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
-    /// - Returns: <#description#>
-    public func settingHeader(name: String, value: String?) -> Request {
-        var request = self
-        request.headers[name] = value
-        return request
-    }
-    
-    /// <#Description#>
-    /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
-    /// - Returns: <#description#>
-    public func settingHeader(name: Header.Name, value: String?) -> Request {
-        settingHeader(name: name.rawValue, value: value)
-    }
-    
-    /// <#Description#>
-    /// - Parameter header: <#header description#>
-    /// - Returns: <#description#>
-    public func appending(header: Header) -> Request {
-        appendingHeader(name: header.name, value: header.value)
-    }
-    
-    /// <#Description#>
-    /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
-    /// - Returns: <#description#>
-    public func appendingHeader(name: String, value: String) -> Request {
-        var request = self
-        request.headers = request.headers.mergingCommaSeparatedValues([name: value])
-        return request
-    }
-    
-    /// <#Description#>
-    /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
-    /// - Returns: <#description#>
-    public func appendingHeader(name: Header.Name, value: String) -> Request {
-        appendingHeader(name: name.rawValue, value: value)
-    }
-    
-    /// <#Description#>
-    /// - Parameter name: <#name description#>
-    /// - Returns: <#description#>
-    public func removingHeader(_ name: String) -> Request {
-        settingHeader(name: name, value: nil)
-    }
-    
-    /// <#Description#>
-    /// - Parameter name: <#name description#>
-    /// - Returns: <#description#>
-    public func removingHeader(_ name: Header.Name) -> Request {
-        removingHeader(name.rawValue)
-    }
-}
-
-extension Request {
-    @discardableResult
-    /// <#Description#>
-    /// - Parameters:
-    ///   - session: <#session description#>
-    ///   - autoResumeTask: <#autoResumeTask description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    ///   - completion: <#completion description#>
-    /// - Returns: <#description#>
-    func send(
-        session: URLSession = .shared,
-        autoResumeTask: Bool = true,
-        parseHTTPStatusErrors: Bool = false,
-        completion: @escaping Request.Completion
-    ) -> URLSessionDataTask? {
-        guard let urlRequest else { return nil }
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-            guard error == nil,
-                  let data = data else {
-                // Check for URLErrors
-                if let urlError = error as? URLError {
-                    return completion(.failure(.urlError(request: self, error: urlError)))
-                }
-                // Any other error
-                return completion(.failure(.other(request: self, message: error!.localizedDescription)))
-            }
-            
-            // Check for an HTTPURLResponse
-            guard let response = response,
-                  let httpResponse = response as? HTTPURLResponse else {
-                return completion(.failure(.urlError(request: self, error: URLError(.unknown))))
-            }
-            
-            let requestResponse = (self, httpResponse, data)
-            
-            // Check for http status code errors (4xx-5xx series)
-            if parseHTTPStatusErrors,
-               let httpError = HTTPError(response: requestResponse) {
-                completion(.failure(RequestError.httpStatus(request: self, error: httpError)))
-            }
-            // Success
-            else {
-                completion(.success(requestResponse))
-            }
-        }
-        
-        if autoResumeTask {
-            task.resume()
-        }
-        
-        return task
-    }
-    
-    /// <#Description#>
-    /// - Parameters:
-    ///   - decoder: <#decoder description#>
-    ///   - session: <#session description#>
-    ///   - autoResumeTask: <#autoResumeTask description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    ///   - completion: <#completion description#>
-    func send<ResponseModel: Decodable>(
-        decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
-        autoResumeTask: Bool = true,
-        parseHTTPStatusErrors: Bool = false,
-        completion: @escaping Request.ModelCompletion<ResponseModel>
-    ) {
-        send(
-            session: session,
-            autoResumeTask: autoResumeTask,
-            parseHTTPStatusErrors: parseHTTPStatusErrors
-        ) { result in
-            do {
-                let success = try result.get()
-                let decoded = try decoder.decode(ResponseModel.self, from: success.data)
-                completion(.success((self, success.response, decoded)))
-            } catch let error as DecodingError {
-                completion(.failure(.decoding(request: self, error: error)))
-            } catch let error as RequestError {
-                completion(.failure(error))
-            } catch {
-                completion(.failure(.other(request: self, message: error.localizedDescription)))
-            }
-        }
-    }
-}
 
 extension Request {
     /// HTTP Request type
@@ -377,24 +187,9 @@ extension Request {
 /// <#Description#>
 public enum RequestBuilder<Parent: APIComponent> {
     static func buildBlock(_ httpMethod: Request.HTTPMethod, _ components: any RequestProperty...) -> Request {
-        Request(
-            httpMethod: httpMethod,
-            url: Parent.baseURL,
-            configuration: Parent.configuration,
-            properties: components.reduce(RequestProperties.empty, { $0 + RequestProperties.from($1) })
-        )
-    }
-    
-    public static func buildOptional(_ component: Request?) -> Request {
-        component ?? Request(.get, parent: Parent.self) { .empty }
-    }
-    
-    public static func buildEither(first component: Request) -> Request {
-        component
-    }
-    
-    public static func buildEither(second component: Request) -> Request {
-        component
+        Request(httpMethod, parent: Parent.self) {
+            components.reduce(.empty, { $0 + .from($1) })
+        }
     }
     
     @available(*, unavailable, message: "First statement of Request.NestedBuilder must be the HTTPMethod type")

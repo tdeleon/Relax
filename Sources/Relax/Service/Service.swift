@@ -9,9 +9,6 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-#if canImport(Combine)
-import Combine
-#endif
 
 public protocol BaseURLProviding {
     /// The base URL to use for requests.
@@ -25,7 +22,7 @@ public protocol RequestPropertyProviding {
     ///
     /// Any properties defined on an `APIComponentSubItem` or `Request` will override, or, if the property is an `AppendableRequestProperty`,
     /// append to those defined here.
-    @RequestPropertiesBuilder static var sharedProperties: RequestProperties { get }
+    @RequestProperties.Builder static var sharedProperties: RequestProperties { get }
 }
 
 public protocol RequestConfigurationProviding {
@@ -40,7 +37,7 @@ extension RequestConfigurationProviding {
 public protocol APIComponent: BaseURLProviding, RequestPropertyProviding, RequestConfigurationProviding {}
 
 extension RequestPropertyProviding {
-    @RequestPropertiesBuilder
+    @RequestProperties.Builder
     public static var sharedProperties: RequestProperties { RequestProperties.empty }
     
     internal static var _sharedProperties: RequestProperties { sharedProperties }
@@ -77,61 +74,21 @@ extension APIComponentSubItem {
  
 */
 public protocol Service: APIComponent {
-    //MARK: - Properties
-    /// The base URL of the service. This value is shared among all endpoints on the service.
-    static var baseURL: URL { get }
-    
     /// The `URLSession` that requests to this service will use.
     ///
     /// The value of this property will be used for all requests made on this service, unless an override
     /// is provided to a given request.
     static var session: URLSession { get }
-    
-    //MARK: - Handling Responses
-    
-    /**
-     Completion handler based response for an HTTP request
-    
-     - `request`: The request made
-     - `response`: The response received
-     - `data`: The data received, if any
-     */
-    typealias Response = (request: URLRequest, response: HTTPURLResponse, data: Data?)
-    
-    typealias ResponseModel<Model: Decodable> = (request: URLRequest, response: HTTPURLResponse, responseModel: Model)
-    
-    /**
-     Response for an HTTP request using a Combine publisher
-     
-        - `request`: The request made
-        - `response`: The response received
-        - `data`: Data received
-     */
-    typealias PublisherResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
-    
-    typealias PublisherModelResponse<Model: Decodable> = (request: URLRequest, response: HTTPURLResponse, responseModel: Model)
-    
-    /**
-     Response for an async HTTP request
-     
-        - `request`: The request made
-        - `response`: The response received
-        - `data`: Data received
-     */
-    typealias AsyncResponse = (request: URLRequest, response: HTTPURLResponse, data: Data)
-    
-    typealias AsyncModelResponse<Model: Decodable> = (request: URLRequest, response: HTTPURLResponse, responseModel: Model)
-    
-    /**
-     Completion handler for requests made
-     
-     - Parameter result: Result receieved
-     
-     */
-    typealias RequestCompletion = (_ result: Result<Response, RequestError>) -> Void
-    
-    typealias RequestModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
 }
+
+public extension Service {
+    static var baseURL: URL { baseURL }
+    
+    ///  Returns `URLSession.shared`.
+    static var session: URLSession { .shared }
+}
+
+//MARK: - Endpoint
 
 protocol Endpoint: APIComponent, APIComponentSubItem {
     static var path: String { get }
@@ -141,12 +98,4 @@ extension Endpoint {
     public static var baseURL: URL {
         Parent.baseURL.appendingPathComponent(path)
     }
-}
-
-//MARK: - Making Requests
-public extension Service {
-    static var baseURL: URL { baseURL }
-    
-    ///  Returns `URLSession.shared`.
-    static var session: URLSession { .shared }
 }

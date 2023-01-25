@@ -50,10 +50,13 @@ final class QueryItemTests: XCTestCase {
     }
     
     func testBuilder() {
+        let query = QueryItems(value: [item2])
         let items = QueryItems {
             QueryItem(item1)
+            query
+            item3
         }
-        XCTAssertEqual(items.baseValue, [item1])
+        XCTAssertEqual(items.baseValue, [item1, item2, item3])
     }
     
     func testBuildOptional() {

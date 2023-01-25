@@ -66,44 +66,48 @@ public struct QueryItems: RequestProperty {
 extension QueryItems {
     @resultBuilder
     public enum Builder {
-        public static func buildBlock() -> [QueryItem] {
-            []
+        public static func buildBlock() -> QueryItems {
+            .init(value: [])
         }
         
-        public static func buildBlock(_ components: [QueryItem]...) -> [QueryItem] {
-            components.flatMap { $0 }
+        public static func buildPartialBlock(first: QueryItems) -> QueryItems {
+            first
         }
         
-        public static func buildOptional(_ component: [QueryItem]?) -> [QueryItem] {
-            component ?? []
+        public static func buildPartialBlock(accumulated: QueryItems, next: QueryItems) -> QueryItems {
+            accumulated + next
         }
         
-        public static func buildEither(first component: [QueryItem]) -> [QueryItem] {
+        public static func buildOptional(_ component: QueryItems?) -> QueryItems {
+            component ?? .init(value: [])
+        }
+        
+        public static func buildEither(first component: QueryItems) -> QueryItems {
             component
         }
         
-        public static func buildEither(second component: [QueryItem]) -> [QueryItem] {
+        public static func buildEither(second component: QueryItems) -> QueryItems {
             component
         }
         
-        public static func buildArray(_ components: [[QueryItem]]) -> [QueryItem] {
-            components.flatMap { $0 }
+        public static func buildArray(_ components: [QueryItems]) -> QueryItems {
+            components.reduce(.init(value: []), +)
         }
         
-        public static func buildExpression(_ expression: URLQueryItem) -> [QueryItem] {
-            [QueryItem(expression.name, expression.value)]
+        public static func buildExpression(_ expression: QueryItems) -> QueryItems {
+            expression
         }
         
-        public static func buildExpression(_ expression: QueryItem) -> [QueryItem] {
-            [expression]
+        public static func buildExpression(_ expression: URLQueryItem) -> QueryItems {
+            .init(value: [expression])
+        }
+        
+        public static func buildExpression(_ expression: QueryItem) -> QueryItems {
+            .init(value: [expression.urlQueryItem])
         }
         
         public static func buildLimitedAvailability(_ component: [QueryItem]) -> [QueryItem] {
             component
-        }
-        
-        public static func buildFinalResult(_ component: [QueryItem]) -> QueryItems {
-            QueryItems(value: component.map(\.urlQueryItem))
         }
     }
 }

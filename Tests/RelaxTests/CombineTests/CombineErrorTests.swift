@@ -43,7 +43,9 @@ final class CombineErrorTests: ErrorTest {
     }
     
     func testURLError() throws {
+        #if !os(watchOS)
         try requestError(expected: urlError)
+        #endif
     }
     
     func testDecodingError() throws {
@@ -68,7 +70,9 @@ final class CombineErrorTests: ErrorTest {
     }
     
     func testOtherError() throws {
+        #if !os(watchOS)
         try requestError(expected: otherError)
+        #endif
     }
 }
 #endif

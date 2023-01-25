@@ -34,7 +34,9 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testURLError() throws {
+        #if !os(watchOS)
         try requestError(expected: urlError)
+        #endif
     }
     
     func testDecodingError() throws {
@@ -55,6 +57,8 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testOtherError() throws {
+        #if !os(watchOS)
         try requestError(expected: otherError)
+        #endif
     }
 }
