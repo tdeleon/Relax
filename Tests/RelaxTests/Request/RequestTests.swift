@@ -21,6 +21,13 @@ final class RequestTests: XCTestCase {
         XCTAssertEqual(request1._properties, .empty)
         XCTAssertEqual(request1.configuration, configurationNoExpensive)
         
+        let path = "path"
+        let request2 = Request(method, url: sampleURL) {
+            PathComponents { path }
+        }
+        XCTAssertEqual(request2.pathComponents, [path])
+        XCTAssertEqual(request2.httpMethod, method)
+        
     }
 
     func testBasic() throws {
@@ -40,12 +47,54 @@ final class RequestTests: XCTestCase {
     func testQueryParameters() {
         let method = Request.HTTPMethod.patch
         let query = URLQueryItem(name: "first", value: "value")
-        let request = Request(method, url: sampleURL) {
+        var request = Request(method, url: sampleURL) {
             QueryItems {
                 query
             }
         }
         XCTAssertEqual(request.queryItems, [query])
+        let newQuery = URLQueryItem(name: "other", value: "value")
+        request.queryItems = [newQuery]
+        XCTAssertEqual(request.queryItems, [newQuery])
+    }
+    
+    func testPathComponents() {
+        let firstPath = "first"
+        var request = Request(.get, url: sampleURL) {
+            PathComponents {
+                firstPath
+            }
+        }
+        XCTAssertEqual(request.pathComponents, [firstPath])
+        let secondPath = "second"
+        request.pathComponents = [secondPath]
+        XCTAssertEqual(request.pathComponents, [secondPath])
+    }
+    
+    func testHeaders() {
+        let header1 = ["name": "value"]
+        var request = Request(.get, url: sampleURL) {
+            Headers {
+                header1
+            }
+        }
+        XCTAssertEqual(request.headers, header1)
+        let header2 = ["second": "secondvalue"]
+        request.headers = header2
+        XCTAssertEqual(request.headers, header2)
+    }
+    
+    func testBody() throws {
+        let body1 = try XCTUnwrap("First".data(using: .utf8))
+        var request = Request(.get, url: sampleURL) {
+            Body {
+                body1
+            }
+        }
+        XCTAssertEqual(request.body, body1)
+        let body2 = try XCTUnwrap("Second".data(using: .utf8))
+        request.body = body2
+        XCTAssertEqual(request.body, body2)
     }
     
     func testURL() {

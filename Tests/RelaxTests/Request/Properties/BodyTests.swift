@@ -50,10 +50,16 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(Body {}, Body(value: nil))
     }
     
-    func testBuild() {
+    func testBuild() throws {
         let body1 = Body(value: stringData1)
         
-        XCTAssertEqual(Body { body1 }, body1)
+        XCTAssertEqual(Body { body1 }.baseValue, body1.baseValue)
+        
+        let nonOptionalData = try XCTUnwrap(stringData2)
+        let body2 = Body {
+            nonOptionalData
+        }
+        XCTAssertEqual(body2.baseValue, nonOptionalData)
     }
     
     func testBuildOptional() {

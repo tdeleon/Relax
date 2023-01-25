@@ -78,6 +78,10 @@ extension Body {
             .init(value: expression)
         }
         
+        public static func buildExpression(_ expression: Data) -> Body {
+            .init(value: expression)
+        }
+        
         public static func buildExpression<T: Encodable>(_ expression: T) -> Body {
             .init(expression)
         }
