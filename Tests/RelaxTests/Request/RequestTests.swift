@@ -15,14 +15,14 @@ final class RequestTests: XCTestCase {
     
     let sampleURL = URL(string: "https://example.com/")!
     
-    let configurationNoExpensive = Request.Configuration(allowsExpensiveNetworkAccess: false)
+    let configuration = Request.Configuration(timeoutInterval: 1)
     
     func testInit() {
         let method = Request.HTTPMethod.post
-        let request1 = Request(.post, url: sampleURL, configuration: configurationNoExpensive)
+        let request1 = Request(.post, url: sampleURL, configuration: configuration)
         XCTAssertEqual(request1.httpMethod, method)
         XCTAssertEqual(request1._properties, .empty)
-        XCTAssertEqual(request1.configuration, configurationNoExpensive)
+        XCTAssertEqual(request1.configuration, configuration)
         
         let path = "path"
         let request2 = Request(method, url: sampleURL) {

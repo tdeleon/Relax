@@ -43,7 +43,7 @@ final class RequestModifiersTests: XCTestCase {
         let request = Request(.get, url: sampleURL)
         XCTAssertEqual(request.configuration, .default)
         
-        let newConfiguration = Request.Configuration(cachePolicy: .returnCacheDataDontLoad, allowsExpensiveNetworkAccess: false)
+        let newConfiguration = Request.Configuration(cachePolicy: .returnCacheDataDontLoad, timeoutInterval: 1)
         
         XCTAssertEqual(request.setting(newConfiguration).configuration, newConfiguration)
     }
