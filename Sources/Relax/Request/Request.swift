@@ -34,7 +34,7 @@ public struct Request: Hashable {
     
     public var httpMethod: HTTPMethod
     
-    public var headers: [String: String] {
+    public internal(set) var headers: [String: String] {
         get {
             _properties.headers.baseValue
         }
@@ -42,7 +42,8 @@ public struct Request: Hashable {
             _properties.headers = .init(value: newValue)
         }
     }
-    public var queryItems: [URLQueryItem] {
+    
+    public internal(set) var queryItems: [URLQueryItem] {
         get {
             _properties.queryItems.baseValue
         }
@@ -50,7 +51,8 @@ public struct Request: Hashable {
             _properties.queryItems = .init(value: newValue)
         }
     }
-    public var pathComponents: [String] {
+    
+    public internal(set) var pathComponents: [String] {
         get {
             _properties.pathComponents.baseValue
         }
@@ -58,7 +60,8 @@ public struct Request: Hashable {
             _properties.pathComponents = .init(value: newValue)
         }
     }
-    public var body: Data? {
+
+    public internal(set) var body: Data? {
         get {
             _properties.body.baseValue
         }
@@ -73,10 +76,10 @@ public struct Request: Hashable {
     
     public var url: URL? {
         var fullURL = _url
-        pathComponents.forEach { fullURL.appendPathComponent($0) }
+        _properties.pathComponents.baseValue.forEach { fullURL.appendPathComponent($0) }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return nil }
-        if !queryItems.isEmpty {
-            components.queryItems = queryItems
+        if !_properties.queryItems.baseValue.isEmpty {
+            components.queryItems = _properties.queryItems.baseValue
         }
             
         return components.url
@@ -87,8 +90,8 @@ public struct Request: Hashable {
         
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
-        headers.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
-        request.httpBody = body
+        _properties.headers.baseValue.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
+        request.httpBody = _properties.body.baseValue
         
         request.allowsCellularAccess = configuration.allowsCellularAccess
         request.cachePolicy = configuration.cachePolicy
@@ -131,7 +134,7 @@ public struct Request: Hashable {
             httpMethod: httpMethod,
             url: parent.baseURL,
             configuration: configuration ?? parent.configuration,
-            properties: parent._sharedProperties + properties()
+            properties: parent.allProperties + properties()
         )
     }
     

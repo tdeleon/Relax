@@ -1,5 +1,5 @@
 //
-//  Service.swift
+//  BaseProtocols.swift
 //
 //
 //  Created by Thomas De Leon on 5/12/20.
@@ -17,15 +17,28 @@ public protocol BaseURLProviding {
     static var baseURL: URL { get }
 }
 
+//MARK: - RequestProperty Providing
 public protocol RequestPropertyProviding {
     /// Properties to be used by all child Requests.
     ///
     /// Any properties defined on an `APIComponentSubItem` or `Request` will override, or, if the property is an `AppendableRequestProperty`,
     /// append to those defined here.
     @RequestProperties.Builder static var sharedProperties: RequestProperties { get }
+    static var allProperties: RequestProperties { get }
 }
 
+extension RequestPropertyProviding {
+    @RequestProperties.Builder
+    public static var sharedProperties: RequestProperties { RequestProperties.empty }
+    
+    public static var allProperties: RequestProperties {
+        sharedProperties
+    }
+}
+
+//MARK: - Request Configuration Providing
 public protocol RequestConfigurationProviding {
+    /// The configuration to use for any Requests provided by this component or its children
     static var configuration: Request.Configuration { get }
 }
 
@@ -33,15 +46,12 @@ extension RequestConfigurationProviding {
     static var configuration: Request.Configuration { .default }
 }
 
-/// A component of an API
-public protocol APIComponent: BaseURLProviding, RequestPropertyProviding, RequestConfigurationProviding {}
+//MARK: - APIComponent & APIComponentSubItem
 
-extension RequestPropertyProviding {
-    @RequestProperties.Builder
-    public static var sharedProperties: RequestProperties { RequestProperties.empty }
-    
-    internal static var _sharedProperties: RequestProperties { sharedProperties }
-}
+/// A component of an API
+public typealias APIComponent = BaseURLProviding & RequestPropertyProviding & RequestConfigurationProviding
+
+
 
 /// A nested component of an API, which inherits properties and a base URL from it's Parent.
 public protocol APIComponentSubItem<Parent>: APIComponent {
@@ -50,10 +60,12 @@ public protocol APIComponentSubItem<Parent>: APIComponent {
 }
 
 extension APIComponentSubItem {
-    internal static var _sharedProperties: RequestProperties {
-        Parent._sharedProperties + sharedProperties
+    public static var allProperties: RequestProperties {
+        Parent.allProperties + sharedProperties
     }
 }
+
+//MARK: - Service
 
 /**
  A protocol to define a REST API service
@@ -81,16 +93,15 @@ public protocol Service: APIComponent {
     static var session: URLSession { get }
 }
 
-public extension Service {
-    static var baseURL: URL { baseURL }
-    
+extension Service {
     ///  Returns `URLSession.shared`.
-    static var session: URLSession { .shared }
+    public static var session: URLSession { .shared }
 }
 
 //MARK: - Endpoint
 
-protocol Endpoint: APIComponent, APIComponentSubItem {
+protocol Endpoint: APIComponentSubItem {
+    /// The path provided by this endpoint
     static var path: String { get }
 }
 

@@ -21,6 +21,11 @@ extension Request {
     
     public typealias PublisherModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - session: <#session description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    /// - Returns: <#description#>
     public func send(
         session: URLSession = .shared,
         parseHTTPStatusErrors: Bool = false
@@ -41,6 +46,12 @@ extension Request {
         .eraseToAnyPublisher()
     }
     
+    /// <#Description#>
+    /// - Parameters:
+    ///   - decoder: <#decoder description#>
+    ///   - session: <#session description#>
+    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
+    /// - Returns: <#description#>
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,

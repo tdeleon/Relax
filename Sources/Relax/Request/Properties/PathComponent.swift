@@ -1,5 +1,5 @@
 //
-//  PathComponent.swift
+//  PathComponents.swift
 //  
 //
 //  Created by Thomas De Leon on 7/17/22.

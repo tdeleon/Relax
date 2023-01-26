@@ -67,8 +67,26 @@ enum ExampleService: Service {
         static var complex: Request {
             Request.HTTPMethod.get
             PathComponents {
-                "suffix"
+                "suf fix"
             }
+        }
+        
+        enum SubComplex: Endpoint {
+            static let path = "sub"
+            
+            typealias Parent = ComplexRequests
+            
+            static var sharedProperties: RequestProperties {
+                Headers {
+                    Header.cacheControl("no-cache")
+                }
+            }
+            
+            @RequestBuilder<SubComplex>
+            static var sub: Request {
+                Request.HTTPMethod.get
+            }
+            
         }
     }
     

@@ -57,6 +57,9 @@ extension Request {
         settingHeader(name: name.rawValue, value: value)
     }
     
+    /// <#Description#>
+    /// - Parameter header: <#header description#>
+    /// - Returns: <#description#>
     public func settingHeader(_ header: Header) -> Request {
         settingHeader(name: header.name, value: header.value)
     }
