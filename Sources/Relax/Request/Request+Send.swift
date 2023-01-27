@@ -19,13 +19,12 @@ extension Request {
     ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
     ///   - completion: <#completion description#>
     /// - Returns: <#description#>
-    func send(
+    public func send(
         session: URLSession = .shared,
         autoResumeTask: Bool = true,
         parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.Completion
-    ) -> URLSessionDataTask? {
-        guard let urlRequest else { return nil }
+    ) -> URLSessionDataTask {
         let task = session.dataTask(with: urlRequest) { data, response, error in
             guard error == nil,
                   let data = data else {
@@ -70,7 +69,7 @@ extension Request {
     ///   - autoResumeTask: <#autoResumeTask description#>
     ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
     ///   - completion: <#completion description#>
-    func send<ResponseModel: Decodable>(
+    public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
         autoResumeTask: Bool = true,

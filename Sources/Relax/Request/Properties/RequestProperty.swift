@@ -9,8 +9,11 @@ import Foundation
 
 public protocol RequestProperty<PropertyType>: Hashable {
     associatedtype PropertyType
+    /// The base value type of the property
     var baseValue: PropertyType { get }
+    /// Create a new instance of the property
     init(value: PropertyType)
+    /// Append this property to another property of the same type
     func append(to property: Self) -> Self
 }
 

@@ -14,7 +14,7 @@ import FoundationNetworking
 final class HTTPErrorTests: XCTestCase {
     func response(statusCode: Int) -> Request.Response {
         let request = Request(.get, url: URL(string: "https://example.com")!)
-        let urlResponse = HTTPURLResponse(url: request.url!, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
+        let urlResponse = HTTPURLResponse(url: request.url, statusCode: statusCode, httpVersion: nil, headerFields: nil)!
         return (request, urlResponse, Data())
     }
     

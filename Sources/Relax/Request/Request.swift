@@ -11,29 +11,28 @@ import FoundationNetworking
 #endif
 
 public struct Request: Hashable {
-    /**
-     Completion handler based response for an HTTP request
-    
-     - `request`: The request made
-     - `response`: The response received
-     - `data`: The data received, if any
-     */
+
+    /// Response for receiving data from an HTTP request
+    ///
+    /// - Parameters:
+    ///    - request: The request made
+    ///    - response: The response made
+    ///    - data: Data received in the request. If there is no data, this will be an empty Data object
     public typealias Response = (request: Request, response: HTTPURLResponse, data: Data)
     
+    /// Response for decoding Decodable objects from an HTTP request
     public typealias ResponseModel<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
-    
-    /**
-     Completion handler for requests made
-     
-     - Parameter result: Result receieved
-     
-     */
+
+    /// Completion handler response for a request
     public typealias Completion = (_ result: Result<Response, RequestError>) -> Void
     
+    /// Completion handler response for decoding a Decodable object from a request
     public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
     
+    /// The HTTP method of the request
     public var httpMethod: HTTPMethod
     
+    /// The HTTP headers of the request
     public internal(set) var headers: [String: String] {
         get {
             _properties.headers.baseValue
@@ -43,6 +42,7 @@ public struct Request: Hashable {
         }
     }
     
+    /// The query items of the request
     public internal(set) var queryItems: [URLQueryItem] {
         get {
             _properties.queryItems.baseValue
@@ -52,6 +52,13 @@ public struct Request: Hashable {
         }
     }
     
+    /// The path components of the request
+    ///
+    /// Components will be appended to the ``APIComponent/baseURL``, before any query items. Each
+    /// string in the array will be separated with a `/` character when added to the URL.
+    ///
+    /// - Note: Invalid URL characters will automatically be escaped when creating the final URL for the request.
+    /// This property will show components as they were provided, without escaping.
     public internal(set) var pathComponents: [String] {
         get {
             _properties.pathComponents.baseValue
@@ -61,6 +68,7 @@ public struct Request: Hashable {
         }
     }
 
+    /// The request body
     public internal(set) var body: Data? {
         get {
             _properties.body.baseValue
@@ -69,25 +77,29 @@ public struct Request: Hashable {
             _properties.body = .init(value: newValue)
         }
     }
+    
+    /// The configuration of the request
+    ///
+    /// The default value is ``Configuration-swift.struct/default``.
+    ///
+    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``)
+    /// when provided
     public var configuration: Configuration
     
-    internal var _url: URL
-    internal var _properties: RequestProperties
-    
-    public var url: URL? {
+    /// The request URL
+    public var url: URL {
         var fullURL = _url
         _properties.pathComponents.baseValue.forEach { fullURL.appendPathComponent($0) }
-        guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return nil }
+        guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return _url }
         if !_properties.queryItems.baseValue.isEmpty {
             components.queryItems = _properties.queryItems.baseValue
         }
             
-        return components.url
+        return components.url ?? _url
     }
     
-    public var urlRequest: URLRequest? {
-        guard let url = url else { return nil }
-        
+    /// The URLRequest of the request
+    public var urlRequest: URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
         _properties.headers.baseValue.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
@@ -102,6 +114,13 @@ public struct Request: Hashable {
         
         return request
     }
+    
+//MARK: Internal properties
+    
+    internal var _url: URL
+    internal var _properties: RequestProperties
+    
+//MARK: - Initializers
     
     /// <#Description#>
     /// - Parameters:
@@ -138,10 +157,6 @@ public struct Request: Hashable {
         )
     }
     
-    public init(_ httpMethod: HTTPMethod, url: URL, configuration: Configuration = .default) {
-        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: .empty)
-    }
-    
     internal init(
         httpMethod: HTTPMethod,
         url: URL,
@@ -156,8 +171,6 @@ public struct Request: Hashable {
         self._properties = properties
     }
 }
-
-
 
 extension Request {
     /// HTTP Request type
