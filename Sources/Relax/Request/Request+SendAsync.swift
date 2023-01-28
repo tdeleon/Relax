@@ -12,23 +12,30 @@ import FoundationNetworking
 
 
 extension Request {
-    /**
-     Response for an async HTTP request
-     
-        - `request`: The request made
-        - `response`: The response received
-        - `data`: Data received
-     */
-    public typealias AsyncResponse = (request: Request, response: HTTPURLResponse, data: Data)
-    
-    public typealias AsyncModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
-    
-    @discardableResult
-    /// <#Description#>
+    /// Response for an HTTP request sent asynchronously
+    ///
     /// - Parameters:
-    ///   - session: <#session description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    /// - Returns: <#description#>
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - data: Data received. If there is no data in the response, then this will be 0 bytes.
+    public typealias AsyncResponse = (request: Request, urlResponse: HTTPURLResponse, data: Data)
+    
+    /// Response for an HTTP request sent asynchronously, decoding a Decodable instance
+    ///
+    /// - Parameters:
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - responseModel: The model decoded from received data
+    public typealias AsyncModelResponse<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
+    
+    /// Send a request asynchronously
+    ///
+    /// - Parameters:
+    ///   - session: The session to use (default is `URLSession.shared`
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    /// - Returns: A response containing the request sent, url response, and data.
+    /// - Throws: A `RequestError` on error.
+    @discardableResult
     public func send(
         session: URLSession = .shared,
         parseHTTPStatusErrors: Bool = false
@@ -57,12 +64,13 @@ extension Request {
         }
     }
     
-    /// <#Description#>
+    /// Send a request asynchronously, decoding data received to a Decodable instance.
     /// - Parameters:
-    ///   - decoder: <#decoder description#>
-    ///   - session: <#session description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    /// - Returns: <#description#>
+    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
+    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    /// - Returns: The model, decoded from received data.
+    /// - Throws: A `RequestError` on error.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,

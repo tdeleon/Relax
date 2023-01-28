@@ -25,6 +25,9 @@
 - ``setting(_:)-2ftno``
 - ``setting(_:)-s95b``
 - ``adding(_:)``
+
+### Modifying Request Headers
+
 - ``settingHeader(_:)``
 - ``settingHeader(name:value:)-8po2n``
 - ``settingHeader(name:value:)-4f2i6``
@@ -34,17 +37,25 @@
 - ``removingHeader(_:)-qd7o``
 - ``removingHeader(_:)-1cn3v``
 
-### Sending Requests
-
-- ``send(session:autoResumeTask:parseHTTPStatusErrors:completion:)``
-- ``send(decoder:session:autoResumeTask:parseHTTPStatusErrors:completion:)``
-
 ### Sending Requests Asynchronously
 
-- ``send(session:parseHTTPStatusErrors:)-2v56r``
+- ``send(session:parseHTTPStatusErrors:)-51tcd``
 - ``send(decoder:session:parseHTTPStatusErrors:)-2nvfo``
+- ``AsyncResponse``
+- ``AsyncModelResponse``
 
-### Sending Requests With a Publisher
+### Sending Requests with a Publisher
 
-- ``send(session:parseHTTPStatusErrors:)-926tl``
+- ``send(session:parseHTTPStatusErrors:)-2a2id``
 - ``send(decoder:session:parseHTTPStatusErrors:)-4i33g``
+- ``PublisherResponse``
+- ``PublisherModelResponse``
+
+### Sending Requests with a Completion Handler
+
+- ``send(session:autoResumeTask:parseHTTPStatusErrors:completion:)``
+- ``send(decoder:session:parseHTTPStatusErrors:completion:)``
+- ``Response``
+- ``ResponseModel``
+- ``Completion``
+- ``ModelCompletion``

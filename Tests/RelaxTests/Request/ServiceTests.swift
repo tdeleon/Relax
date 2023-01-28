@@ -26,7 +26,7 @@ final class ServiceTests: XCTestCase {
             .appending(complex._properties.pathComponents)
         
         XCTAssertEqual(complex.url, expectedURL)
-        XCTAssertEqual(complex._properties.headers.baseValue, Complex.sharedProperties.headers.baseValue)
+        XCTAssertEqual(complex._properties.headers.value, Complex.sharedProperties.headers.value)
     }
     
     func testDoubleNested() {
@@ -56,7 +56,7 @@ final class ServiceTests: XCTestCase {
 extension URL {
     func appending(_ components: PathComponents) -> URL {
         var modified = self
-        components.baseValue.forEach { modified.appendPathComponent($0) }
+        components.value.forEach { modified.appendPathComponent($0) }
         return modified
     }
 }

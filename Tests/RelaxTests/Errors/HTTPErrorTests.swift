@@ -18,9 +18,9 @@ final class HTTPErrorTests: XCTestCase {
         return (request, urlResponse, Data())
     }
     
-    func checkHTTPError(statusCode: Int, type: HTTPError.HTTPErrorType?) throws {
+    func checkHTTPError(statusCode: Int, type: RequestError.HTTPError.ErrorType?) throws {
         let response = response(statusCode: statusCode)
-        let error = HTTPError(response: response)
+        let error = RequestError.HTTPError(response: response)
         guard let type else {
             XCTAssertNil(error)
             return
@@ -30,7 +30,7 @@ final class HTTPErrorTests: XCTestCase {
         XCTAssertEqual(unwrappedError.type, type)
         XCTAssertEqual(unwrappedError.statusCode, statusCode)
         XCTAssertEqual(unwrappedError.localizedDescription, HTTPURLResponse.localizedString(forStatusCode: statusCode))
-        XCTAssertEqual(unwrappedError.response.response, response.response)
+        XCTAssertEqual(unwrappedError.response.urlResponse, response.urlResponse)
         XCTAssertEqual(unwrappedError.response.request, response.request)
         XCTAssertEqual(unwrappedError.response.data, response.data)
         XCTAssertEqual(unwrappedError, unwrappedError)

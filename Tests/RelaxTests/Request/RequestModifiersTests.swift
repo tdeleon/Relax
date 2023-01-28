@@ -24,7 +24,7 @@ final class RequestModifiersTests: XCTestCase {
         
         let newComponents = PathComponents { "other" }
         
-        XCTAssertEqual(request.setting(newComponents).pathComponents, newComponents.baseValue)
+        XCTAssertEqual(request.setting(newComponents).pathComponents, newComponents.value)
     }
     
     func testAdding() {

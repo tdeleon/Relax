@@ -7,12 +7,12 @@
 
 import Foundation
 
-/// Describes the body of a request
+/// A structure which describes the body of a request
 public struct Body: RequestProperty {
-    public var baseValue: Data?
+    public var value: Data?
             
     public init(value: Data?) {
-        self.baseValue = value
+        self.value = value
     }
     
     /// Creates a body from an Encodable value encoded as JSON.
@@ -23,7 +23,7 @@ public struct Body: RequestProperty {
         self.init(value: try? encoder.encode(value))
     }
     
-    /// Creates a body from any number of `Data` or `Encodable` instances.
+    /// Creates a body from any number of `Data` or `Encodable` instances using a ``Builder``.
     ///
     /// This initializer combines all `Data` or `Encodable` instances specified in `content`. Each instance will be appended to each other (from top to
     /// bottom), producing a single `Data` object. `Encodable` instances will be encoded into `Data`. ``Body`` instances can also be nested inside
@@ -33,15 +33,15 @@ public struct Body: RequestProperty {
     /// ``Body/init(_:encoder:)`` initializer instead.
     /// - Parameter content: A body builder that returns the content of the body.
     public init(@Builder _ content: () -> Body) {
-        self.init(value: content().baseValue)
+        self.init(value: content().value)
     }
     
     public func append(to property: Body) -> Body {
-        if let baseValue, let other = property.baseValue {
-            return Body(value: baseValue + other)
-        } else if let baseValue {
-            return Body(value: baseValue)
-        } else if let other = property.baseValue {
+        if let value, let other = property.value {
+            return Body(value: value + other)
+        } else if let value {
+            return Body(value: value)
+        } else if let other = property.value {
             return Body(value: other)
         } else {
             return Body(value: nil)

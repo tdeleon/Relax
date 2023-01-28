@@ -18,7 +18,7 @@ final class PathComponentsTests: XCTestCase {
         let path1 = PathComponents(value: [component1])
         let path2 = PathComponents(value: [component2])
         
-        XCTAssertEqual((path1 + path2).baseValue, (path1.baseValue + path2.baseValue))
+        XCTAssertEqual((path1 + path2).value, (path1.value + path2.value))
     }
 
     func testAppend() {
@@ -30,7 +30,7 @@ final class PathComponentsTests: XCTestCase {
     
     func testBuildEmpty() {
         let empty = PathComponents {}
-        XCTAssertTrue(empty.baseValue.isEmpty)
+        XCTAssertTrue(empty.value.isEmpty)
     }
     
     func testBuildOptional() {
@@ -40,8 +40,8 @@ final class PathComponentsTests: XCTestCase {
                 component1
             }
         }
-        XCTAssertEqual(components(true).baseValue, [component1])
-        XCTAssertTrue(components(false).baseValue.isEmpty)
+        XCTAssertEqual(components(true).value, [component1])
+        XCTAssertTrue(components(false).value.isEmpty)
     }
     
     func testBuildEither() {
@@ -54,8 +54,8 @@ final class PathComponentsTests: XCTestCase {
                 component2
             }
         }
-        XCTAssertEqual(components(true).baseValue, [component1])
-        XCTAssertEqual(components(false).baseValue, [component2])
+        XCTAssertEqual(components(true).value, [component1])
+        XCTAssertEqual(components(false).value, [component2])
     }
     
     func testBuildArray() {
@@ -65,7 +65,7 @@ final class PathComponentsTests: XCTestCase {
                 item
             }
         }
-        XCTAssertEqual(components.baseValue, items)
+        XCTAssertEqual(components.value, items)
     }
 
     func testBuilder() {
@@ -77,7 +77,7 @@ final class PathComponentsTests: XCTestCase {
             path
             [component1, component2]
         }
-        XCTAssertEqual(components.baseValue, [component1, component2, component2, component1, component2])
+        XCTAssertEqual(components.value, [component1, component2, component2, component1, component2])
     }
     
     func testBuildLimitedAvailability() {

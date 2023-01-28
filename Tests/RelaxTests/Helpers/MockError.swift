@@ -11,8 +11,8 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
-extension HTTPError {
-    static func mock(_ statusCode: Int, request: Request) -> HTTPError? {
+extension RequestError.HTTPError {
+    static func mock(_ statusCode: Int, request: Request) -> RequestError.HTTPError? {
         let urlResponse = HTTPURLResponse(
             url: URL(string: "https://example.com/")!,
             statusCode: statusCode,

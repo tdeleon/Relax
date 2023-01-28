@@ -11,14 +11,38 @@ import FoundationNetworking
 #endif
 
 extension Request {
-    @discardableResult
-    /// <#Description#>
+    /// Response for receiving data from an HTTP request
+    ///
     /// - Parameters:
-    ///   - session: <#session description#>
-    ///   - autoResumeTask: <#autoResumeTask description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    ///   - completion: <#completion description#>
-    /// - Returns: <#description#>
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - data: Data received in the request. If there is no data in the response, then this will be 0 bytes.
+    public typealias Response = (request: Request, urlResponse: HTTPURLResponse, data: Data)
+    
+    /// Response for decoding Decodable objects from an HTTP request
+    ///
+    /// - Parameters:
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - responseModel: The model decoded from data received
+    public typealias ResponseModel<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
+
+    /// Completion handler response for a request
+    public typealias Completion = (_ result: Result<Response, RequestError>) -> Void
+    
+    /// Completion handler response for decoding a Decodable object from a request
+    public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
+    
+    /// Send a request with a completion handler, returning a data task
+    /// - Parameters:
+    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - autoResumeTask: Whether to call `resume()` on the created task. The default is `true`.
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    ///   - completion: A completion handler with the response from the server.
+    /// - Returns: The task used to make the request
+    /// - Warning: If `autoResumeTask` is `true`, do **not** call `resume()` on the returned task, as the it will already be called. Calling it yourself
+    /// will result in the request being sent again.
+    @discardableResult
     public func send(
         session: URLSession = .shared,
         autoResumeTask: Bool = true,
@@ -46,7 +70,7 @@ extension Request {
             
             // Check for http status code errors (4xx-5xx series)
             if parseHTTPStatusErrors,
-               let httpError = HTTPError(response: requestResponse) {
+               let httpError = RequestError.HTTPError(response: requestResponse) {
                 completion(.failure(RequestError.httpStatus(request: self, error: httpError)))
             }
             // Success
@@ -62,29 +86,27 @@ extension Request {
         return task
     }
     
-    /// <#Description#>
+    /// Send a request with a completion handler, decoding the received data to a Decodable instance
     /// - Parameters:
-    ///   - decoder: <#decoder description#>
-    ///   - session: <#session description#>
-    ///   - autoResumeTask: <#autoResumeTask description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    ///   - completion: <#completion description#>
+    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
+    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
-        autoResumeTask: Bool = true,
         parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
         send(
             session: session,
-            autoResumeTask: autoResumeTask,
+            autoResumeTask: true,
             parseHTTPStatusErrors: parseHTTPStatusErrors
         ) { result in
             do {
                 let success = try result.get()
                 let decoded = try decoder.decode(ResponseModel.self, from: success.data)
-                completion(.success((self, success.response, decoded)))
+                completion(.success((self, success.urlResponse, decoded)))
             } catch let error as DecodingError {
                 completion(.failure(.decoding(request: self, error: error)))
             } catch let error as RequestError {

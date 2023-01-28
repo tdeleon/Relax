@@ -22,7 +22,7 @@ final class RequestErrorTests: XCTestCase {
         let decodingError = DecodingError.dataCorrupted(.init(codingPath: [Coding.test], debugDescription: "test"))
         XCTAssertEqual(RequestError.decoding(request: request, error: decodingError).localizedDescription, decodingError.localizedDescription)
         
-        let httpError = try XCTUnwrap(HTTPError.mock(404, request: request))
+        let httpError = try XCTUnwrap(RequestError.HTTPError.mock(404, request: request))
         XCTAssertEqual(RequestError.httpStatus(request: request, error: httpError).localizedDescription, httpError.localizedDescription)
         
         let message = "This is a test"

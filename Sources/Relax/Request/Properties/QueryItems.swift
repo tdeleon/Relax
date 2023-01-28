@@ -7,30 +7,46 @@
 
 import Foundation
 
+/// A structure which represents a single query item
 public struct QueryItem {
+    /// The query item name
     public var name: String
+    /// The query item value
     public var value: String?
-    
+    /// The `URLQueryItem` representation
     public var urlQueryItem: URLQueryItem {
         .init(name: name, value: value)
     }
-        
+    
+    /// Creates a query item from a `URLQueryItem`
+    /// - Parameter item: A `URLQueryItem` to create the query item from
     public init(_ item: URLQueryItem) {
         self.name = item.name
         self.value = item.value
     }
     
-    public init(_ name: String, _ value: String?) {
+    /// Creates a query item from a tuple
+    /// - Parameters:
+    ///   - name: The query item name
+    ///   - value: The query item value, from any string representable value
+    public init(_ name: String, _ value: CustomStringConvertible?) {
         self.name = name
-        self.value = value
+        self.value = value?.description
     }
     
-    public init(_ name: QueryItem.Name, _ value: String?) {
+    /// Creates a query item from a tuple with a `QueryItem.Name`
+    /// - Parameters:
+    ///   - name: The `QueryItem.Name`
+    ///   - value: The item value, from any string representable value
+    public init(_ name: QueryItem.Name, _ value: CustomStringConvertible?) {
         self.init(name.rawValue, value)
     }
 }
 
 extension QueryItem {
+    /// A structure representing a query item name.
+    ///
+    /// You can use this to define commonly used query item names in your requests by adding static constant properties in an extension.
     public struct Name: RawRepresentable {
         public var rawValue: String
         
@@ -46,19 +62,26 @@ extension QueryItem {
 
 //MARK: - QueryItems
 
+/// A structure which describes the query items in a request.
 public struct QueryItems: RequestProperty {
-    public var baseValue: [URLQueryItem]
+    public var value: [URLQueryItem]
     
     public init(value: [URLQueryItem]) {
-        self.baseValue = value
+        self.value = value
     }
     
+    /// Creates query items from any number of ``QueryItem``, `URLQueryItem`, or `(String, CustomStringConvertible?)` instances using a
+    /// ``Builder``.
+    ///
+    /// All items provided in `items` will be combined into an array of `URLQueryItem`s as the value for ``QueryItems``.
+    ///
+    /// - Parameter items: A ``Builder`` that returns the query items to be used.
     public init(@Builder _ items: () -> QueryItems) {
-        self.init(value: items().baseValue)
+        self.init(value: items().value)
     }
     
     public func append(to property: QueryItems) -> QueryItems {
-        QueryItems(value: baseValue + property.baseValue)
+        QueryItems(value: value + property.value)
     }
 }
 
@@ -100,6 +123,10 @@ extension QueryItems {
         
         public static func buildExpression(_ expression: URLQueryItem) -> QueryItems {
             .init(value: [expression])
+        }
+        
+        public static func buildExpression(_ expression: (String, CustomStringConvertible?)) -> QueryItems {
+            .init(value: [.init(name: expression.0, value: expression.1?.description)])
         }
         
         public static func buildExpression(_ expression: QueryItem) -> QueryItems {

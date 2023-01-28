@@ -10,7 +10,7 @@ import Foundation
 public protocol RequestProperty<PropertyType>: Hashable {
     associatedtype PropertyType
     /// The base value type of the property
-    var baseValue: PropertyType { get }
+    var value: PropertyType { get }
     /// Create a new instance of the property
     init(value: PropertyType)
     /// Append this property to another property of the same type
@@ -46,6 +46,7 @@ public struct RequestProperties: Hashable {
         left = left + right
     }
     
+    /// Provides an instance with no property values set
     public static let empty: RequestProperties = .init()
     
     internal static func from(_ requestProperty: some RequestProperty) -> RequestProperties {

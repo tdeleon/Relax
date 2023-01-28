@@ -10,22 +10,27 @@ import Foundation
 import Combine
 
 extension Request {
-    /**
-     Response for an HTTP request using a Combine publisher
-     
-        - `request`: The request made
-        - `response`: The response received
-        - `data`: Data received
-     */
-    public typealias PublisherResponse = (request: Request, response: HTTPURLResponse, data: Data)
-    
-    public typealias PublisherModelResponse<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
-    
-    /// <#Description#>
+    /// Response for an HTTP request using a Combine publisher
+    ///
     /// - Parameters:
-    ///   - session: <#session description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    /// - Returns: <#description#>
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - data: Data received. If there is no data in the response, then this will be 0 bytes.
+    public typealias PublisherResponse = (request: Request, urlResponse: HTTPURLResponse, data: Data)
+    
+    /// Response for an HTTP request using a Combine publisher, decoding a Decodable instance
+    ///
+    /// - Parameters:
+    ///    - request: The request made
+    ///    - urlResponse: The response received
+    ///    - responseModel: The model decoded from received data
+    public typealias PublisherModelResponse<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
+    
+    /// Send a request, returning a Combine publisher
+    /// - Parameters:
+    ///   - session: The session to use
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
         session: URLSession = .shared,
         parseHTTPStatusErrors: Bool = false
@@ -46,12 +51,12 @@ extension Request {
         .eraseToAnyPublisher()
     }
     
-    /// <#Description#>
+    /// Send a request and decode received data to a Decodable instance, returning a Combine publisher
     /// - Parameters:
-    ///   - decoder: <#decoder description#>
-    ///   - session: <#session description#>
-    ///   - parseHTTPStatusErrors: <#parseHTTPStatusErrors description#>
-    /// - Returns: <#description#>
+    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
+    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,

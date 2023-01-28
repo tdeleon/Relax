@@ -8,21 +8,32 @@
 
 ## Topics
 
-### Essentials
-
-- ``Request``
-- ``Service``
-- ``Endpoint``
-
 ### Defining An API Structure
 
+- <doc:DefiningAPIStructure>
 - ``Service``
 - ``Endpoint``
+- ``APIComponent``
+- ``APIComponentSubItem``
 
 ### Defining Requests
 
+- <doc:CreatingRequests>
+- ``Request``
 - ``Body``
 - ``Headers``
 - ``QueryItems``
 - ``PathComponents``
 - ``Request/Configuration-swift.struct``
+- ``RequestBuilder``
+- ``RequestProperties``
+- ``RequestProperty``
+
+### Sending Requests
+
+- <doc:SendingRequests>
+
+### Handling Errors
+
+- ``Relax/RequestError``
+- ``Relax/RequestError/HTTPError``

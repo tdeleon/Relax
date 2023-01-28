@@ -28,7 +28,7 @@ final class RequestTests: XCTestCase {
         let request2 = Request(method, url: sampleURL) {
             PathComponents { path }
         }
-        XCTAssertEqual(request2._properties.pathComponents.baseValue, [path])
+        XCTAssertEqual(request2._properties.pathComponents.value, [path])
         XCTAssertEqual(request2.httpMethod, method)
         
     }
@@ -40,7 +40,7 @@ final class RequestTests: XCTestCase {
         XCTAssertEqual(request._properties, .empty)
         XCTAssertEqual(request.httpMethod, method)
         XCTAssertEqual(request.url, sampleURL)
-        XCTAssertEqual(request._properties.headers.baseValue, [:])
+        XCTAssertEqual(request._properties.headers.value, [:])
         XCTAssertEqual(request.queryItems, [])
         XCTAssertEqual(request.pathComponents, [])
         XCTAssertNil(request.body)

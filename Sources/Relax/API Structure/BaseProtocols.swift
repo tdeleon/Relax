@@ -59,7 +59,7 @@ extension APIComponentSubItem {
 
 //MARK: - Endpoint
 
-/// An type that defines a particular resource on a ``Service``, where requests can be made.
+/// A type that defines a particular resource on a ``Service``, where requests can be made.
 ///
 /// 
 public protocol Endpoint: APIComponentSubItem {

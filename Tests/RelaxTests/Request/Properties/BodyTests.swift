@@ -22,14 +22,14 @@ final class BodyTests: XCTestCase {
     func testInit() {
         let body = Body(value: stringData1)
         
-        XCTAssertEqual(body.baseValue, stringData1)
+        XCTAssertEqual(body.value, stringData1)
     }
     
     func testInitModel() throws {
         let encoder = JSONEncoder()
         
         let body = Body(model, encoder: encoder)
-        let bodyData = try XCTUnwrap(body.baseValue)
+        let bodyData = try XCTUnwrap(body.value)
         XCTAssertEqual(try? JSONDecoder().decode(Test.self, from: bodyData), model)
     }
     
@@ -49,7 +49,7 @@ final class BodyTests: XCTestCase {
             Body(value: stringData1)
             Body(value: stringData2)
         }
-        XCTAssertEqual(bodyAppended.baseValue, stringData1! + stringData2!)
+        XCTAssertEqual(bodyAppended.value, stringData1! + stringData2!)
     }
     
     func testBuildEmpty() {
@@ -59,13 +59,13 @@ final class BodyTests: XCTestCase {
     func testBuild() throws {
         let body1 = Body(value: stringData1)
         
-        XCTAssertEqual(Body { body1 }.baseValue, body1.baseValue)
+        XCTAssertEqual(Body { body1 }.value, body1.value)
         
         let nonOptionalData = try XCTUnwrap(stringData2)
         let body2 = Body {
             nonOptionalData
         }
-        XCTAssertEqual(body2.baseValue, nonOptionalData)
+        XCTAssertEqual(body2.value, nonOptionalData)
     }
     
     func testBuildOptional() {

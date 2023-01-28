@@ -25,7 +25,7 @@ final class HeaderTests: XCTestCase {
     
     func testBuildEmpty() {
         let headers = Headers {}
-        XCTAssertTrue(headers.baseValue.isEmpty)
+        XCTAssertTrue(headers.value.isEmpty)
     }
     
     func testBuild() {
@@ -41,7 +41,7 @@ final class HeaderTests: XCTestCase {
             header3
             headers1
         }
-        XCTAssertEqual(headers.baseValue, [header1.name: header1.value,
+        XCTAssertEqual(headers.value, [header1.name: header1.value,
                                            header2.name: "\(header2.value),\(header3.value)",
                                            header4.name: header4.value])
         
@@ -56,9 +56,9 @@ final class HeaderTests: XCTestCase {
                 header
             }
         }
-        XCTAssertEqual(headers(true).baseValue, header.dictionary)
+        XCTAssertEqual(headers(true).value, header.dictionary)
         
-        XCTAssertTrue(headers(false).baseValue.isEmpty)
+        XCTAssertTrue(headers(false).value.isEmpty)
     }
     
     func testBuildEither() {
@@ -75,8 +75,8 @@ final class HeaderTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(headers(true).baseValue, header1.dictionary)
-        XCTAssertEqual(headers(false).baseValue, header2.dictionary)
+        XCTAssertEqual(headers(true).value, header1.dictionary)
+        XCTAssertEqual(headers(false).value, header2.dictionary)
     }
     
     func testBuildArray() {
@@ -90,7 +90,7 @@ final class HeaderTests: XCTestCase {
                 item
             }
         }
-        XCTAssertEqual(headers.baseValue, [header1.name: header1.value,
+        XCTAssertEqual(headers.value, [header1.name: header1.value,
                                            header2.name: "\(header2.value),\(header3.value)"])
     }
     
@@ -106,7 +106,7 @@ final class HeaderTests: XCTestCase {
         }
         let expected = header1.mergingCommaSeparatedValues(header2)
             .mergingCommaSeparatedValues(header3)
-        XCTAssertEqual(headers.baseValue, expected)
+        XCTAssertEqual(headers.value, expected)
     }
     
     func testBuildTuple() {

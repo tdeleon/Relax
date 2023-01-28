@@ -23,10 +23,15 @@ final class QueryItemTests: XCTestCase {
         
         let items = [item1, item2, item3]
         let queryItems = QueryItems(value: items)
-        XCTAssertEqual(queryItems.baseValue, items)
+        XCTAssertEqual(queryItems.value, items)
         
         let queryItems2 = QueryItems(value: [query.urlQueryItem, query2.urlQueryItem])
-        XCTAssertEqual(queryItems2.baseValue, [query.urlQueryItem, query2.urlQueryItem])
+        XCTAssertEqual(queryItems2.value, [query.urlQueryItem, query2.urlQueryItem])
+        
+        let testName = "test"
+        let stringConvertible = QueryItem(testName, true)
+        XCTAssertEqual(stringConvertible.name, testName)
+        XCTAssertEqual(stringConvertible.value, "true")
         
     }
     
@@ -46,7 +51,7 @@ final class QueryItemTests: XCTestCase {
     
     func testBuildEmpty() {
         let query = QueryItems {}
-        XCTAssertTrue(query.baseValue.isEmpty)
+        XCTAssertTrue(query.value.isEmpty)
     }
     
     func testBuilder() {
@@ -56,7 +61,7 @@ final class QueryItemTests: XCTestCase {
             query
             item3
         }
-        XCTAssertEqual(items.baseValue, [item1, item2, item3])
+        XCTAssertEqual(items.value, [item1, item2, item3])
     }
     
     func testBuildOptional() {
@@ -67,8 +72,8 @@ final class QueryItemTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(query(true).baseValue, [item1])
-        XCTAssertTrue(query(false).baseValue.isEmpty)
+        XCTAssertEqual(query(true).value, [item1])
+        XCTAssertTrue(query(false).value.isEmpty)
     }
     
     func testBuildEither() {
@@ -82,8 +87,8 @@ final class QueryItemTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(query(true).baseValue, [item1])
-        XCTAssertEqual(query(false).baseValue, [item2])
+        XCTAssertEqual(query(true).value, [item1])
+        XCTAssertEqual(query(false).value, [item2])
     }
     
     func testBuildArray() {
@@ -93,7 +98,7 @@ final class QueryItemTests: XCTestCase {
                 QueryItem(queryItem)
             }
         }
-        XCTAssertEqual(query.baseValue, items)
+        XCTAssertEqual(query.value, items)
     }
     
     func testBuildURLQueryItem() {
@@ -101,7 +106,16 @@ final class QueryItemTests: XCTestCase {
         let query = QueryItems {
             item
         }
-        XCTAssertEqual(query.baseValue, [item])
+        XCTAssertEqual(query.value, [item])
+    }
+    
+    func testBuildTuple() {
+        let name = "test"
+        let value = false
+        let query = QueryItems {
+            (name, value)
+        }
+        XCTAssertEqual(query.value, [.init(name: name, value: value.description)])
     }
     
     func testBuildLimitedAvailability() {

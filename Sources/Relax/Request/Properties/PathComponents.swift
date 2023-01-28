@@ -8,18 +8,20 @@
 import Foundation
 
 public struct PathComponents: RequestProperty {
-    public var baseValue: [String]
+    public var value: [String]
     
     public init(value: [String]) {
-        self.baseValue = value.filter { !$0.isEmpty }
+        self.value = value.filter { !$0.isEmpty }
     }
     
+    /// Creates path components from any number of strings or string arrays using a ``Builder``.
+    /// - Parameter components: A ``Builder`` that returns the path components to be used.
     public init(@Builder _ components: () -> PathComponents) {
-        self.init(value: components().baseValue)
+        self.init(value: components().value)
     }
     
     public func append(to property: PathComponents) -> PathComponents {
-        .init(value: baseValue + property.baseValue)
+        .init(value: value + property.value)
     }
 }
 

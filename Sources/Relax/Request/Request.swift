@@ -10,32 +10,14 @@ import Foundation
 import FoundationNetworking
 #endif
 
-public struct Request: Hashable {
-
-    /// Response for receiving data from an HTTP request
-    ///
-    /// - Parameters:
-    ///    - request: The request made
-    ///    - response: The response made
-    ///    - data: Data received in the request. If there is no data, this will be an empty Data object
-    public typealias Response = (request: Request, response: HTTPURLResponse, data: Data)
-    
-    /// Response for decoding Decodable objects from an HTTP request
-    public typealias ResponseModel<Model: Decodable> = (request: Request, response: HTTPURLResponse, responseModel: Model)
-
-    /// Completion handler response for a request
-    public typealias Completion = (_ result: Result<Response, RequestError>) -> Void
-    
-    /// Completion handler response for decoding a Decodable object from a request
-    public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
-    
+public struct Request: Hashable {    
     /// The HTTP method of the request
     public var httpMethod: HTTPMethod
     
     /// The HTTP headers of the request
     public internal(set) var headers: [String: String] {
         get {
-            _properties.headers.baseValue
+            _properties.headers.value
         }
         set {
             _properties.headers = .init(value: newValue)
@@ -45,7 +27,7 @@ public struct Request: Hashable {
     /// The query items of the request
     public internal(set) var queryItems: [URLQueryItem] {
         get {
-            _properties.queryItems.baseValue
+            _properties.queryItems.value
         }
         set {
             _properties.queryItems = .init(value: newValue)
@@ -61,7 +43,7 @@ public struct Request: Hashable {
     /// This property will show components as they were provided, without escaping.
     public internal(set) var pathComponents: [String] {
         get {
-            _properties.pathComponents.baseValue
+            _properties.pathComponents.value
         }
         set {
             _properties.pathComponents = .init(value: newValue)
@@ -71,7 +53,7 @@ public struct Request: Hashable {
     /// The request body
     public internal(set) var body: Data? {
         get {
-            _properties.body.baseValue
+            _properties.body.value
         }
         set {
             _properties.body = .init(value: newValue)
@@ -89,10 +71,10 @@ public struct Request: Hashable {
     /// The request URL
     public var url: URL {
         var fullURL = _url
-        _properties.pathComponents.baseValue.forEach { fullURL.appendPathComponent($0) }
+        _properties.pathComponents.value.forEach { fullURL.appendPathComponent($0) }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return _url }
-        if !_properties.queryItems.baseValue.isEmpty {
-            components.queryItems = _properties.queryItems.baseValue
+        if !_properties.queryItems.value.isEmpty {
+            components.queryItems = _properties.queryItems.value
         }
             
         return components.url ?? _url
@@ -102,8 +84,8 @@ public struct Request: Hashable {
     public var urlRequest: URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = httpMethod.rawValue
-        _properties.headers.baseValue.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
-        request.httpBody = _properties.body.baseValue
+        _properties.headers.value.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
+        request.httpBody = _properties.body.value
         
         request.allowsCellularAccess = configuration.allowsCellularAccess
         request.cachePolicy = configuration.cachePolicy
@@ -122,12 +104,13 @@ public struct Request: Hashable {
     
 //MARK: - Initializers
     
-    /// <#Description#>
+    /// Creates a request using a provided HTTP method, base URL, and properties using a ``RequestProperties/Builder``.
     /// - Parameters:
-    ///   - httpMethod: <#httpMethod description#>
-    ///   - url: <#url description#>
-    ///   - configuration: <#configuration description#>
-    ///   - properties: <#properties description#>
+    ///   - httpMethod: The HTTP method to use
+    ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
+    ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
+    ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
+    ///   ``RequestProperties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         url: URL,
@@ -137,12 +120,15 @@ public struct Request: Hashable {
         self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
     }
     
-    /// <#Description#>
+    /// Creates a request using a provided HTTP method, using the base URL, configuration, and any shared properties provided by a parent ``APIComponent``
+    /// and its' parents. Properties are provided with a ``RequestProperties/Builder``.
     /// - Parameters:
-    ///   - httpMethod: <#httpMethod description#>
-    ///   - parent: <#parent description#>
-    ///   - configuration: <#configuration description#>
-    ///   - properties: <#properties description#>
+    ///   - httpMethod: The HTTP method for the request
+    ///   - parent: A parent which provides the base URL, ``Configuration-swift.struct``, and
+    ///   ``APIComponent/sharedProperties-36tfo``.
+    ///   - configuration: An optional configuration to override what is provided by the parent.
+    ///   - properties: A ``RequestProperties/Builder`` closure which provides properties to use in this request. Any provided here will be
+    ///   appended to any provided by `parent`. The default value is ``RequestProperties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
@@ -200,7 +186,6 @@ extension Request {
 
 
 @resultBuilder
-/// <#Description#>
 public enum RequestBuilder<Parent: APIComponent> {
     static func buildBlock(_ httpMethod: Request.HTTPMethod, _ components: any RequestProperty...) -> Request {
         Request(httpMethod, parent: Parent.self) {

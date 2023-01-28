@@ -8,7 +8,7 @@ This result builder combines any number of ``Body``, `Data`, or `Encodable` inst
 with support for conditionals.
 
 Each component will be converted to `Data` and appended to each other, from top to bottom. You can use this builder in
-any closure with the @Body.Builder attribute.
+any closure with the `@Body.Builder` attribute.
 
 ```swift
 // Encoding a string as Data
