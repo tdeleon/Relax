@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// A structure which describes path components to be appended to the base URL of a request.
+///
+/// You should not escape the values entered here as they will be escaped when they are appended to the URL of the request.
 public struct PathComponents: RequestProperty {
     public var value: [String]
     

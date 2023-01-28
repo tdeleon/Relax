@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A type describing a property of a request
 public protocol RequestProperty<PropertyType>: Hashable {
     associatedtype PropertyType
     /// The base value type of the property
@@ -27,6 +28,7 @@ extension RequestProperty {
     }
 }
 
+/// A structure that groups properties of a request
 public struct RequestProperties: Hashable {
     var headers: Headers = Headers(value: [:])
     var queryItems: QueryItems = QueryItems(value: [])
@@ -82,6 +84,7 @@ public struct RequestProperties: Hashable {
 
 //MARK: Result Builder
 extension RequestProperties {
+    /// A result builder to combine one or more ``RequestProperty`` into a single instance
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> RequestProperties {

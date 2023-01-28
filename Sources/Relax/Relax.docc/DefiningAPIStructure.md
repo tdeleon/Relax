@@ -8,6 +8,8 @@ While some REST APIs are simple, many are complex consisting of many different p
 combinations. The structure will often be nested by one or more levels.
 
 Relax provides a great way to define these complex APIs- making it clear to read while reusing and inheriting as much as
-possible.
+possible. ``Service`` and ``Endpoint`` protocols are used to 
 
+## Service
 
+A ``Service`` is a protocol you use to represent an entire API Service.

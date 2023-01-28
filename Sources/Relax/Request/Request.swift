@@ -10,6 +10,21 @@ import Foundation
 import FoundationNetworking
 #endif
 
+/// A structure representing an HTTP request to a REST API
+///
+/// Requests are created with zero or more properties (``RequestProperty``), and are then sent to a server which provides a response.
+///
+/// ```swift
+/// // initially create the request
+/// let request = Request(.get, url: URL(string: "https://example.com/")!)
+/// ```
+///
+/// You can add or replace properties after the request is created using modifier style methods before sending them:
+/// ```swift
+/// let response = try await request
+///         .settingHeader(name: "name", value: "value")
+///         .send()
+/// ```
 public struct Request: Hashable {    
     /// The HTTP method of the request
     public var httpMethod: HTTPMethod
@@ -160,6 +175,8 @@ public struct Request: Hashable {
 
 extension Request {
     /// HTTP Request type
+    ///
+    /// The main request types are provided (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`); additional ones can be added as static properties in an extension.
     public struct HTTPMethod: RawRepresentable, Hashable {
         public var rawValue: String
         
