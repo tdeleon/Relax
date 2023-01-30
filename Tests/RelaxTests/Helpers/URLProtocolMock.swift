@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/22/20.
 //
 
-#if !os(watchOS)
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -13,7 +12,7 @@ import FoundationNetworking
 @testable import Relax
 
 class URLProtocolMock: URLProtocol {
-    typealias MockHandler = ((URLRequest) -> (URLResponse?, Data?, Error?, TimeInterval))
+    typealias MockHandler = ((URLRequest) -> (URLResponse?, Data?, Error?))
     
     static var mock: MockHandler?
     
@@ -30,14 +29,12 @@ class URLProtocolMock: URLProtocol {
             fatalError("Missing mock - the mock property must be set.")
         }
                 
-        let (response, data, error, delay) = mock(request)
+        let (response, data, error) = mock(request)
         
         guard error == nil else {
             client?.urlProtocol(self, didFailWithError: error!)
             return
         }
-        
-        sleep(UInt32(delay))
         
         if let response = response {
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
@@ -62,4 +59,3 @@ extension URLSession {
         return URLSession(configuration: configuration)
     }
 }
-#endif

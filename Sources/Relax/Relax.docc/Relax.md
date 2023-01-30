@@ -1,24 +1,13 @@
+# ``Relax``
 
-<h1 style="text-align: center;"><img src="https://user-images.githubusercontent.com/3507743/82412732-08c9c900-9a29-11ea-9eb4-0f7caea45e6e.png" height="60" style="vertical-align: middle; padding-right: 20px">Relax</h1>
-
----
-
-[![License](https://img.shields.io/github/license/tdeleon/Relax)](https://github.com/tdeleon/Relax/blob/master/LICENSE)
-[![Swift](https://img.shields.io/badge/Swift-5.7-brightgreen.svg?colorA=orange&colorB=4E4E4E)](https://swift.org)
-[![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen)](https://swift.org/package-manager/)
-[![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20iOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20Linux%20%7C%20Windows-blue)](https://www.swift.org/platform-support/)
-[![Test](https://github.com/tdeleon/Relax/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tdeleon/Relax/actions/workflows/test.yml?query=branch%3Amain++)
-
-*Declaratively build and send client requests for REST APIs.*
+Declaratively build and send client requests for REST APIs.
 
 ## Overview
 
+![Relax logo](RelaxLogo.png)
+
 Relax provides a way to declaratively define and organize client HTTP requests for REST APIs. The framework is
 lightweight built on protocols, easily allowing you to structure your requests for even the most complex REST APIs.
-
-### Full Reference Documentation
-
-https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/Relax
 
 ### Features
 
@@ -71,5 +60,34 @@ In files where you will be using Relax, import the framework:
 import Relax
 ```
 
-To get started using Relax, see the [full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/Relax
-).
+## Topics
+
+### Defining Requests
+
+- <doc:DefiningRequests>
+- ``Request``
+- ``RequestBuilder``
+- ``RequestProperty``
+- ``Body``
+- ``Headers``
+- ``QueryItems``
+- ``PathComponents``
+
+### Sending Requests
+
+- <doc:SendingRequestsAsync>
+- <doc:SendingRequestsPublisher>
+- <doc:SendingRequestsHandler>
+
+### Defining An API Structure
+
+- <doc:DefiningAPIStructure>
+- ``Service``
+- ``Endpoint``
+- ``APIComponent``
+- ``APISubComponent``
+
+### Handling Errors
+
+- ``Relax/RequestError``
+- ``Relax/RequestError/HTTPError``

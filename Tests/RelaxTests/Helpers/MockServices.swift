@@ -5,89 +5,140 @@
 //  Created by Thomas De Leon on 5/21/20.
 //
 
-#if !os(watchOS)
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 @testable import Relax
 
-extension ServiceRequest {
-    var urlRequest: URLRequest {
-        URLRequest(request: self, baseURL: ExampleService().baseURL)!
-    }
-}
-
-struct ExampleService: Service {
-    let baseURL: URL = URL(string: "https://www.example.com")!
+enum ExampleService: Service {
+    static let baseURL: URL = URL(string: "https://www.example.com")!
     
-    struct Get: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .get
+    static var session: URLSession = .shared
+    
+    @RequestBuilder<ExampleService>
+    static var get: Request {
+        Request.HTTPMethod.get
     }
     
-    struct Put: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .put
+    enum BasicRequests: Endpoint {
+        typealias Parent = ExampleService
         
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
+        static let path = "basic"
+        
+        @RequestBuilder<BasicRequests>
+        static var get: Request {
+            Request.HTTPMethod.get
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var put: Request {
+            Request.HTTPMethod.put
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var post: Request {
+            Request.HTTPMethod.post
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var patch: Request {
+            Request.HTTPMethod.patch
+        }
+        
+        @RequestBuilder<BasicRequests>
+        static var delete: Request {
+            Request.HTTPMethod.delete
         }
     }
     
-    struct Post: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .post
+    enum ComplexRequests: Endpoint {
+        typealias Parent = ExampleService
+        static let path = "complex"
         
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
-    }
-    
-    struct Patch: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .patch
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
-    }
-    
-    struct Delete: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .delete
-        
-        var urlRequest: URLRequest {
-            return URLRequest(request: self, baseURL: ExampleService().baseURL)!
-        }
-    }
-    
-    enum ExampleEndpoint: Endpoint {
-        static let path = "example"
-        enum Keys {
-            static let key = "key"
+        static var sharedProperties: Request.Properties {
+            Headers {
+                Header.authorization(.basic, value: "secret")
+                Header.contentType("application/json")
+            }
         }
         
-        struct Complex: ServiceRequest {
-            let endpoint = ExampleEndpoint.self
-            let httpMethod: HTTPRequestMethod = .get
+        @RequestBuilder<ComplexRequests>
+        static var complex: Request {
+            Request.HTTPMethod.get
+            PathComponents {
+                "suf fix"
+            }
+        }
+        
+        enum SubComplex: Endpoint {
+            static let path = "sub"
             
-            let pathComponents = ["path", "components"]
-            let queryParameters: [URLQueryItem] = [URLQueryItem(name: "first", value: "firstValue")]
-            let headers: [String : String] = [Keys.key: "value"]
-            let body: Data? = try? JSONSerialization.data(withJSONObject: ["body"], options: [])
+            typealias Parent = ComplexRequests
+            
+            static var sharedProperties: Request.Properties {
+                Headers {
+                    Header.cacheControl("no-cache")
+                }
+            }
+            
+            @RequestBuilder<SubComplex>
+            static var sub: Request {
+                Request.HTTPMethod.get
+            }
+            
         }
     }
     
-    struct NoContentType: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .get
+    enum Users: Endpoint {
+        typealias Parent = ExampleService
+        static let path = "users"
         
-        var contentType: RequestContentType? = nil
+        struct User: Codable, Hashable {
+            var name: String
+        }
+        
+        static let getRequest = Request(.get, parent: Users.self)
+
+        static func get() async throws -> [User] {
+            try await getRequest
+                .send(session: Parent.session)
+        }
+        
+        static func get(_ name: String) async throws -> User? {
+            try await Request(.get, parent: Users.self) {
+                PathComponents { name }
+            }
+            .send(session: Parent.session)
+        }
+        
+        static func add(_ user: User) async throws {
+            try await Request(.put, parent: Users.self) {
+                Body(user)
+            }
+            .send(session: Parent.session)
+        }
+        
+        static func add(_ name: String) async throws {
+            try await add(User(name: name))
+        }
     }
-    
 }
 
 struct BadURLService: Service {
-    let baseURL: URL = URL(string: "a://@@")!
+    static let baseURL: URL = URL(string: "a://@@")!
     
-    struct Get: ServiceRequest {
-        let httpMethod: HTTPRequestMethod = .get
+    @RequestBuilder<BadURLService>
+    static var get: Request {
+        Request.HTTPMethod.get
+    }
+    
+    @RequestBuilder<BadURLService>
+    static var request: Request {
+        Request.HTTPMethod.get
+        Headers {
+            Header.authorization(.basic, value: "a")
+            Header.contentType("ab")
+        }
     }
 }
-
-#endif

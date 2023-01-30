@@ -1,11 +1,11 @@
 //
-//  File.swift
+//  AsyncRequestTests.swift
 //  
 //
 //  Created by Thomas De Leon on 11/11/21.
 //
 
-#if !os(watchOS) && swift(>=5.5)
+#if swift(>=5.5)
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -25,41 +25,37 @@ final class AsyncRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    let service = ExampleService()
+    let service = ExampleService.self
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) async throws {
+    private func makeSuccess(request: Request) async throws {
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
         
-        let result = try await service.request(request, session: session)
-        service.checkSuccess(request: request, received: result.request)
+        let result = try await request.send(session: session)
+        XCTAssertEqual(request.urlRequest, result.request.urlRequest)
     }
     
     func testGet() async throws {
-        try await makeSuccess(request: type(of: self.service).Get())
+        try await makeSuccess(request: service.get)
     }
     
     func testPost() async throws {
-        try await makeSuccess(request: type(of: self.service).Post())
+        try await makeSuccess(request: service.BasicRequests.post)
     }
     
     func testPatch() async throws {
-        try await makeSuccess(request: type(of: self.service).Patch())
+        try await makeSuccess(request: service.BasicRequests.patch)
     }
     
     func testPut() async throws {
-        try await makeSuccess(request: type(of: self.service).Put())
+        try await makeSuccess(request: service.BasicRequests.put)
     }
     
     func testDelete() async throws {
-        try await makeSuccess(request: type(of: self.service).Delete())
+        try await makeSuccess(request: service.BasicRequests.delete)
     }
     
     func testComplexRequest() async throws {
-        try await makeSuccess(request: type(of: self.service).ExampleEndpoint.Complex())
-    }
-    
-    func testNoContentType() async throws {
-        try await makeSuccess(request: type(of: self.service).NoContentType())
+        try await makeSuccess(request: service.ComplexRequests.complex)
     }
 }
 #endif
