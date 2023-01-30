@@ -1,10 +1,56 @@
 # ``Relax``
 
-<!--@START_MENU_TOKEN@-->Summary<!--@END_MENU_TOKEN@-->
+Declaratively build and send client requests for REST APIs.
 
 ## Overview
 
-<!--@START_MENU_TOKEN@-->Text<!--@END_MENU_TOKEN@-->
+Relax provides a way to declaratively define and organize client HTTP requests for REST APIs. The framework is
+lightweight built on protocols, easily allowing you to structure your requests for even the most complex REST APIs.
+
+### Features
+
+- **Lightweight:** built on protocols, works directly on URLSession for low overhead
+- **Declarative syntax:** using [result builders](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630),
+allows 
+
+### Platforms
+
+Available for all Swift (5.7+) platforms, including:
+
+- macOS
+- iOS
+- watchOS
+- tvOS
+- Linux
+- Windows
+
+### Getting Started
+
+Relax supports the [Swift Package Manager](). To integrate in your project-
+
+1. Add the following to the **package** dependencies in the *Package.swift* manifest file:
+
+    ```swift
+    dependencies: [
+        .package(url: "https://github.com/tdeleon/Relax.git", from: "2.0.0")
+    ]
+    ```
+
+2. Add *Relax* to the **target** dependencies:
+
+    ```swift
+    targets: [
+        .target(
+            name: "YourProject",
+            dependencies: ["Relax"])
+    ]
+    ```
+
+In files where you will be using Relax, import the framework:
+
+```swift
+import Relax
+```
 
 ## Topics
 
