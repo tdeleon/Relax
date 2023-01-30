@@ -17,16 +17,20 @@ allows for quickly and easily organizing requests to match any structure of REST
 - **Modern:** Supports [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
 (`async`/`await`) and [Combine](https://developer.apple.com/documentation/combine) (on macOS/iOS/watchOS/tvOS).
 
-### Platforms
+### Supported Platforms
 
 Available for all Swift (5.7+) platforms, including:
 
-- macOS
-- iOS
-- watchOS
-- tvOS
-- Linux
-- Windows
+| Platform | Minimum Version |
+|----------|-----------------|
+| macOS    | 12.0            |
+| iOS      | 14.0            |
+| watchOS  | 7.0             |
+| tvOS     | 14.0            |
+| Linux    | Swift 5.7*      |
+| Windows  | Swift 5.7*      |
+
+*Works on any version where Swift 5.7 is supported.
 
 ### Getting Started
 

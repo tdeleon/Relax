@@ -1,5 +1,5 @@
 //
-//  BaseProtocols.swift
+//  APIComponent.swift
 //
 //
 //  Created by Thomas De Leon on 5/12/20.
@@ -32,6 +32,7 @@ public protocol APIComponent {
     static var configuration: Request.Configuration { get }
 }
 
+//MARK: Default Implementation
 extension APIComponent {
     public static var configuration: Request.Configuration { .default }
     
@@ -43,7 +44,7 @@ extension APIComponent {
     }
 }
 
-
+//MARK: - APISubComponent
 /// A type that defines a nested component of a REST API
 public protocol APISubComponent<Parent>: APIComponent {
     /// Connects the type to a parent ``APIComponent`` to allow for inheriting values.
@@ -56,19 +57,3 @@ extension APISubComponent {
     }
 }
 
-
-//MARK: - Endpoint
-
-/// A type that defines a particular resource on a ``Service``, where requests can be made.
-///
-/// 
-public protocol Endpoint: APISubComponent {
-    /// The path provided by this endpoint
-    static var path: String { get }
-}
-
-extension Endpoint {
-    public static var baseURL: URL {
-        Parent.baseURL.appendingPathComponent(path)
-    }
-}
