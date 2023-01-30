@@ -4,7 +4,7 @@
 ---
 
 [![License](https://img.shields.io/github/license/tdeleon/Relax)](https://github.com/tdeleon/Relax/blob/master/LICENSE)
-[![Swift](https://img.shields.io/badge/Swift-5.7-brightgreen.svg?colorA=orange&colorB=4E4E4E)](https://swift.org)
+[![Swift](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftdeleon%2FRelax%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/tdeleon/Relax)
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-brightgreen)](https://swift.org/package-manager/)
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20iOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20Linux%20%7C%20Windows-blue)](https://www.swift.org/platform-support/)
 [![Test](https://github.com/tdeleon/Relax/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tdeleon/Relax/actions/workflows/test.yml?query=branch%3Amain++)
@@ -18,7 +18,7 @@ lightweight built on protocols, easily allowing you to structure your requests f
 
 ### Full Reference Documentation
 
-https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/Relax
+https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/relax
 
 ### Features
 
@@ -71,5 +71,5 @@ In files where you will be using Relax, import the framework:
 import Relax
 ```
 
-To get started using Relax, see the [full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/Relax
+To get started using Relax, see the [full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/relax
 ).
