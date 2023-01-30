@@ -22,8 +22,8 @@ final class RequestPropertiesTests: XCTestCase {
     }
 
     func testAddOperator() {
-        let first = RequestProperties(headers: .init(value: ["first": "value"]))
-        let second = RequestProperties(queryItems: .init(value: [.init(name: "second", value: "value")]))
+        let first = Request.Properties(headers: .init(value: ["first": "value"]))
+        let second = Request.Properties(queryItems: .init(value: [.init(name: "second", value: "value")]))
         
         let combined = first + second
         
@@ -36,7 +36,7 @@ final class RequestPropertiesTests: XCTestCase {
     }
     
     func testAdding() {
-        let properties = RequestProperties.empty
+        let properties = Request.Properties.empty
         
         XCTAssertEqual(properties.adding(headers).headers, headers)
         XCTAssertEqual(properties.adding(queryItems).queryItems, queryItems)
@@ -49,7 +49,7 @@ final class RequestPropertiesTests: XCTestCase {
     }
     
     func testSetting() {
-        let properties = RequestProperties(
+        let properties = Request.Properties(
             headers: .init(value: ["another": "value"]),
             queryItems: .init(value: [.init(name: "another", value: "query")]),
             pathComponents: .init(value: ["something"]),
@@ -63,12 +63,12 @@ final class RequestPropertiesTests: XCTestCase {
     }
     
     func testFrom() {
-        XCTAssertEqual(RequestProperties.from(headers).headers, headers)
-        XCTAssertEqual(RequestProperties.from(queryItems).queryItems, queryItems)
-        XCTAssertEqual(RequestProperties.from(pathComponents).pathComponents, pathComponents)
-        XCTAssertEqual(RequestProperties.from(body).body, body)
+        XCTAssertEqual(Request.Properties.from(headers).headers, headers)
+        XCTAssertEqual(Request.Properties.from(queryItems).queryItems, queryItems)
+        XCTAssertEqual(Request.Properties.from(pathComponents).pathComponents, pathComponents)
+        XCTAssertEqual(Request.Properties.from(body).body, body)
         
-        XCTAssertEqual(RequestProperties.from(headers).body, RequestProperties.empty.body)
+        XCTAssertEqual(Request.Properties.from(headers).body, Request.Properties.empty.body)
     }
 
 }

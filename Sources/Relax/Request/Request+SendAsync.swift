@@ -20,14 +20,6 @@ extension Request {
     ///    - data: Data received. If there is no data in the response, then this will be 0 bytes.
     public typealias AsyncResponse = (request: Request, urlResponse: HTTPURLResponse, data: Data)
     
-    /// Response for an HTTP request sent asynchronously, decoding a Decodable instance
-    ///
-    /// - Parameters:
-    ///    - request: The request made
-    ///    - urlResponse: The response received
-    ///    - responseModel: The model decoded from received data
-    public typealias AsyncModelResponse<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
-    
     /// Send a request asynchronously
     ///
     /// - Parameters:

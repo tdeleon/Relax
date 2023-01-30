@@ -5,6 +5,6 @@
 ### Attributes
 
 - ``path``
-- ``APIComponent/sharedProperties-3o6cp``
+- ``APIComponent/sharedProperties-2ewu``
 - ``APIComponent/configuration-53bhx``
 

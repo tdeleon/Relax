@@ -10,12 +10,12 @@ import XCTest
 
 final class RequestPropertiesBuilderTests: XCTestCase {
     func testBuildEmpty() {
-        @RequestProperties.Builder
-        func empty() -> RequestProperties {}
-        XCTAssertEqual(empty(), RequestProperties.empty)
+        @Request.Properties.Builder
+        func empty() -> Request.Properties {}
+        XCTAssertEqual(empty(), Request.Properties.empty)
     }
     
-    let expectedProperties = RequestProperties(
+    let expectedProperties = Request.Properties(
         headers: Headers(value: ["key": "value"]),
         queryItems: QueryItems(value: [.init(name: "name", value: "value")]),
         pathComponents: PathComponents(value: ["test"]),
@@ -23,8 +23,8 @@ final class RequestPropertiesBuilderTests: XCTestCase {
     )
     
     func testBuild() {
-        @RequestProperties.Builder
-        var properties: RequestProperties {
+        @Request.Properties.Builder
+        var properties: Request.Properties {
             expectedProperties.pathComponents
             expectedProperties.queryItems
             expectedProperties.headers
@@ -36,8 +36,8 @@ final class RequestPropertiesBuilderTests: XCTestCase {
     }
     
     func testBuildOptional() {
-        @RequestProperties.Builder
-        func properties(include: Bool) -> RequestProperties {
+        @Request.Properties.Builder
+        func properties(include: Bool) -> Request.Properties {
             if include {
                 expectedProperties.headers
             }
@@ -47,8 +47,8 @@ final class RequestPropertiesBuilderTests: XCTestCase {
     }
 
     func testBuildEither() {
-        @RequestProperties.Builder
-        func properties(include: Bool) -> RequestProperties {
+        @Request.Properties.Builder
+        func properties(include: Bool) -> Request.Properties {
             if include {
                 expectedProperties.headers
             }
@@ -64,8 +64,8 @@ final class RequestPropertiesBuilderTests: XCTestCase {
         let path1 = PathComponents(value: ["first"])
         let path2 = PathComponents(value: ["second"])
         let paths = [path1, path2]
-        @RequestProperties.Builder
-        var properties: RequestProperties {
+        @Request.Properties.Builder
+        var properties: Request.Properties {
             for path in paths {
                 path
             }
@@ -74,16 +74,16 @@ final class RequestPropertiesBuilderTests: XCTestCase {
     }
     
     func testBuildRequestProperties() {
-        @RequestProperties.Builder
-        var properties: RequestProperties {
+        @Request.Properties.Builder
+        var properties: Request.Properties {
             expectedProperties
         }
         XCTAssertEqual(properties, expectedProperties)
     }
     
     func testBuildLimitedAvailability() {
-        @RequestProperties.Builder
-        var properties: RequestProperties {
+        @Request.Properties.Builder
+        var properties: Request.Properties {
             if #available(*) {
                 expectedProperties
             }

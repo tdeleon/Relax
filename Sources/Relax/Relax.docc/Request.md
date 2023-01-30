@@ -4,8 +4,11 @@
 
 ### Creating a Request
 
+- <doc:DefiningRequests>
 - ``init(_:url:configuration:properties:)``
 - ``init(_:parent:configuration:properties:)``
+- ``HTTPMethod-swift.struct``
+- ``Configuration-swift.struct``
 - ``RequestBuilder``
 
 ### Request Attributes
@@ -18,13 +21,13 @@
 - ``queryItems``
 - ``pathComponents``
 - ``body``
-- ``HTTPMethod-swift.struct``
 
 ### Modifying a Request
 
 - ``setting(_:)-2ftno``
 - ``setting(_:)-s95b``
 - ``adding(_:)``
+- ``RequestProperty``
 
 ### Modifying Request Headers
 
@@ -39,13 +42,14 @@
 
 ### Sending Requests Asynchronously
 
+- <doc:SendingRequestsAsync>
 - ``send(session:parseHTTPStatusErrors:)-51tcd``
 - ``send(decoder:session:parseHTTPStatusErrors:)-2nvfo``
 - ``AsyncResponse``
-- ``AsyncModelResponse``
 
 ### Sending Requests with a Publisher
 
+- <doc:SendingRequestsPublisher>
 - ``send(session:parseHTTPStatusErrors:)-2a2id``
 - ``send(decoder:session:parseHTTPStatusErrors:)-4i33g``
 - ``PublisherResponse``
@@ -53,6 +57,7 @@
 
 ### Sending Requests with a Completion Handler
 
+- <doc:SendingRequestsHandler>
 - ``send(session:autoResumeTask:parseHTTPStatusErrors:completion:)``
 - ``send(decoder:session:parseHTTPStatusErrors:completion:)``
 - ``Response``

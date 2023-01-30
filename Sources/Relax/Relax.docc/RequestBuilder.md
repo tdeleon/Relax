@@ -6,7 +6,7 @@ A result builder that you use to compose a request.
 
 This result builder combines any number of ``RequestProperty`` instances (``Headers``, ``QueryItems``, ``Body``, or
 ``PathComponents``) into the request properties for the request. The properties are grouped using a
-``RequestProperties`` structure.
+``Request/Properties`` structure.
 
 Use the `@RequestBuilder` attribute to precede the definition, along with specifying an ``APIComponent`` parent type
 (``Service`` or ``Endpoint``) which provides the base URL. The first line of the closure must be the HTTP method type

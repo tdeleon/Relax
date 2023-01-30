@@ -56,7 +56,7 @@ enum ExampleService: Service {
         typealias Parent = ExampleService
         static let path = "complex"
         
-        static var sharedProperties: RequestProperties {
+        static var sharedProperties: Request.Properties {
             Headers {
                 Header.authorization(.basic, value: "secret")
                 Header.contentType("application/json")
@@ -76,7 +76,7 @@ enum ExampleService: Service {
             
             typealias Parent = ComplexRequests
             
-            static var sharedProperties: RequestProperties {
+            static var sharedProperties: Request.Properties {
                 Headers {
                     Header.cacheControl("no-cache")
                 }

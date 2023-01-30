@@ -8,30 +8,30 @@
 
 ## Topics
 
+### Defining Requests
+
+- <doc:DefiningRequests>
+- ``Request``
+- ``RequestBuilder``
+- ``RequestProperty``
+- ``Body``
+- ``Headers``
+- ``QueryItems``
+- ``PathComponents``
+
+### Sending Requests
+
+- <doc:SendingRequestsAsync>
+- <doc:SendingRequestsPublisher>
+- <doc:SendingRequestsHandler>
+
 ### Defining An API Structure
 
 - <doc:DefiningAPIStructure>
 - ``Service``
 - ``Endpoint``
 - ``APIComponent``
-- ``APIComponentSubItem``
-
-### Defining Requests
-
-- <doc:CreatingRequests>
-- ``Request``
-- ``Body``
-- ``Headers``
-- ``QueryItems``
-- ``PathComponents``
-- ``Request/Configuration-swift.struct``
-- ``RequestBuilder``
-- ``RequestProperties``
-- ``RequestProperty``
-
-### Sending Requests
-
-- <doc:SendingRequests>
+- ``APISubComponent``
 
 ### Handling Errors
 

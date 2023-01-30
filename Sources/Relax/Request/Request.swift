@@ -15,8 +15,28 @@ import FoundationNetworking
 /// Requests are created with zero or more properties (``RequestProperty``), and are then sent to a server which provides a response.
 ///
 /// ```swift
-/// // initially create the request
+/// // Simple GET request to a URL
 /// let request = Request(.get, url: URL(string: "https://example.com/")!)
+/// ```
+///
+/// When reuqests are nested as part of an ``APIComponent`` (``Service`` or ``Endpoint``), you specify the `Parent` type to the initializer or
+/// ``RequestBuilder`` result builder. In the following example, both `request1` and `request2` are equivalent:
+///
+/// ```swift
+/// enum MyService: Service {
+///     static let baseURL = URL(string: https://example.com/)!
+///
+///     // Uses the baseURL defined on MyService
+///     @RequestBuilder<MyService>
+///     static var request1: Request {
+///         QueryItems { ("name", "value") }
+///     }
+///
+///     // Uses the baseURL defined on MyService
+///     static let request2 = Request(.get, parent: MyService.self) {
+///         QueryItems { ("name", "value") }
+///     }
+/// }
 /// ```
 ///
 /// You can add or replace properties after the request is created using modifier style methods before sending them:
@@ -25,6 +45,8 @@ import FoundationNetworking
 ///         .settingHeader(name: "name", value: "value")
 ///         .send()
 /// ```
+/// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
+///
 public struct Request: Hashable {    
     /// The HTTP method of the request
     public var httpMethod: HTTPMethod
@@ -115,40 +137,40 @@ public struct Request: Hashable {
 //MARK: Internal properties
     
     internal var _url: URL
-    internal var _properties: RequestProperties
+    internal var _properties: Properties
     
 //MARK: - Initializers
     
-    /// Creates a request using a provided HTTP method, base URL, and properties using a ``RequestProperties/Builder``.
+    /// Creates a request using a provided HTTP method, base URL, and properties using a ``Request/Properties/Builder``.
     /// - Parameters:
     ///   - httpMethod: The HTTP method to use
     ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
     ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
     ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
-    ///   ``RequestProperties/empty`` (no properties).
+    ///   ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration = .default,
-        @RequestProperties.Builder properties: () -> RequestProperties = { .empty }
+        @Request.Properties.Builder properties: () -> Properties = { .empty }
     ) {
         self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
     }
     
     /// Creates a request using a provided HTTP method, using the base URL, configuration, and any shared properties provided by a parent ``APIComponent``
-    /// and its' parents. Properties are provided with a ``RequestProperties/Builder``.
+    /// and its' parents. Properties are provided with a ``Request/Properties/Builder``.
     /// - Parameters:
     ///   - httpMethod: The HTTP method for the request
     ///   - parent: A parent which provides the base URL, ``Configuration-swift.struct``, and
-    ///   ``APIComponent/sharedProperties-36tfo``.
+    ///   ``APIComponent/sharedProperties-5764x``.
     ///   - configuration: An optional configuration to override what is provided by the parent.
-    ///   - properties: A ``RequestProperties/Builder`` closure which provides properties to use in this request. Any provided here will be
-    ///   appended to any provided by `parent`. The default value is ``RequestProperties/empty`` (no properties).
+    ///   - properties: A ``Request/Properties/Builder`` closure which provides properties to use in this request. Any provided here will be
+    ///   appended to any provided by `parent`. The default value is ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
         configuration: Configuration? = nil,
-        @RequestProperties.Builder properties: () -> RequestProperties = { .empty }
+        @Request.Properties.Builder properties: () -> Properties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
@@ -162,7 +184,7 @@ public struct Request: Hashable {
         httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration,
-        properties: RequestProperties
+        properties: Properties
     ) {
         self._url = url
         

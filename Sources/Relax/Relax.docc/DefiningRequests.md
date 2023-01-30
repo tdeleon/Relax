@@ -1,6 +1,6 @@
-# Creating Requests
+# Defining Requests
 
-Create a Request to send and receive data from a REST API
+Define a Request to send and receive data from a REST API
 
 ## Overview
 
@@ -8,7 +8,7 @@ You can create Requests in several different ways, ranging from as simple as a o
 definition of an entire REST API service. They can be either pre-defined and static, or accept dynamic parameters at
 runtime, depending on your needs.
 
-Once you've created your request, see <doc:SendingRequests> on how to send them and receive a response.
+Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler> on how to send them and receive a response.
 
 ## Request Basics
 
@@ -27,7 +27,7 @@ Usually, you will need to customize at least some other properties on the reques
 - ``Body``
 - ``PathComponents``
 
-These can be set using the `properties` parameter on the init method, which takes a ``RequestProperties/Builder``
+These can be set using the `properties` parameter on the init method, which takes a ``Request/Properties/Builder``
 closure where you set any number of properties to be used in the request using a [result builder](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630).
 
 The following builds on the previous example by adding a `Content-Type: application/json` header and appending a query
@@ -82,7 +82,7 @@ With a large API service, there will often be many different requests (often nes
 to organize and reuse. A ``Request`` allows for inheriting shared values among groups of requests, such as the base URL
 and properties.
 
-- Note: For a full discussion on how to define complex API structures, see <doc:DefiningAPIStructure>.
+> Note: For a full discussion on how to define complex API structures, see <doc:DefiningAPIStructure>.
 
 When you have defined a ``Service`` and optionally ``Endpoint``s, you can inherit their properties by passing their
 type to the Request init method. The `parent` parameter takes an ``APIComponent`` type, which both ``Service`` and
@@ -92,7 +92,7 @@ Note in the following example how the base URL does not need to be provided to e
 it from the `UserService`. Also, since the `sharedProperties` property was provided, each child request will
 use the authorization header provided.
 
-- Tip: When using ``Service``s or ``Endpoint``s as shown, it is not required for the requests to be nested under them
+> Tip: When using ``Service``s or ``Endpoint``s as shown, it is not required for the requests to be nested under them
 as shown- they can still inherit from them as long as the parent type is provided. However, nesting this way may better
 help organize requests and make your code easier to read.
 
@@ -100,7 +100,7 @@ help organize requests and make your code easier to read.
 enum UserService: Service {
     static let baseURL = URL(string: "https://example.com/users")!
 
-    static var sharedProperties: RequestProperties {
+    static var sharedProperties: Request.Properties {
         Headers {
             Header.authorization(.basic, value: "secret password")
         }
@@ -125,7 +125,7 @@ requests, but allows for a different syntax to the above:
 enum UserService: Service {
     static let baseURL = URL(string: "https://example.com/")!
 
-    static var sharedProperties: RequestProperties {
+    static var sharedProperties: Request.Properties {
         Headers {
             Header.authorization(.basic, value: "secret password")
         }

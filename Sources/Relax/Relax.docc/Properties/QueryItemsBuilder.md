@@ -10,7 +10,7 @@ instances into a single ``QueryItems`` instance, with support for conditionals.
 Each component will be converted to a `URLQueryItem` and appended to an array. You can use this builder in any closure
 with the `@QueryItems.Builder` attribute.
 
-- Note: Although not required, you can use ``QueryItem`` structure to better organize and pre-define query items which
+> Note: Although not required, you can use ``QueryItem`` structure to better organize and pre-define query items which
 are used often in your requests.
 
 ```swift

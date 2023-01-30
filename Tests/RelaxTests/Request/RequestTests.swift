@@ -119,7 +119,7 @@ final class RequestTests: XCTestCase {
     }
     
     func testBuilder() {
-        let properties = RequestProperties(
+        let properties = Request.Properties(
             headers: .init(value: ["first": "second"]),
             queryItems: .init(value: [.init(name: "name", value: "value")]),
             pathComponents: .init(value: ["path"]),
