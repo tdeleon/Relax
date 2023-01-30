@@ -26,7 +26,7 @@ https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/Relax
 - **Declarative syntax:** using [result builders](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630),
 allows for quickly and easily organizing requests to match any structure of REST API.
 - **Modern:** Supports [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
-(`async`/`await`) and [Combine](https://developer.apple.com/documentation/combine) (on macOS/iOS/watchOS/tvOS).
+(`async`/`await`) and [Combine](https://developer.apple.com/documentation/combine) (on Apple platforms).
 
 ### Supported Platforms
 
