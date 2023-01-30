@@ -30,7 +30,7 @@ Available for all Swift (5.7+) platforms, including:
 
 ### Getting Started
 
-Relax supports the [Swift Package Manager](). To integrate in your project-
+Relax supports the [Swift Package Manager](https://www.swift.org/package-manager/). To integrate in your project-
 
 1. Add the following to the **package** dependencies in the *Package.swift* manifest file:
 
