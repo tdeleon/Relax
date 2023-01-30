@@ -4,6 +4,8 @@ Declaratively build and send client requests for REST APIs.
 
 ## Overview
 
+![Relax logo](RelaxLogo.png)
+
 Relax provides a way to declaratively define and organize client HTTP requests for REST APIs. The framework is
 lightweight built on protocols, easily allowing you to structure your requests for even the most complex REST APIs.
 
@@ -11,7 +13,9 @@ lightweight built on protocols, easily allowing you to structure your requests f
 
 - **Lightweight:** built on protocols, works directly on URLSession for low overhead
 - **Declarative syntax:** using [result builders](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630),
-allows 
+allows for quickly and easily organizing requests to match any structure of REST API.
+- **Modern:** Supports [Swift concurrency](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
+(`async`/`await`) and [Combine](https://developer.apple.com/documentation/combine) (on macOS/iOS/watchOS/tvOS).
 
 ### Platforms
 
