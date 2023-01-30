@@ -5,74 +5,52 @@
 //  Created by Thomas De Leon on 11/11/21.
 //
 
-#if !os(watchOS) && swift(>=5.5)
+#if swift(>=5.5)
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 @testable import Relax
 
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-final class AsyncErrorTests: XCTestCase {
-    var session: URLSession!
-    
-    override func setUpWithError() throws {
-        session = URLSession.sessionWithMock
-    }
-    
-    override func tearDownWithError() throws {
-        session = nil
-        URLProtocolMock.mock = nil
-    }
-    
-    let method = ExampleService.Get()
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+final class AsyncErrorTests: ErrorTest {
     
     private func requestError(expected: RequestError) async {
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
         
         do {
-            _ = try await ExampleService().request(ExampleService.Get(), session: session)
+            _ = try await request.send(session: session, parseHTTPStatusErrors: true)
             XCTFail("Should fail")
         } catch {
             XCTAssertEqual(error as? RequestError, expected)
         }
     }
     
-    func testBadRequestError() async {
-        await requestError(expected: .httpBadRequest(request: URLRequest(request: method, baseURL: ExampleService().baseURL)!))
-    }
-    
-    func testUnauthorizedError() async {
-        await requestError(expected: .httpUnauthorized(request: method.urlRequest))
-    }
-    
-    func testNotFoundError() async {
-        await requestError(expected: .httpNotFound(request: method.urlRequest))
-    }
-    
-    func testServerError() async {
-        await requestError(expected: .httpServerError(request: method.urlRequest, httpStatus: 500))
-    }
-    
-    func testOtherHTTPError() async {
-        await requestError(expected: .otherHTTPError(request: method.urlRequest, httpStatus: 999))
+    func testHttpError() async throws {
+        await requestError(expected: httpError)
     }
     
     func testURLError() async {
-        let expectedError = URLError(.badURL)
-        let testRequest = ExampleService.Get()
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: .urlError(request: testRequest.urlRequest, error: expectedError))
+        #if !os(watchOS)
+        await requestError(expected: urlError)
+        #endif
+    }
+    
+    func testDecodingError() async {
+        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: decodingError)
         do {
-            _ = try await ExampleService().request(testRequest, session: session)
+            let _: TestItem = try await request.send(session: session)
             XCTFail("Should fail")
         } catch {
-            if case let .urlError(_, urlError) = error as? RequestError {
-                XCTAssertEqual(urlError.code, expectedError.code)
-            } else {
-                XCTFail("Wrong error type")
-            }
+            if case .decoding(_, _) = (error as? RequestError) { return }
+            XCTFail("Wrong error")
         }
-        
+    }
+    
+    func testOtherError() async {
+        #if !os(watchOS)
+        await requestError(expected: otherError)
+        #endif
     }
 }
 #endif

@@ -5,7 +5,6 @@
 //  Created by Thomas De Leon on 5/21/20.
 //
 
-#if !os(watchOS)
 import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
@@ -26,19 +25,24 @@ final class CompletionRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) {
+    private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = { request in
-            let response = HTTPURLResponse(url: URL(string: "http://example.com/")!, statusCode: 200, httpVersion: nil, headerFields: nil)!
-            return (response, nil, nil,0)
+            let response = HTTPURLResponse(
+                url: URL(string: "http://example.com/")!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+            return (response, nil, nil)
         }
-        let service = ExampleService()
-        service.request(request, session: session) { (result) in
+        
+        request.send(session: session) { result in
             switch result {
             case .failure(let error):
                 XCTFail("Request failed with error - \(error)")
             case .success(let received):
-                service.checkSuccess(request: request, received: received.request)
+                XCTAssertEqual(request.urlRequest, received.request.urlRequest)
             }
             expectation.fulfill()
         }
@@ -46,73 +50,62 @@ final class CompletionRequestTests: XCTestCase {
     }
     
     func testGet() throws {
-        makeSuccess(request: ExampleService.Get())
+        makeSuccess(request: ExampleService.get)
     }
     
     func testPost() throws {
-        makeSuccess(request: ExampleService.Post())
+        makeSuccess(request: ExampleService.BasicRequests.get)
     }
     
     func testPatch() throws {
-        makeSuccess(request: ExampleService.Patch())
+        makeSuccess(request: ExampleService.BasicRequests.patch)
     }
     
     func testPut() throws {
-        makeSuccess(request: ExampleService.Put())
+        makeSuccess(request: ExampleService.BasicRequests.put)
     }
     
     func testDelete() throws {
-        makeSuccess(request: ExampleService.Delete())
+        makeSuccess(request: ExampleService.BasicRequests.delete)
     }
     
     func testComplexRequest() throws {
-        makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
-    }
-    
-    func testNoContentType() throws {
-        makeSuccess(request: ExampleService.NoContentType())
+        makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
     func testGetPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Get())
+            makeSuccess(request: ExampleService.get)
         }
     }
     
     func testPostPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Post())
+            makeSuccess(request: ExampleService.BasicRequests.post)
         }
     }
     
     func testPatchPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Patch())
+            makeSuccess(request: ExampleService.BasicRequests.patch)
         }
     }
     
     func testPutPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Put())
+            makeSuccess(request: ExampleService.BasicRequests.put)
         }
     }
     
     func testDeletePerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Delete())
+            makeSuccess(request: ExampleService.BasicRequests.delete)
         }
     }
     
     func testComplexRequestPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
-        }
-    }
-    
-    func testNoContentTypePerformance() throws {
-        measure {
-            makeSuccess(request: ExampleService.NoContentType())
+            makeSuccess(request: ExampleService.ComplexRequests.complex)
         }
     }
 }
-#endif

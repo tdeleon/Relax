@@ -5,7 +5,7 @@
 //  Created by Thomas De Leon on 5/21/20.
 //
 
-#if os(macOS) || os(iOS) || os(tvOS)
+#if canImport(Combine)
 import XCTest
 import Combine
 @testable import Relax
@@ -26,11 +26,11 @@ final class CombineRequestTests: XCTestCase {
         URLProtocolMock.mock = nil
     }
     
-    private func makeSuccess<Request: ServiceRequest>(request: Request) {
+    private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockResponse()
-        let service = ExampleService()
-        cancellable = service.requestPublisher(request, session: session)
+        
+        cancellable = request.send(session: session)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
@@ -38,80 +38,70 @@ final class CombineRequestTests: XCTestCase {
                 case .finished:
                     expectation.fulfill()
                 }
-            }, receiveValue: { (received) in
-                service.checkSuccess(request: request, received: received.request)
+            }, receiveValue: { received in
+                XCTAssertEqual(request.urlRequest, received.request.urlRequest)
             })
         
         waitForExpectations(timeout: 3)
     }
     
     func testGet() throws {
-        makeSuccess(request: ExampleService.Get())
+        makeSuccess(request: ExampleService.get)
     }
     
     func testPost() throws {
-        makeSuccess(request: ExampleService.Post())
+        makeSuccess(request: ExampleService.BasicRequests.post)
     }
     
     func testPatch() throws {
-        makeSuccess(request: ExampleService.Patch())
+        makeSuccess(request: ExampleService.BasicRequests.patch)
     }
     
     func testPut() throws {
-        makeSuccess(request: ExampleService.Put())
+        makeSuccess(request: ExampleService.BasicRequests.put)
     }
     
     func testDelete() throws {
-        makeSuccess(request: ExampleService.Delete())
+        makeSuccess(request: ExampleService.BasicRequests.delete)
     }
     
     func testComplexRequest() throws {
-        makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
-    }
-    
-    func testNoContentType() throws {
-        makeSuccess(request: ExampleService.NoContentType())
+        makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
     func testGetPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Get())
+            makeSuccess(request: ExampleService.get)
         }
     }
     
     func testPostPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Post())
+            makeSuccess(request: ExampleService.BasicRequests.post)
         }
     }
     
     func testPatchPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Patch())
+            makeSuccess(request: ExampleService.BasicRequests.patch)
         }
     }
     
     func testPutPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Put())
+            makeSuccess(request: ExampleService.BasicRequests.put)
         }
     }
     
     func testDeletePerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.Delete())
+            makeSuccess(request: ExampleService.BasicRequests.delete)
         }
     }
     
     func testComplexRequestPerformance() throws {
         measure {
-            makeSuccess(request: ExampleService.ExampleEndpoint.Complex())
-        }
-    }
-    
-    func testNoContentTypePerformance() throws {
-        measure {
-            makeSuccess(request: ExampleService.NoContentType())
+            makeSuccess(request: ExampleService.ComplexRequests.complex)
         }
     }
 }
