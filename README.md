@@ -13,8 +13,6 @@
 
 ## Overview
 
-![Relax logo](RelaxLogo.png)
-
 Relax provides a way to declaratively define and organize client HTTP requests for REST APIs. The framework is
 lightweight built on protocols, easily allowing you to structure your requests for even the most complex REST APIs.
 
