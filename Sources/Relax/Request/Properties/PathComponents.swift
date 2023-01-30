@@ -30,6 +30,18 @@ public struct PathComponents: RequestProperty {
 
 //MARK: Result Builder
 extension PathComponents {
+    /// A result builder you use to define a ``PathComponents`` instance.
+    ///
+    /// This result builder combines any number of `CustomStringConvertible` instances into a single PathComponents instance, with support for conditionals.
+    /// Each component will be appended to an array of Strings. You can use this builder in any closure with the `@PathComponents.Builder` attribute.
+    ///
+    /// ```swift
+    ///  PathComponents {
+    ///     "first"
+    ///     2 //uses the String representation of an Int
+    ///  }
+    ///  // Value of components: ["first","2"]
+    ///  ```
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> PathComponents {
@@ -64,12 +76,12 @@ extension PathComponents {
             expression
         }
         
-        public static func buildExpression(_ expression: String) -> PathComponents {
-            PathComponents(value: [expression])
+        public static func buildExpression(_ expression: CustomStringConvertible) -> PathComponents {
+            PathComponents(value: [expression.description])
         }
         
-        public static func buildExpression(_ expression: [String]) -> PathComponents {
-            PathComponents(value: expression)
+        public static func buildExpression(_ expression: [CustomStringConvertible]) -> PathComponents {
+            PathComponents(value: expression.map(\.description))
         }
         
         public static func buildLimitedAvailability(_ component: PathComponents) -> PathComponents {

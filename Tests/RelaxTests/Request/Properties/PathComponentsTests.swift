@@ -12,6 +12,7 @@ final class PathComponentsTests: XCTestCase {
     
     let component1 = "first"
     let component2 = "second"
+    let component3 = 3
     let componentEmpty = ""
     
     func testAddOperator() {
@@ -74,10 +75,11 @@ final class PathComponentsTests: XCTestCase {
             component1
             component2
             componentEmpty
+            component3
             path
             [component1, component2]
         }
-        XCTAssertEqual(components.value, [component1, component2, component2, component1, component2])
+        XCTAssertEqual(components.value, [component1, component2, component3.description, component2, component1, component2])
     }
     
     func testBuildLimitedAvailability() {
