@@ -33,7 +33,7 @@ extension Request {
         ///
         /// See [`httpShouldHandleCookies`](https://developer.apple.com/documentation/foundation/urlrequest/2011548-httpshouldhandlecookies)
         public var httpShouldHandleCookies: Bool
-        // Whether to parse HTTP status codes as errors
+        /// Whether to parse HTTP status codes as errors
         public var parseHTTPStatusErrors: Bool
         
         

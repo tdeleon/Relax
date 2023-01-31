@@ -15,7 +15,7 @@ You can optionally provide your own `URLSession` to use, otherwise `URLSession.s
 
 ### Sending the Request
 
-Use ``Request/send(session:parseHTTPStatusErrors:)-2a2id`` to return a publisher which
+Use ``Request/send(session:)-488d1`` to return a publisher which
 upon receiving a response from the server, will publish a ``Request/PublisherResponse``.
 
 ```swift
@@ -39,7 +39,7 @@ do {
 ### Decoding JSON
 
 You can automatically decode received data into a `Decodable` instance with the
-``Request/send(decoder:session:parseHTTPStatusErrors:)-4i33g``, which will publish a
+``Request/send(decoder:session:)-6f0kg``, which will publish a
 ``Request/PublisherModelResponse`` with the decoded data.
 
 > Tip: By default, `JSONDecoder()` is used, but you can also pass in your own to the `decoder` parameter.
@@ -63,4 +63,4 @@ do {
 
 ### Handling Errors
 
-When a failure occurs, ``RequestError`` is the `Failure` of the publisher returned. By default, HTTP status codes (`4XX`, `5XX`, etc) returned from the server are not parsed for errors. As a convenience, you can set the `parseHTTPStatusErrors` parameter to `true` in order to enable this. If enabled, then any HTTP status code outside the `1XX`-`3XX` range will be treated as an error.
+When a failure occurs, ``RequestError`` is the `Failure` of the publisher returned. By default, HTTP status codes (`4XX`, `5XX`, etc) returned from the server are not parsed for errors. As a convenience, you can set the ``Request/Configuration-swift.struct/parseHTTPStatusErrors`` parameter in ``Request/Configuration-swift.struct`` to `true` in order to enable this. If enabled, then any HTTP status code outside the `1XX`-`3XX` range will be treated as an error.

@@ -43,23 +43,23 @@
 ### Sending Requests Asynchronously
 
 - <doc:SendingRequestsAsync>
-- ``send(session:parseHTTPStatusErrors:)-51tcd``
-- ``send(decoder:session:parseHTTPStatusErrors:)-2nvfo``
+- ``send(session:)-43n5v``
+- ``send(decoder:session:)-3h323``
 - ``AsyncResponse``
 
 ### Sending Requests with a Publisher
 
 - <doc:SendingRequestsPublisher>
-- ``send(session:parseHTTPStatusErrors:)-2a2id``
-- ``send(decoder:session:parseHTTPStatusErrors:)-4i33g``
+- ``send(session:)-488d1``
+- ``send(decoder:session:)-6f0kg``
 - ``PublisherResponse``
 - ``PublisherModelResponse``
 
 ### Sending Requests with a Completion Handler
 
 - <doc:SendingRequestsHandler>
-- ``send(session:autoResumeTask:parseHTTPStatusErrors:completion:)``
-- ``send(decoder:session:parseHTTPStatusErrors:completion:)``
+- ``send(session:autoResumeTask:completion:)``
+- ``send(decoder:session:completion:)``
 - ``Response``
 - ``ResponseModel``
 - ``Completion``

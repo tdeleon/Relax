@@ -29,7 +29,6 @@ extension Request {
     /// Send a request, returning a Combine publisher
     /// - Parameters:
     ///   - session: The session to use
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
         session: URLSession = .shared
@@ -54,7 +53,6 @@ extension Request {
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
     ///   - session: The session to use to send the request. Default is `URLSession.shared`.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),

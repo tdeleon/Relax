@@ -24,7 +24,6 @@ extension Request {
     ///
     /// - Parameters:
     ///   - session: The session to use (default is `URLSession.shared`
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A response containing the request sent, url response, and data.
     /// - Throws: A `RequestError` on error.
     @discardableResult
@@ -59,13 +58,11 @@ extension Request {
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
     ///   - session: The session to use to send the request. Default is `URLSession.shared`.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: The model, decoded from received data.
     /// - Throws: A `RequestError` on error.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) async throws -> ResponseModel {
         let response: AsyncResponse = try await send(
             session: session
