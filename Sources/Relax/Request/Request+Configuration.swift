@@ -35,7 +35,8 @@ extension Request {
         public var httpShouldHandleCookies: Bool
         /// Whether to parse HTTP status codes as errors
         public var parseHTTPStatusErrors: Bool
-        
+        /// Always append a trailing `/` to the end of the path components
+        public var appendTraillingSlashToPath: Bool
         
         /// A configuration structure with all default values
         ///
@@ -64,6 +65,8 @@ extension Request {
         ///   - networkServiceType: The network service type
         ///   - timeoutInterval: The timeout interval
         ///   - httpShouldHandleCookies: Whether to handle cookies
+        ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes for errors
+        ///   - appendTrailingSlashToPath: Whether to append a trailing '/' to the path components
         public init(
             allowsCellularAccess: Bool = true,
             cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
@@ -71,7 +74,8 @@ extension Request {
             networkServiceType: URLRequest.NetworkServiceType = .default,
             timeoutInterval: TimeInterval = 60,
             httpShouldHandleCookies: Bool = true,
-            parseHTTPStatusErrors: Bool = false
+            parseHTTPStatusErrors: Bool = false,
+            appendTraillingSlashToPath: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -80,6 +84,7 @@ extension Request {
             self.timeoutInterval = timeoutInterval
             self.httpShouldHandleCookies = httpShouldHandleCookies
             self.parseHTTPStatusErrors = parseHTTPStatusErrors
+            self.appendTraillingSlashToPath = appendTraillingSlashToPath
         }
 #else
         /// Allows access on constrained networks
@@ -104,6 +109,8 @@ extension Request {
         ///   - httpShouldHandleCookies: Whether to handle cookies
         ///   - allowsConstrainedNetworkAccess: Whether to allow access to constrained networks
         ///   - allowsExpensiveNetworkAccess: Whether to allow access to expensive networks
+        ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes for errors
+        ///   - appendTrailingSlashToPath: Whether to append a trailing '/' to the path components
         public init(
             allowsCellularAccess: Bool = true,
             cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
@@ -113,7 +120,8 @@ extension Request {
             httpShouldHandleCookies: Bool = true,
             allowsConstrainedNetworkAccess: Bool = true,
             allowsExpensiveNetworkAccess: Bool = true,
-            parseHTTPStatusErrors: Bool = false
+            parseHTTPStatusErrors: Bool = false,
+            appendTraillingSlashToPath: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -124,6 +132,7 @@ extension Request {
             self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
             self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
             self.parseHTTPStatusErrors = parseHTTPStatusErrors
+            self.appendTraillingSlashToPath = appendTraillingSlashToPath
         }
 #endif
     }

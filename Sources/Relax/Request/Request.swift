@@ -109,6 +109,9 @@ public struct Request: Hashable {
     public var url: URL {
         var fullURL = _url
         _properties.pathComponents.value.forEach { fullURL.appendPathComponent($0) }
+        if configuration.appendTraillingSlashToPath {
+            fullURL.appendPathComponent("/")
+        }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return _url }
         if !_properties.queryItems.value.isEmpty {
             components.queryItems = _properties.queryItems.value
