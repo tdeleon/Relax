@@ -33,6 +33,9 @@ extension Request {
         ///
         /// See [`httpShouldHandleCookies`](https://developer.apple.com/documentation/foundation/urlrequest/2011548-httpshouldhandlecookies)
         public var httpShouldHandleCookies: Bool
+        // Whether to parse HTTP status codes as errors
+        public var parseHTTPStatusErrors: Bool
+        
         
         /// A configuration structure with all default values
         ///
@@ -67,7 +70,8 @@ extension Request {
             httpShouldUsePipelining: Bool = false,
             networkServiceType: URLRequest.NetworkServiceType = .default,
             timeoutInterval: TimeInterval = 60,
-            httpShouldHandleCookies: Bool = true
+            httpShouldHandleCookies: Bool = true,
+            parseHTTPStatusErrors: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -75,6 +79,7 @@ extension Request {
             self.networkServiceType = networkServiceType
             self.timeoutInterval = timeoutInterval
             self.httpShouldHandleCookies = httpShouldHandleCookies
+            self.parseHTTPStatusErrors = parseHTTPStatusErrors
         }
 #else
         /// Allows access on constrained networks
@@ -107,7 +112,8 @@ extension Request {
             timeoutInterval: TimeInterval = 60,
             httpShouldHandleCookies: Bool = true,
             allowsConstrainedNetworkAccess: Bool = true,
-            allowsExpensiveNetworkAccess: Bool = true
+            allowsExpensiveNetworkAccess: Bool = true,
+            parseHTTPStatusErrors: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -117,6 +123,7 @@ extension Request {
             self.httpShouldHandleCookies = httpShouldHandleCookies
             self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
             self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
+            self.parseHTTPStatusErrors = parseHTTPStatusErrors
         }
 #endif
     }

@@ -46,7 +46,6 @@ extension Request {
     public func send(
         session: URLSession = .shared,
         autoResumeTask: Bool = true,
-        parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.Completion
     ) -> URLSessionDataTask {
         let task = session.dataTask(with: urlRequest) { data, response, error in
@@ -69,7 +68,7 @@ extension Request {
             let requestResponse = (self, httpResponse, data)
             
             // Check for http status code errors (4xx-5xx series)
-            if parseHTTPStatusErrors,
+            if configuration.parseHTTPStatusErrors,
                let httpError = RequestError.HTTPError(response: requestResponse) {
                 completion(.failure(RequestError.httpStatus(request: self, error: httpError)))
             }
@@ -95,13 +94,11 @@ extension Request {
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
         send(
             session: session,
-            autoResumeTask: true,
-            parseHTTPStatusErrors: parseHTTPStatusErrors
+            autoResumeTask: true
         ) { result in
             do {
                 let success = try result.get()

@@ -29,8 +29,7 @@ extension Request {
     /// - Throws: A `RequestError` on error.
     @discardableResult
     public func send(
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) async throws -> AsyncResponse {
         var task: URLSessionDataTask?
         let onCancel = { task?.cancel() }
@@ -41,8 +40,8 @@ extension Request {
             return try await withCheckedThrowingContinuation { continuation in
                 task = send(
                     session: session,
-                    autoResumeTask: true,
-                    parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
+                    autoResumeTask: true
+                ) { result in
                         switch result {
                         case .success(let success):
                             continuation.resume(returning: success)
@@ -69,8 +68,7 @@ extension Request {
         parseHTTPStatusErrors: Bool = false
     ) async throws -> ResponseModel {
         let response: AsyncResponse = try await send(
-            session: session,
-            parseHTTPStatusErrors: parseHTTPStatusErrors
+            session: session
         )
         do {
             return try decoder.decode(ResponseModel.self, from: response.data)

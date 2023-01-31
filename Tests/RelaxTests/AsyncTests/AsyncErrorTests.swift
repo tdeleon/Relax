@@ -19,7 +19,7 @@ final class AsyncErrorTests: ErrorTest {
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
         
         do {
-            _ = try await request.send(session: session, parseHTTPStatusErrors: true)
+            _ = try await request.send(session: session)
             XCTFail("Should fail")
         } catch {
             XCTAssertEqual(error as? RequestError, expected)

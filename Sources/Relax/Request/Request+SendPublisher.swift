@@ -32,14 +32,13 @@ extension Request {
     ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) -> AnyPublisher<PublisherResponse, RequestError> {
         Future<PublisherResponse, RequestError> { promise in
             send(
                 session: session,
-                autoResumeTask: true,
-                parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
+                autoResumeTask: true
+            ) { result in
                     switch result {
                     case .success(let successResponse):
                         promise(.success(successResponse))
@@ -59,10 +58,9 @@ extension Request {
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) -> AnyPublisher<ResponseModel, RequestError> {
-        send(session: session, parseHTTPStatusErrors: parseHTTPStatusErrors)
+        send(session: session)
             .map(\.data)
             .decode(type: ResponseModel.self, decoder: decoder)
             .mapError { RequestError.decoding(request: self, error: $0 as! DecodingError) }

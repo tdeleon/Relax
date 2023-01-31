@@ -29,7 +29,7 @@ class ErrorTest: XCTestCase {
         let name: String
     }
     
-    let request = ExampleService.get
+    let request = ExampleService.get.setting(.init(parseHTTPStatusErrors: true))
     
     var httpError: RequestError {
         .httpStatus(request: request, error: .mock(400, request: request)!)

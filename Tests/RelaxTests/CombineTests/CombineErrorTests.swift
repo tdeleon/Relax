@@ -22,7 +22,7 @@ final class CombineErrorTests: ErrorTest {
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
-        cancellable = request.send(session: session, parseHTTPStatusErrors: true)
+        cancellable = request.send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let receivedError):
