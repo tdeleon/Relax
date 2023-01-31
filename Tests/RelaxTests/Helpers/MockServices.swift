@@ -90,6 +90,17 @@ enum ExampleService: Service {
         }
     }
     
+    enum ConfigTest: Endpoint {
+        typealias Parent = ExampleService
+        static let path = "configtest"
+        
+        static var configuration: Request.Configuration {
+            .init(parseHTTPStatusErrors: true)
+        }
+        
+        static let request = Request(.get, parent: ConfigTest.self)
+    }
+    
     enum Users: Endpoint {
         typealias Parent = ExampleService
         static let path = "users"
