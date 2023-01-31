@@ -10,7 +10,7 @@ You can send a ``Request`` which calls a completion handler closure when a respo
 
 ### Customizing the URLSession Used
 
-You can optionally provide your own `URLSession` to use, otherwise `URLSession.shared` or any ``Service/session-5836y`` defined on the parent ``Service`` will be used.
+You can optionally provide your own `URLSession` to use, otherwise `URLSession.shared` will be used.
 
 ### Sending the Request
 

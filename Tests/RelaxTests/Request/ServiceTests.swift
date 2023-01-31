@@ -55,7 +55,6 @@ final class ServiceTests: XCTestCase {
         
         XCTAssertEqual(Testing.allProperties, .empty)
         XCTAssertEqual(Testing.configuration, .default)
-        XCTAssertEqual(Testing.session, .shared)
     }
 }
 

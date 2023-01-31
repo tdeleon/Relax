@@ -23,7 +23,7 @@ extension Endpoint {
         Parent.baseURL.appendingPathComponent(path)
     }
     
-    public static var configuration: Request.Configuration {
-        Parent.configuration
-    }
+//    public static var configuration: Request.Configuration {
+//        Parent.configuration
+//    }
 }
