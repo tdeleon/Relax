@@ -44,17 +44,21 @@ extension Request {
         
         /// A configuration structure with all default values
         ///
-        /// Default values are:
-        /// - allowsCellularAccess: `true`
-        /// - cachePolicy: `URLRequest.CachePolicy.useProtocolCachePolicy`
-        /// - httpShouldUsePipelining: `false`
-        /// - networkServiceType: `URLRequest.NetworkServiceType.default`
-        /// - timeoutInterval: 60
-        /// - httpShouldHandleCookies: `true`
+        /// Default property values are as follows:
+        /// Property                                                                  | Default Value
+        /// -------------------------------------------------------- | ---------------------------------------------------------------------------
+        /// ``allowsCellularAccess``                          |  `true`
+        /// ``cachePolicy``                                              | `URLRequest.CachePolicy.useProtocolCachePolicy`
+        /// ``httpShouldUsePipelining``                   | `false`
+        /// ``networkServiceType``                              | `URLRequest.NetworkServiceType.default`
+        /// ``timeoutInterval``                                     | `60`
+        /// ``httpShouldHandleCookies``                   | `true`
+        /// ``parseHTTPStatusErrors``                       | `false`
+        /// ``appendTraillingSlashToPath``            | `false`
+        /// ``allowsConstrainedNetworkAccess``* | `true`
+        /// ``appendTraillingSlashToPath``*                          | `false`
         ///
-        /// Available on iOS, macOS, tvOS, and watchOS only:
-        /// - allowsConstrainedNetworkAccess: `true`
-        /// - allowsExpensiveNetworkAccess: `true`
+        /// _*available on iOS, macOS, tvOS, and watchOS only._
         public static var `default`: Configuration {
             Configuration()
         }
