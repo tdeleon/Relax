@@ -16,23 +16,23 @@ public struct Header: CustomStringConvertible {
     
     /// Creates a header with the specified name and value
     /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
+    ///   - name: The header name
+    ///   - value: The header value
     public init(_ name: String, _ value: String) {
         self.name = name
         self.value = value
     }
     
-    /// <#Description#>
+    /// Creates a header with the specified name and value
     /// - Parameters:
-    ///   - name: <#name description#>
-    ///   - value: <#value description#>
+    ///   - name: The header name
+    ///   - value: The header value
     internal init(_ name: Header.Name, _ value: String) {
         self.init(name.rawValue, value)
     }
     
     public var description: String {
-        "\(name):\(value)"
+        "\(name): \(value)"
     }
 }
 
@@ -230,8 +230,9 @@ public struct Headers: RequestProperty {
             expression
         }
         
-        public static func buildExpression(_ expression: Header) -> Headers {
-            .init(headers: [expression])
+        public static func buildExpression(_ expression: Header?) -> Headers {
+            guard let expression else { return .init(value: [:])}
+            return .init(headers: [expression])
         }
         
         public static func buildExpression(_ expression: [String: String]) -> Headers {

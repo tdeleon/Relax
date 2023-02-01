@@ -76,6 +76,7 @@ final class PathComponentsTests: XCTestCase {
             component2
             componentEmpty
             component3
+            nil
             path
             [component1, component2]
         }

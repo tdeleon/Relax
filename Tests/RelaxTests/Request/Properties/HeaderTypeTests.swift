@@ -13,7 +13,7 @@ final class HeaderTypeTests: XCTestCase {
     func verify(_ header: Header, name: Header.Name, value: String) {
         XCTAssertEqual(header.name, name.rawValue)
         XCTAssertEqual(header.value, value)
-        XCTAssertEqual(header.description, "\(name.rawValue):\(value)")
+        XCTAssertEqual(header.description, "\(name.rawValue): \(value)")
     }
     
     func testAccept() {

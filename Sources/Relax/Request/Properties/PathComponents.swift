@@ -76,8 +76,9 @@ extension PathComponents {
             expression
         }
         
-        public static func buildExpression(_ expression: CustomStringConvertible) -> PathComponents {
-            PathComponents(value: [expression.description])
+        public static func buildExpression(_ expression: CustomStringConvertible?) -> PathComponents {
+            guard let expression else { return .init(value: []) }
+            return PathComponents(value: [expression.description])
         }
         
         public static func buildExpression(_ expression: [CustomStringConvertible]) -> PathComponents {
