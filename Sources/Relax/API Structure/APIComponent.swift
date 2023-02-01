@@ -55,5 +55,9 @@ extension APISubComponent {
     public static var allProperties: Request.Properties {
         Parent.allProperties + sharedProperties
     }
+    
+    public static var configuration: Request.Configuration {
+        Parent.configuration
+    }
 }
 

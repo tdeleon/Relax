@@ -29,17 +29,15 @@ extension Request {
     /// Send a request, returning a Combine publisher
     /// - Parameters:
     ///   - session: The session to use
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) -> AnyPublisher<PublisherResponse, RequestError> {
         Future<PublisherResponse, RequestError> { promise in
             send(
                 session: session,
-                autoResumeTask: true,
-                parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
+                autoResumeTask: true
+            ) { result in
                     switch result {
                     case .success(let successResponse):
                         promise(.success(successResponse))
@@ -55,14 +53,12 @@ extension Request {
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
     ///   - session: The session to use to send the request. Default is `URLSession.shared`.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) -> AnyPublisher<ResponseModel, RequestError> {
-        send(session: session, parseHTTPStatusErrors: parseHTTPStatusErrors)
+        send(session: session)
             .map(\.data)
             .decode(type: ResponseModel.self, decoder: decoder)
             .mapError { RequestError.decoding(request: self, error: $0 as! DecodingError) }

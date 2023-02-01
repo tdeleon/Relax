@@ -24,13 +24,11 @@ extension Request {
     ///
     /// - Parameters:
     ///   - session: The session to use (default is `URLSession.shared`
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: A response containing the request sent, url response, and data.
     /// - Throws: A `RequestError` on error.
     @discardableResult
     public func send(
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) async throws -> AsyncResponse {
         var task: URLSessionDataTask?
         let onCancel = { task?.cancel() }
@@ -41,8 +39,8 @@ extension Request {
             return try await withCheckedThrowingContinuation { continuation in
                 task = send(
                     session: session,
-                    autoResumeTask: true,
-                    parseHTTPStatusErrors: parseHTTPStatusErrors) { result in
+                    autoResumeTask: true
+                ) { result in
                         switch result {
                         case .success(let success):
                             continuation.resume(returning: success)
@@ -60,17 +58,14 @@ extension Request {
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
     ///   - session: The session to use to send the request. Default is `URLSession.shared`.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     /// - Returns: The model, decoded from received data.
     /// - Throws: A `RequestError` on error.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false
+        session: URLSession = .shared
     ) async throws -> ResponseModel {
         let response: AsyncResponse = try await send(
-            session: session,
-            parseHTTPStatusErrors: parseHTTPStatusErrors
+            session: session
         )
         do {
             return try decoder.decode(ResponseModel.self, from: response.data)

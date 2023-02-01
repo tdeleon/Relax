@@ -16,7 +16,7 @@ final class CompletionErrorTests: ErrorTest {
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
-        request.send(session: session, parseHTTPStatusErrors: true) { result in
+        request.send(session: session) { result in
             switch result {
             case .failure(let receivedError):
                 XCTAssertEqual(receivedError, expected)

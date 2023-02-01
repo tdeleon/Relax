@@ -14,14 +14,4 @@ import FoundationNetworking
 ///
 /// A ``Service`` defines a REST API at the root level, and all ``Request``s and ``Endpoint``s which share a common base URL belong to the service.
 /// You define common properties here which will be used by all requests that belong to the service.
-public protocol Service: APIComponent {
-    /// The session requests on this service will use. Default implementation provides `URLSession.shared`.
-    ///
-    /// The value of this property will be used for all requests made on this service, unless an override
-    /// is provided to a given request.
-    static var session: URLSession { get }
-}
-
-extension Service {
-    public static var session: URLSession { .shared }
-}
+public typealias Service = APIComponent

@@ -41,6 +41,12 @@ final class ServiceTests: XCTestCase {
         
         XCTAssertEqual(SubComplex.allProperties, Complex.sharedProperties + SubComplex.sharedProperties)
     }
+    
+    func testConfiguration() {
+        let request = ExampleService.ConfigTest.request
+        
+        XCTAssertTrue(request.configuration.parseHTTPStatusErrors)
+    }
 
     func testDefaults() {
         enum Testing: Service {
@@ -49,7 +55,6 @@ final class ServiceTests: XCTestCase {
         
         XCTAssertEqual(Testing.allProperties, .empty)
         XCTAssertEqual(Testing.configuration, .default)
-        XCTAssertEqual(Testing.session, .shared)
     }
 }
 

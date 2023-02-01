@@ -37,7 +37,6 @@ extension Request {
     /// - Parameters:
     ///   - session: The session to use to send the request. Default is `URLSession.shared`.
     ///   - autoResumeTask: Whether to call `resume()` on the created task. The default is `true`.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     ///   - completion: A completion handler with the response from the server.
     /// - Returns: The task used to make the request
     /// - Warning: If `autoResumeTask` is `true`, do **not** call `resume()` on the returned task, as the it will already be called. Calling it yourself
@@ -46,7 +45,6 @@ extension Request {
     public func send(
         session: URLSession = .shared,
         autoResumeTask: Bool = true,
-        parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.Completion
     ) -> URLSessionDataTask {
         let task = session.dataTask(with: urlRequest) { data, response, error in
@@ -69,7 +67,7 @@ extension Request {
             let requestResponse = (self, httpResponse, data)
             
             // Check for http status code errors (4xx-5xx series)
-            if parseHTTPStatusErrors,
+            if configuration.parseHTTPStatusErrors,
                let httpError = RequestError.HTTPError(response: requestResponse) {
                 completion(.failure(RequestError.httpStatus(request: self, error: httpError)))
             }
@@ -95,13 +93,11 @@ extension Request {
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
         session: URLSession = .shared,
-        parseHTTPStatusErrors: Bool = false,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
         send(
             session: session,
-            autoResumeTask: true,
-            parseHTTPStatusErrors: parseHTTPStatusErrors
+            autoResumeTask: true
         ) { result in
             do {
                 let success = try result.get()

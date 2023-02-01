@@ -33,20 +33,32 @@ extension Request {
         ///
         /// See [`httpShouldHandleCookies`](https://developer.apple.com/documentation/foundation/urlrequest/2011548-httpshouldhandlecookies)
         public var httpShouldHandleCookies: Bool
+        /// Whether to parse HTTP status codes as errors
+        ///
+        /// When true, the status code of a response will be parsed, and any code outside the `1XX-3XX` range will be returned as a ``RequestError/httpStatus(request:error:)``.
+        public var parseHTTPStatusErrors: Bool
+        /// Always append a trailing `/` to the end of the path components
+        ///
+        /// Some APIs require a trailing slash at the end of the URL path. This option will append a `/` character after the path, before the query items.
+        public var appendTraillingSlashToPath: Bool
         
         /// A configuration structure with all default values
         ///
-        /// Default values are:
-        /// - allowsCellularAccess: `true`
-        /// - cachePolicy: `URLRequest.CachePolicy.useProtocolCachePolicy`
-        /// - httpShouldUsePipelining: `false`
-        /// - networkServiceType: `URLRequest.NetworkServiceType.default`
-        /// - timeoutInterval: 60
-        /// - httpShouldHandleCookies: `true`
+        /// Default property values are as follows:
+        /// Property                                                                  | Default Value
+        /// -------------------------------------------------------- | ---------------------------------------------------------------------------
+        /// ``allowsCellularAccess``                          |  `true`
+        /// ``cachePolicy``                                              | `URLRequest.CachePolicy.useProtocolCachePolicy`
+        /// ``httpShouldUsePipelining``                   | `false`
+        /// ``networkServiceType``                              | `URLRequest.NetworkServiceType.default`
+        /// ``timeoutInterval``                                     | `60`
+        /// ``httpShouldHandleCookies``                   | `true`
+        /// ``parseHTTPStatusErrors``                       | `false`
+        /// ``appendTraillingSlashToPath``            | `false`
+        /// ``allowsConstrainedNetworkAccess``* | `true`
+        /// ``appendTraillingSlashToPath``*                          | `false`
         ///
-        /// Available on iOS, macOS, tvOS, and watchOS only:
-        /// - allowsConstrainedNetworkAccess: `true`
-        /// - allowsExpensiveNetworkAccess: `true`
+        /// _*available on iOS, macOS, tvOS, and watchOS only._
         public static var `default`: Configuration {
             Configuration()
         }
@@ -61,13 +73,17 @@ extension Request {
         ///   - networkServiceType: The network service type
         ///   - timeoutInterval: The timeout interval
         ///   - httpShouldHandleCookies: Whether to handle cookies
+        ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes for errors
+        ///   - appendTrailingSlashToPath: Whether to append a trailing '/' to the path components
         public init(
             allowsCellularAccess: Bool = true,
             cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
             httpShouldUsePipelining: Bool = false,
             networkServiceType: URLRequest.NetworkServiceType = .default,
             timeoutInterval: TimeInterval = 60,
-            httpShouldHandleCookies: Bool = true
+            httpShouldHandleCookies: Bool = true,
+            parseHTTPStatusErrors: Bool = false,
+            appendTraillingSlashToPath: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -75,6 +91,8 @@ extension Request {
             self.networkServiceType = networkServiceType
             self.timeoutInterval = timeoutInterval
             self.httpShouldHandleCookies = httpShouldHandleCookies
+            self.parseHTTPStatusErrors = parseHTTPStatusErrors
+            self.appendTraillingSlashToPath = appendTraillingSlashToPath
         }
 #else
         /// Allows access on constrained networks
@@ -99,6 +117,8 @@ extension Request {
         ///   - httpShouldHandleCookies: Whether to handle cookies
         ///   - allowsConstrainedNetworkAccess: Whether to allow access to constrained networks
         ///   - allowsExpensiveNetworkAccess: Whether to allow access to expensive networks
+        ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes for errors
+        ///   - appendTrailingSlashToPath: Whether to append a trailing '/' to the path components
         public init(
             allowsCellularAccess: Bool = true,
             cachePolicy: URLRequest.CachePolicy = .useProtocolCachePolicy,
@@ -107,7 +127,9 @@ extension Request {
             timeoutInterval: TimeInterval = 60,
             httpShouldHandleCookies: Bool = true,
             allowsConstrainedNetworkAccess: Bool = true,
-            allowsExpensiveNetworkAccess: Bool = true
+            allowsExpensiveNetworkAccess: Bool = true,
+            parseHTTPStatusErrors: Bool = false,
+            appendTraillingSlashToPath: Bool = false
         ) {
             self.allowsCellularAccess = allowsCellularAccess
             self.cachePolicy = cachePolicy
@@ -117,6 +139,8 @@ extension Request {
             self.httpShouldHandleCookies = httpShouldHandleCookies
             self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
             self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
+            self.parseHTTPStatusErrors = parseHTTPStatusErrors
+            self.appendTraillingSlashToPath = appendTraillingSlashToPath
         }
 #endif
     }

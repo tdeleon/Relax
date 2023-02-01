@@ -129,8 +129,9 @@ extension QueryItems {
             .init(value: [.init(name: expression.0, value: expression.1?.description)])
         }
         
-        public static func buildExpression(_ expression: QueryItem) -> QueryItems {
-            .init(value: [expression.urlQueryItem])
+        public static func buildExpression(_ expression: QueryItem?) -> QueryItems {
+            guard let expression else { return .init(value: [])}
+            return .init(value: [expression.urlQueryItem])
         }
         
         public static func buildLimitedAvailability(_ component: QueryItems) -> QueryItems {
