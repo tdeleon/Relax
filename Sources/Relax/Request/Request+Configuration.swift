@@ -34,8 +34,12 @@ extension Request {
         /// See [`httpShouldHandleCookies`](https://developer.apple.com/documentation/foundation/urlrequest/2011548-httpshouldhandlecookies)
         public var httpShouldHandleCookies: Bool
         /// Whether to parse HTTP status codes as errors
+        ///
+        /// When true, the status code of a response will be parsed, and any code outside the `1XX-3XX` range will be returned as a ``RequestError/httpStatus(request:error:)``.
         public var parseHTTPStatusErrors: Bool
         /// Always append a trailing `/` to the end of the path components
+        ///
+        /// Some APIs require a trailing slash at the end of the URL path. This option will append a `/` character after the path, before the query items.
         public var appendTraillingSlashToPath: Bool
         
         /// A configuration structure with all default values
