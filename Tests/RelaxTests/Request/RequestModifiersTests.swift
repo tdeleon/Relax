@@ -13,7 +13,7 @@ import FoundationNetworking
 
 final class RequestModifiersTests: XCTestCase {
     
-    let sampleURL = URL(string: "https://example.com/")!
+    let sampleURL = URL(string: "https://example.com")!
     
     lazy var emptyRequest: Request = { Request(.get, url: sampleURL) }()
 
@@ -42,10 +42,16 @@ final class RequestModifiersTests: XCTestCase {
     func testSettingConfiguration() {
         let request = Request(.get, url: sampleURL)
         XCTAssertEqual(request.configuration, .default)
+        XCTAssertEqual(request.url.absoluteString, sampleURL.absoluteString)
         
-        let newConfiguration = Request.Configuration(cachePolicy: .returnCacheDataDontLoad, timeoutInterval: 1)
-        
-        XCTAssertEqual(request.setting(newConfiguration).configuration, newConfiguration)
+        let newConfiguration = Request.Configuration(
+            cachePolicy: .returnCacheDataDontLoad,
+            timeoutInterval: 1,
+            appendTraillingSlashToPath: true
+        )
+        let updatedRequest = request.setting(newConfiguration)
+        XCTAssertEqual(updatedRequest.configuration, newConfiguration)
+        XCTAssertEqual(updatedRequest.url.absoluteString, sampleURL.appendingPathComponent("/").absoluteString)
     }
     
     func testSettingHeader() {
