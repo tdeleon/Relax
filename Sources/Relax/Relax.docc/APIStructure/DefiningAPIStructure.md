@@ -98,4 +98,48 @@ enum UserService: Service {
 }
 ```
 
+To send the requests:
+```swift
+// get all users
+// resolves to GET 'https://example.com/users'
+Task {
+    do {
+        let users: [User] = try await UserService.Users
+            .getAll()
+            .send()
+        print(users)
+    } catch {
+        print(error)
+    }
+}
+```
+
+```swift
+// get a single user
+// resolves to GET 'https://example.com/users?name=John'
+Task {
+    do {
+        let users: [User] = try await UserService.Users
+            .get(with: "John")
+            .send()
+        print(users)
+    } catch {
+        print(error)
+    }
+}
+```
+
+```swift
+// add a user
+// resolves to POST 'https://example.com/users' with a JSON encoded User in the body
+Task {
+    do {
+        let newUser = User(name: "John")
+        try await UserService.Users.add(newUser)
+    } catch {
+        print(error)
+    }
+}
+```
+
 > Tip: See <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler> for how to send requests you've defined.

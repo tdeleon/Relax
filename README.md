@@ -71,5 +71,16 @@ In files where you will be using Relax, import the framework:
 import Relax
 ```
 
+### Make a Simple Request
+
+```swift
+do {
+    let request = Request(.get, url: URL(string: "https://example.com/users")!)
+    try await request.send()
+} catch {
+    print(error)
+}
+```
+
 To get started using Relax, see the [full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/relax
 ).
