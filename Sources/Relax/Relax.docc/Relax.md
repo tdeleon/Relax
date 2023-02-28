@@ -93,6 +93,7 @@ do {
 ### Defining An API Structure
 
 - <doc:DefiningAPIStructure>
+- <doc:GettingStarted>
 - ``Service``
 - ``Endpoint``
 - ``APIComponent``
