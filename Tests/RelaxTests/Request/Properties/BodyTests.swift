@@ -33,6 +33,12 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(try? JSONDecoder().decode(Test.self, from: bodyData), model)
     }
     
+    func testInitDictionary() throws {
+        let dictionary = ["key": "value"]
+        let body = Body(dictionary)
+        XCTAssertEqual(body.value, try JSONSerialization.data(withJSONObject: dictionary))
+    }
+    
     func testAppend() throws {
         let body1 = Body { stringData1 }
         let body2 = Body { stringData2 }
@@ -66,6 +72,12 @@ final class BodyTests: XCTestCase {
             nonOptionalData
         }
         XCTAssertEqual(body2.value, nonOptionalData)
+        
+        let dictionary = ["key": "value"]
+        let body3 = Body {
+            dictionary
+        }
+        XCTAssertEqual(body3.value, try JSONSerialization.data(withJSONObject: dictionary))
     }
     
     func testBuildOptional() {

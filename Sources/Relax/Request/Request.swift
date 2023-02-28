@@ -229,14 +229,14 @@ extension Request {
 
 @resultBuilder
 public enum RequestBuilder<Parent: APIComponent> {
-    static func buildBlock(_ httpMethod: Request.HTTPMethod, _ components: any RequestProperty...) -> Request {
+    public static func buildBlock(_ httpMethod: Request.HTTPMethod, _ components: any RequestProperty...) -> Request {
         Request(httpMethod, parent: Parent.self) {
             components.reduce(.empty, { $0 + .from($1) })
         }
     }
     
     @available(*, unavailable, message: "First statement of Request.NestedBuilder must be the HTTPMethod type")
-    static func buildBlock(_ components: any RequestProperty...) -> Request {
+    public static func buildBlock(_ components: any RequestProperty...) -> Request {
         fatalError()
     }
     

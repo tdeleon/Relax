@@ -1,6 +1,6 @@
 # ``Relax``
 
-Declaratively build and send client requests for REST APIs.
+Declaratively build and send client requests for REST APIs in Swift.
 
 ## Overview
 
@@ -58,6 +58,17 @@ In files where you will be using Relax, import the framework:
 
 ```swift
 import Relax
+```
+
+### Make a Simple Request
+
+```swift
+do {
+    let request = Request(.get, url: URL(string: "https://example.com/users")!)
+    try await request.send()
+} catch {
+    print(error)
+}
 ```
 
 ## Topics

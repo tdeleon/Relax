@@ -18,4 +18,5 @@ Body {
 
 - ``init(_:)``
 - ``init(_:encoder:)``
+- ``init(_:options:)``
 - ``init(value:)``

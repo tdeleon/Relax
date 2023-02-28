@@ -9,7 +9,7 @@
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20iOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20Linux%20%7C%20Windows-blue)](https://www.swift.org/platform-support/)
 [![Test](https://github.com/tdeleon/Relax/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tdeleon/Relax/actions/workflows/test.yml?query=branch%3Amain++)
 
-*Declaratively build and send client requests for REST APIs.*
+*Declaratively build and send client requests for REST APIs in Swift.*
 
 ## Overview
 
@@ -18,7 +18,7 @@ lightweight built on protocols, easily allowing you to structure your requests f
 
 ### Full Reference Documentation
 
-https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/relax
+https://swiftpackageindex.com/tdeleon/Relax/2.1.0/documentation/relax
 
 ### Features
 
@@ -71,5 +71,16 @@ In files where you will be using Relax, import the framework:
 import Relax
 ```
 
-To get started using Relax, see the [full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.0.0/documentation/relax
-).
+### Make a Simple Request
+
+```swift
+do {
+    let request = Request(.get, url: URL(string: "https://example.com/users")!)
+    try await request.send()
+} catch {
+    print(error)
+}
+```
+
+To get started using Relax, see the 
+[full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.1.0/documentation/relax).

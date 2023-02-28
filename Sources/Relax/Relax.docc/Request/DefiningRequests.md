@@ -14,6 +14,8 @@ Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRe
 
 At a minimum, a request needs a URL and HTTP method type (`GET`, `POST`, `PUT`, etc) to be defined:
 ```swift
+// Creates a GET request to 'https://example.com/users'
+// with no headers, query parameters, or body.
 let request = Request(.get, url: URL(string: "https://example.com/users")!)
 ```
 
@@ -56,6 +58,34 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
     }
 }
 ```
+
+### Modifying Requests
+
+While many properties can be pre-defined on requests, there may be cases where values need to be changed after
+the request is defined, but before it is sent. In this case, there are modifier style methods available for
+adding/changing/deleting a ``RequestProperty`` and for modifying headers.
+
+```swift
+let request = Request(.get, url: URL(string: "https://example.com/users")!) {
+    QueryItems {
+        ("filter", true)
+    }
+}
+
+// adds the query item to any existing query items already part of the request 
+try await request
+        .adding(
+            QueryItems { ("name", "firstname") }
+        )
+        .send()
+
+// sets a header on the request 
+try await request
+        .settingHeader(name: "name", value: "value")
+        .send()
+```
+
+For more information on modifying requests, see ``Request``.
 
 ### Configuring Requests
 
