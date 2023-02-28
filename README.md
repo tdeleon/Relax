@@ -9,7 +9,7 @@
 [![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20iOS%20%7C%20watchOS%20%7C%20tvOS%20%7C%20Linux%20%7C%20Windows-blue)](https://www.swift.org/platform-support/)
 [![Test](https://github.com/tdeleon/Relax/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tdeleon/Relax/actions/workflows/test.yml?query=branch%3Amain++)
 
-*Declaratively build and send client requests for REST APIs.*
+*Declaratively build and send client requests for REST APIs in Swift.*
 
 ## Overview
 

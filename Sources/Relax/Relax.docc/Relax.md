@@ -1,6 +1,6 @@
 # ``Relax``
 
-Declaratively build and send client requests for REST APIs.
+Declaratively build and send client requests for REST APIs in Swift.
 
 ## Overview
 
