@@ -18,7 +18,7 @@ lightweight built on protocols, easily allowing you to structure your requests f
 
 ### Full Reference Documentation
 
-https://swiftpackageindex.com/tdeleon/Relax/2.1.0/documentation/relax
+https://swiftpackageindex.com/tdeleon/Relax/documentation
 
 ### Features
 
@@ -83,4 +83,4 @@ do {
 ```
 
 To get started using Relax, see the 
-[full documentation](https://swiftpackageindex.com/tdeleon/Relax/2.1.0/documentation/relax).
+[full documentation](https://swiftpackageindex.com/tdeleon/Relax/documentation).
