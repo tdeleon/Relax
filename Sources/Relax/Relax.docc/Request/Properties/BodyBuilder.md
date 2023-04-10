@@ -24,7 +24,7 @@ Body {
 
 // Dictionaries serialized to Data
 Body {
-    ["key": "value]
+    ["key": "value"]
 }
 
 // Encoding an Encodable instance
