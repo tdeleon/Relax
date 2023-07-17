@@ -15,6 +15,7 @@ class URLProtocolMock: URLProtocol {
     typealias MockHandler = ((URLRequest) -> (URLResponse?, Data?, Error?))
     
     static var mock: MockHandler?
+    static var delay: TimeInterval = 0
     
     override class func canInit(with request: URLRequest) -> Bool {
         return true
@@ -25,12 +26,14 @@ class URLProtocolMock: URLProtocol {
     }
     
     override func startLoading() {
-        guard let mock = URLProtocolMock.mock else {
+        guard let mock = Self.mock else {
             fatalError("Missing mock - the mock property must be set.")
         }
                 
         let (response, data, error) = mock(request)
-        
+        if Self.delay > 0 {
+            sleep(UInt32(Self.delay))
+        }
         guard error == nil else {
             client?.urlProtocol(self, didFailWithError: error!)
             return
