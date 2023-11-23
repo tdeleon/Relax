@@ -10,13 +10,14 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 final class AsyncErrorTests: ErrorTest {
     
     private func requestError(expected: RequestError) async {
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
+        URLProtocolMock.response = .mock(error: expected)
         
         do {
             _ = try await request.send(session: session)
@@ -37,7 +38,7 @@ final class AsyncErrorTests: ErrorTest {
     }
     
     func testDecodingError() async {
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: decodingError)
+        URLProtocolMock.response = .mock()
         do {
             let _: TestItem = try await request.send(session: session)
             XCTFail("Should fail")

@@ -10,6 +10,7 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
@@ -19,19 +20,14 @@ final class AsyncCodableTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        ExampleService.session = .sessionWithMock
-    }
-    
-    override func tearDownWithError() throws {
-        session = nil
-        URLProtocolMock.mock = nil
+        ExampleService.session = .mock()
     }
     
     let users = ExampleService.Users.self
     
     func testGet() async throws {
         let sampleModel = [User(name: "test1"), User(name: "test2")]
-        URLProtocolMock.mock = URLProtocolMock.mockResponse(model: sampleModel)
+        URLProtocolMock.response = .mock(sampleModel)
         
         let users: [User] = try await Users.get()
         XCTAssertEqual(users, sampleModel)
@@ -39,7 +35,7 @@ final class AsyncCodableTests: XCTestCase {
     
     func testGetOne() async throws {
         let sampleModel = User(name: "someone")
-        URLProtocolMock.mock = URLProtocolMock.mockResponse(model: sampleModel)
+        URLProtocolMock.response = .mock(sampleModel)
         
         let user = try await Users.get(sampleModel.name)
         XCTAssertEqual(user, sampleModel)
@@ -47,7 +43,7 @@ final class AsyncCodableTests: XCTestCase {
     
     func testAdd() async throws {
         let new = User(name: "someone")
-        URLProtocolMock.mock = URLProtocolMock.mockResponse()
+        URLProtocolMock.response = .mock()
         
         try await Users.add(new)
     }

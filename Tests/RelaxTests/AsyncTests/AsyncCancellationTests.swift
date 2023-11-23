@@ -10,21 +10,14 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 final class AsyncCancellationTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        URLProtocolMock.mock = URLProtocolMock.mockResponse()
-        URLProtocolMock.delay = 5
-        session = URLSession.sessionWithMock
-    }
-    
-    override func tearDownWithError() throws {
-        session = nil
-        URLProtocolMock.mock = nil
-        URLProtocolMock.delay = 0
+        session = .mock(response: .mock(delay: 5))
     }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet

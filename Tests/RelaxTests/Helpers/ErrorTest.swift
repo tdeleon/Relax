@@ -9,6 +9,7 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 class ErrorTest: XCTestCase {
@@ -16,13 +17,12 @@ class ErrorTest: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        session = .sessionWithMock
+        session = .mock()
     }
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         session = nil
-        URLProtocolMock.mock = nil
     }
     
     struct TestItem: Codable {
@@ -37,14 +37,6 @@ class ErrorTest: XCTestCase {
     
     var urlError: RequestError {
         .urlError(request: request, error: .init(.badURL))
-    }
-    
-    var decodingError: RequestError {
-        enum TestKey: String, CodingKey {
-            case test
-        }
-        let error = DecodingError.dataCorrupted(.init(codingPath: [TestKey.test], debugDescription: "failed"))
-        return .decoding(request: request, error: error)
     }
     
     var otherError: RequestError {

@@ -9,13 +9,14 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 final class CompletionErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
+        URLProtocolMock.response = .mock(error: expected)
         request.send(session: session) { result in
             switch result {
             case .failure(let receivedError):
@@ -40,7 +41,7 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testDecodingError() throws {
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: decodingError)
+        URLProtocolMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
         
         request.send(decoder: JSONDecoder()) { (result: Result<Request.ResponseModel<TestItem>, RequestError>) in

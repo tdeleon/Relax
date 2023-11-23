@@ -10,6 +10,7 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
@@ -17,18 +18,17 @@ final class AsyncRequestTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        session = URLSession.sessionWithMock
+        session = .mock()
     }
     
     override func tearDownWithError() throws {
         session = nil
-        URLProtocolMock.mock = nil
     }
     
     let service = ExampleService.self
     
     private func makeSuccess(request: Request) async throws {
-        URLProtocolMock.mock = URLProtocolMock.mockResponse()
+        URLProtocolMock.response = .mock()
         
         let result = try await request.send(session: session)
         XCTAssertEqual(request.urlRequest, result.request.urlRequest)
