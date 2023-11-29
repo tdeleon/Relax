@@ -20,14 +20,14 @@ final class AsyncCodableTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        ExampleService.session = .mock()
+        ExampleService.session = URLMock.session()
     }
     
     let users = ExampleService.Users.self
     
     func testGet() async throws {
         let sampleModel = [User(name: "test1"), User(name: "test2")]
-        URLProtocolMock.response = .mock(sampleModel)
+        URLMock.response = .mock(sampleModel)
         
         let users: [User] = try await Users.get()
         XCTAssertEqual(users, sampleModel)
@@ -35,7 +35,7 @@ final class AsyncCodableTests: XCTestCase {
     
     func testGetOne() async throws {
         let sampleModel = User(name: "someone")
-        URLProtocolMock.response = .mock(sampleModel)
+        URLMock.response = .mock(sampleModel)
         
         let user = try await Users.get(sampleModel.name)
         XCTAssertEqual(user, sampleModel)
@@ -43,7 +43,7 @@ final class AsyncCodableTests: XCTestCase {
     
     func testAdd() async throws {
         let new = User(name: "someone")
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         
         try await Users.add(new)
     }

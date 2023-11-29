@@ -20,7 +20,7 @@ final class CombineCodableTests: XCTestCase {
     let service = ExampleService.Users.self
 
     override func setUpWithError() throws {
-        session = .mock()
+        session = URLMock.session()
     }
 
     override func tearDownWithError() throws {
@@ -29,7 +29,7 @@ final class CombineCodableTests: XCTestCase {
 
     func testGet() throws {
         let sampleModel = [User(name: "1"), User(name: "2")]
-        URLProtocolMock.response = .mock(sampleModel)
+        URLMock.response = .mock(sampleModel)
         let expectation = self.expectation(description: "Expect")
         
         cancellable = service.getRequest

@@ -11,7 +11,7 @@ import FoundationNetworking
 #endif
 
 /// A `URLProtocol` implementation which uses a mock response for all requests made
-public class URLProtocolMock: URLProtocol {
+public class URLMock: URLProtocol {
     /// The mock object used to return the response
     public static var response: MockResponse = .mock()
     
@@ -24,21 +24,21 @@ public class URLProtocolMock: URLProtocol {
             // Call the onReceive closure first, if set. This will notify the caller
             try Self.response.onReceive?(request)
             // call the response handler to get the desired response from the MockResponse
-            let (response, data, error) = try Self.response.responseHandler(request)
+            let response = try Self.response.responseHandler(request)
             // Sleep for any set delay
             if Self.response.delay > 0 {
                 sleep(UInt32(Self.response.delay))
             }
             
             // Call did failWithError for an error
-            guard error == nil else {
-                client?.urlProtocol(self, didFailWithError: error!)
+            guard response.error == nil else {
+                client?.urlProtocol(self, didFailWithError: response.error!)
                 return
             }
             
             // call normal loading methods
-            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocol(self, didReceive: response.httpURLResponse, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: response.data)
             client?.urlProtocolDidFinishLoading(self)
         } catch {
             // catch an error from onReceive or the responseHandler
@@ -49,28 +49,28 @@ public class URLProtocolMock: URLProtocol {
     override public func stopLoading() {}
 }
 
-extension URLSession {
+extension URLMock {
     /// A URLSession configured to return mock responses.
     /// - Parameters:
-    ///   - configuration: The configuration for the session
-    ///   - delegate: The delegate for the session
-    ///   - delegateQueue: The delegateQueue for the session
-    ///   - response: The mock response to return
+    ///   - configuration: The configuration for the session. The default is `URLSessionConfiguration.ephemeral`
+    ///   - delegate: The delegate for the session. The default is `nil`.
+    ///   - delegateQueue: The delegateQueue for the session. The default is `nil`.
+    ///   - response: The mock response to return. The default is `.mock()`, an empty response with a `204` HTTP status code.
     /// - Returns: A session configured to return mock responses.
     ///
     /// Any request made using this session will use the `URLProtocolMock` protocol, which will return a mock response without using the network.
     /// Pass in the desired response for all requests to the `response` parameter, which defaults to a response with an HTTP status code of `200`, an empty
     /// data object (`Data()`) and no error. You can change the mocked response at any time after the session is created by setting the
     /// `URLProtocol.mock` property.
-    public static func mock(
+    public static func session(
         configuration: URLSessionConfiguration = .ephemeral,
         delegate: URLSessionDelegate? = nil,
         delegateQueue: OperationQueue? = nil,
-        response: URLProtocolMock.MockResponse = .mock()
+        response: URLMock.MockResponse = .mock()
     ) -> URLSession {
         let sessionConfiguration = configuration
-        sessionConfiguration.protocolClasses = [URLProtocolMock.self]
-        URLProtocolMock.response = response
+        sessionConfiguration.protocolClasses = [URLMock.self]
+        Self.response = response
         return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
 }

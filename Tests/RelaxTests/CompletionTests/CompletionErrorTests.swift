@@ -16,7 +16,7 @@ final class CompletionErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.response = .mock(error: expected)
+        URLMock.response = .mock(error: expected)
         request.send(session: session) { result in
             switch result {
             case .failure(let receivedError):
@@ -41,7 +41,7 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testDecodingError() throws {
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
         
         request.send(decoder: JSONDecoder()) { (result: Result<Request.ResponseModel<TestItem>, RequestError>) in

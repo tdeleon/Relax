@@ -8,29 +8,39 @@
 import Foundation
 import Relax
 
-extension URLProtocolMock {
+extension URLMock {
+    /// A structure that holds details of a mocked response.
+    ///
+    /// A mocked response includes:
+    ///
+    /// - An optional delay (the default is 0s)
+    /// - An optional closure providing the request, which is called just before the response is returned. This can be used to validate the request.
+    /// - A closure providing the request and returning a ``Response``. This is used to provide the actual response back to the request.
+    ///
+    /// ``Response``s consist of an `HTTPURLResponse`, `Data`, and optional `Error`. Convenience methods are provided to quickly create common
+    /// responses such as JSON objects, HTTP status codes, and Errors.
     public struct MockResponse {
-        public typealias Response = (response: HTTPURLResponse, data: Data, error: Error?)
-        
-        /// The delay before returning the response
+        /// The delay before a response is returned.
         ///
         /// Any delay is applied *after* `onReceive` is called. The default value is `0`.
         public var delay: TimeInterval = 0
-        /// Called just before the response is returned
+        /// Called just before the response is returned.
+        ///
+        /// Use this closure to validate what request was actually sent.
         public var onReceive: ((_ request: URLRequest) throws -> Void)? = nil
-        /// A closure providing the response to be returned
+        /// A closure providing the response to be returned.
         public var responseHandler: (_ for: URLRequest) throws -> Response
         
         //MARK: - Mock Responses
         
-        /// A `MockResponse` with an optional delay, with a closure providing the response to be returned.
+        /// A ``MockResponse`` with a closure providing the ``Response`` to be returned.
         /// - Parameters:
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
-        ///   - response: The response to return to the `URLSession` client. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
+        ///   - response: A closure which provides a response to `URLSession`, with a parameter of the request received.
         /// - Returns: A new mock response
         ///
-        /// Use this method to provide a mock response where you want to evaluate the request received when providing the response.
+        /// Use this method to provide a mock response when you need to base the response on the request received.
         public static func mock(
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil,
@@ -43,24 +53,24 @@ extension URLProtocolMock {
         
         /// A mock response with the given status code, data, and optional error.
         /// - Parameters:
-        ///   - statusCode: The HTTP status code to return.
+        ///   - statusCode: The HTTP status code to return. The default is `204` (no content).
         ///   - data: Data to return
         ///   - error: Error to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response
         ///
         /// Use this method when you don't need to base the response on the request received. A response will be created from the properties provided and
         /// returned.
         public static func mock(
-            statusCode: Int = 200,
+            statusCode: Int = 204,
             data: Data = Data(),
             error: Error? = nil,
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) rethrows -> MockResponse {
             try mock(delay: delay, onReceive: onReceive) {
-                response(statusCode: statusCode, data: data, error: error, for: $0)
+                Response(statusCode, data: data, error: error, for: $0)
             }
         }
         
@@ -70,23 +80,23 @@ extension URLProtocolMock {
         /// - Parameters:
         ///   - model: The model to be returned
         ///   - encoder: The encoder to encode the model with
-        ///   - statusCode: The HTTP status code to return
+        ///   - statusCode: The HTTP status code to return. The default is `204` (no content).
         ///   - error: An error to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response.
         ///
         /// Use this method to return an `Encodable` model in the response as `Data`. The model will be encoded using the encoder specified.
         public static func mock<Model: Encodable>(
             _ model: Model,
             encoder: JSONEncoder = JSONEncoder(),
-            statusCode: Int = 200,
+            statusCode: Int = 204,
             error: Error? = nil,
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) rethrows -> MockResponse {
             try mock(delay: delay, onReceive: onReceive) {
-                try response(model, encoder: encoder, statusCode: statusCode, error: error, for: $0)
+                try Response(model, encoder: encoder, statusCode: statusCode, error: error, for: $0)
             }
         }
         
@@ -94,23 +104,23 @@ extension URLProtocolMock {
         /// - Parameters:
         ///   - jsonObject: The json object to return
         ///   - jsonWritingOptions: Options for `JSONSerialization` writing
-        ///   - statusCode: HTTP status code to return
+        ///   - statusCode: HTTP status code to return. The default is `204` (no content).
         ///   - error: Error to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response
         ///
         /// Use this method to return a mock response with the given json object as data. `JSONSerialization` will be used to encode the object.
         public static func mock(
             _ jsonObject: Any,
             jsonWritingOptions: JSONSerialization.WritingOptions = [],
-            statusCode: Int = 200,
+            statusCode: Int = 204,
             error: Error? = nil,
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) throws -> MockResponse {
             try mock(delay: delay, onReceive: onReceive) { request in
-                try response(
+                try Response(
                     jsonObject,
                     jsonWritingOptions: jsonWritingOptions,
                     statusCode: statusCode,
@@ -126,7 +136,7 @@ extension URLProtocolMock {
         ///   - data: Data to return
         ///   - error: Error to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response
         ///
         /// Creates a mock response using the HTTPURLResponse, data, and error provided.
@@ -138,7 +148,7 @@ extension URLProtocolMock {
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) rethrows -> MockResponse {
             try mock(delay: delay, onReceive: onReceive) { _ in
-                { (httpURLResponse, data, error) }()
+                { Response(httpURLResponse, data: data, error: error) }()
             }
         }
         
@@ -148,7 +158,7 @@ extension URLProtocolMock {
         /// - Parameters:
         ///   - urlErrorCode: The code of the error to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response
         ///
         /// Use this method to return a mock response with a `URLError` of the given code.
@@ -157,7 +167,7 @@ extension URLProtocolMock {
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) rethrows -> MockResponse {
-            try mock(delay: delay, onReceive: onReceive) { response(urlErrorCode, for: $0) }
+            try mock(delay: delay, onReceive: onReceive) { Response(urlErrorCode, for: $0) }
         }
         
         /// A mock response returning a `RequestError.HTTPError` of the given type
@@ -165,17 +175,17 @@ extension URLProtocolMock {
         ///   - httpErrorType: The type of HTTPError to return
         ///   - data: Data to return
         ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-        ///   - onReceive: A closure called when the request is received, just before the response is returned. The parameter is the request received.
+        ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
         /// - Returns: A new mock response
         ///
-        /// Use this method to return a mock response with a `RequestError.HTTPError` of the given code.
+        /// Use this method to return a mock response with a `RequestError.HTTPError` of the given type.
         public static func mock(
             _ httpErrorType: RequestError.HTTPError.ErrorType,
             data: Data = Data(),
             delay: TimeInterval = 0,
             onReceive: ((_ request: URLRequest) throws -> Void)? = nil
         ) rethrows -> MockResponse {
-            try mock(delay: delay, onReceive: onReceive) { response(httpErrorType, data: data, for: $0) }
+            try mock(delay: delay, onReceive: onReceive) { Response(httpErrorType, data: data, for: $0) }
         }
     }
 }

@@ -22,7 +22,7 @@ final class CombineErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.response = .mock(error: expected)
+        URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -50,7 +50,7 @@ final class CombineErrorTests: ErrorTest {
     }
     
     func testDecodingError() throws {
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
 
         cancellable = request.send(session: session)

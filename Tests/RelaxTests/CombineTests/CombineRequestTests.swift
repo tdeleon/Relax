@@ -18,7 +18,7 @@ final class CombineRequestTests: XCTestCase {
     var session: URLSession!
         
     override func setUp() {
-        session = .mock()
+        session = URLMock.session()
     }
     
     override func tearDown() {
@@ -28,7 +28,7 @@ final class CombineRequestTests: XCTestCase {
     
     private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         
         cancellable = request.send(session: session)
             .sink(receiveCompletion: { (completion) in

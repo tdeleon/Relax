@@ -17,7 +17,7 @@ final class CompletionRequestTests: XCTestCase {
     
     override func setUp() {
         let configuration = URLSessionConfiguration.default
-        configuration.protocolClasses = [URLProtocolMock.self]
+        configuration.protocolClasses = [URLMock.self]
         session = URLSession(configuration: configuration)
     }
     
@@ -27,7 +27,7 @@ final class CompletionRequestTests: XCTestCase {
     
     private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         
         request.send(session: session) { result in
             switch result {

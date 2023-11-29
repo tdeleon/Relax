@@ -18,7 +18,7 @@ final class AsyncRequestTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        session = .mock()
+        session = URLMock.session()
     }
     
     override func tearDownWithError() throws {
@@ -28,7 +28,7 @@ final class AsyncRequestTests: XCTestCase {
     let service = ExampleService.self
     
     private func makeSuccess(request: Request) async throws {
-        URLProtocolMock.response = .mock()
+        URLMock.response = .mock()
         
         let result = try await request.send(session: session)
         XCTAssertEqual(request.urlRequest, result.request.urlRequest)
