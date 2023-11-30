@@ -66,7 +66,7 @@ public struct MockResponse {
     public static func mock(
         delay: TimeInterval = 0,
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil,
-        response: @escaping (_ for: URLRequest) throws -> Response
+        response: @escaping (_ request: URLRequest) throws -> Response
     ) rethrows -> MockResponse {
         self.init(delay: delay, onReceive: onReceive) {
             try response($0)
