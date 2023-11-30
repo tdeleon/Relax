@@ -72,7 +72,7 @@ the parameter of the closure.
 
 ### Creating a Mocked Session
 
-- ``URLMock/URLMock/session(configuration:delegate:delegateQueue:mockResponse:)``
+- ``URLMock/URLMock/session(_:configuration:delegate:delegateQueue:)``
 - ``URLMock/URLMock/session(configuration:delegate:delegateQueue:response:)``
 
 ### Mocking Responses

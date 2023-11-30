@@ -54,10 +54,10 @@ public final class URLMock: URLProtocol {
 extension URLMock {
     /// A `URLSession` configured to return mock responses.
     /// - Parameters:
+    ///   - mockResponse: The mock response to return. The default is `.mock()`, an empty response with a `204` HTTP status code.
     ///   - configuration: The configuration for the session. The default is `URLSessionConfiguration.ephemeral`
     ///   - delegate: The delegate for the session. The default is `nil`.
     ///   - delegateQueue: The delegateQueue for the session. The default is `nil`.
-    ///   - response: The mock response to return. The default is `.mock()`, an empty response with a `204` HTTP status code.
     /// - Returns: A session configured to return mock responses.
     ///
     /// Any request made using this session will use the ``URLMock`` class for responses, which will return a mock response without using the network.
@@ -67,10 +67,10 @@ extension URLMock {
     /// data object (`Data()`) and no error. You can change the mocked response at any time after the session is created by setting the
     /// `URLProtocol.mock` property.
     public static func session(
+        _ mockResponse: MockResponse = .mock(),
         configuration: URLSessionConfiguration = .ephemeral,
         delegate: URLSessionDelegate? = nil,
-        delegateQueue: OperationQueue? = nil,
-        mockResponse: MockResponse = .mock()
+        delegateQueue: OperationQueue? = nil
     ) -> URLSession {
         let sessionConfiguration = configuration
         sessionConfiguration.protocolClasses = [URLMock.self]
@@ -98,10 +98,10 @@ extension URLMock {
         response: @escaping (URLRequest) throws -> MockResponse.Response
     ) rethrows -> URLSession {
         session(
+            try .mock(response: response),
             configuration: configuration,
             delegate: delegate,
-            delegateQueue: delegateQueue,
-            mockResponse: try .mock(response: response)
+            delegateQueue: delegateQueue
         )
     }
 }
