@@ -1,5 +1,5 @@
 //
-//  Responses.swift
+//  Response.swift
 //  
 //
 //  Created by Thomas De Leon on 11/20/23.
@@ -25,7 +25,7 @@ extension MockResponse {
         ///   - httpURLResponse: `HTTPURLResponse` to return
         ///   - data: `Data` to return
         ///   - error: `Error` to return
-        public init(_ httpURLResponse: HTTPURLResponse, data: Data = Data(), error: Error? = nil) {
+        public init(httpURLResponse: HTTPURLResponse, data: Data = Data(), error: Error? = nil) {
             self.httpURLResponse = httpURLResponse
             self.data = data
             self.error = error
@@ -38,17 +38,18 @@ extension MockResponse {
         ///   - error: Error to return
         ///   - request: The request this is in response to
         /// - Returns: A response from the given properties
-        public init(_ statusCode: Int = 204, data: Data = Data(), error: Error? = nil, for request: URLRequest) {
+        public init(statusCode: Int = 204, data: Data = Data(), error: Error? = nil, for request: URLRequest) {
             let urlResponse = HTTPURLResponse(
                 url: request.url!,
                 statusCode: statusCode,
                 httpVersion: nil,
                 headerFields: nil
             )!
+            
             if let requestError = error as? RequestError {
-                self.init(requestError, data: data)
+                self.init(requestError: requestError, data: data)
             } else {
-                self.init(urlResponse, data: data, error: error)
+                self.init(httpURLResponse: urlResponse, data: data, error: error)
             }
         }
         
@@ -62,14 +63,14 @@ extension MockResponse {
         ///   - request: The request this is in response to.
         /// - Returns: A response from the given properties.
         public init<Model: Encodable>(
-            _ model: Model,
+            model: Model,
             encoder: JSONEncoder = JSONEncoder(),
             statusCode: Int = 204,
             error: Error? = nil,
             for request: URLRequest
         ) throws {
             let data = try encoder.encode(model)
-            self.init(statusCode, data: data, error: error, for: request)
+            self.init(statusCode: statusCode, data: data, error: error, for: request)
         }
         
         /// A response returning a JSON object as encoded data
@@ -81,14 +82,14 @@ extension MockResponse {
         ///   - request: The request this is in response to
         /// - Returns: A response from the give properties
         public init(
-            _ jsonObject: Any,
+            jsonObject: Any,
             jsonWritingOptions: JSONSerialization.WritingOptions = [],
             statusCode: Int = 200,
             error: Error? = nil,
             for request: URLRequest
         ) throws {
             let data = try JSONSerialization.data(withJSONObject: jsonObject, options: jsonWritingOptions)
-            self.init(statusCode, data: data, error: error, for: request)
+            self.init(statusCode: statusCode, data: data, error: error, for: request)
         }
         
         //MARK: Error Responses
@@ -98,8 +99,8 @@ extension MockResponse {
         ///   - urlErrorCode: The code for the error
         ///   - request: The request this is in response to
         /// - Returns: A response with `URLError` of the given code
-        public init(_ urlErrorCode: URLError.Code, for request: URLRequest) {
-            self.init(error: URLError(urlErrorCode), for: request)
+        public init(code: URLError.Code, for request: URLRequest) {
+            self.init(error: URLError(code), for: request)
         }
         
         /// A response returning a `RequestError.HTTPError`
@@ -111,11 +112,7 @@ extension MockResponse {
         ///
         /// - Note: The `Request.send()` method will only throw/return an error if the  `Request.Configuration.parseHTTPStatusErrors`
         /// property is set to `true`. If  `false`, the the status code will be set in the HTTPURLResponse, but the method will not throw.
-        public init(
-            _ httpErrorType: RequestError.HTTPError.ErrorType,
-            data: Data = Data(),
-            for request: URLRequest
-        ) {
+        public init(httpErrorType: RequestError.HTTPError.ErrorType, data: Data = Data(), for request: URLRequest) {
             var statusCode: Int
             switch httpErrorType {
             case .badRequest:
@@ -133,7 +130,7 @@ extension MockResponse {
             case .other:
                 statusCode = 405
             }
-            self.init(statusCode, data: data, for: request)
+            self.init(statusCode: statusCode, data: data, for: request)
         }
         
         /// A response returning a `RequestError`
@@ -141,10 +138,10 @@ extension MockResponse {
         ///   - requestError: The error to return
         ///   - data: Data to return
         /// - Returns: A response with the `RequestError` of the given type
-        public init(_ requestError: RequestError, data: Data = Data()) {
+        public init(requestError: RequestError, data: Data = Data()) {
             switch requestError {
             case .urlError(let request, let error):
-                self.init(error.code, for: request.urlRequest)
+                self.init(code:error.code, for: request.urlRequest)
             case .decoding(let request, let error):
                 self.init(data: data, error: error, for: request.urlRequest)
             case .other(let request, let message):
@@ -154,7 +151,7 @@ extension MockResponse {
                     for: request.urlRequest
                 )
             case .httpStatus(let request, let error):
-                self.init(error.statusCode, data: data, for: request.urlRequest)
+                self.init(statusCode: error.statusCode, data: data, for: request.urlRequest)
             }
         }
         

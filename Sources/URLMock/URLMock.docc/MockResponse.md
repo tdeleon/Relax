@@ -1,4 +1,4 @@
-# ``URLMock/URLMock/MockResponse``
+# ``URLMock/MockResponse``
 
 ## Topics
 

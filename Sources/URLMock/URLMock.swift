@@ -10,8 +10,10 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// A `URLProtocol` implementation which uses a mock response for all requests made
-public class URLMock: URLProtocol {
+/// A class which returns a mocked response for all requests made.
+///
+/// This class subclasses `URLProtocol` in order to return a mocked response instead of using the network.
+public final class URLMock: URLProtocol {
     /// The mock object used to return the response
     public static var response: MockResponse = .mock()
     
@@ -50,7 +52,7 @@ public class URLMock: URLProtocol {
 }
 
 extension URLMock {
-    /// A URLSession configured to return mock responses.
+    /// A `URLSession` configured to return mock responses.
     /// - Parameters:
     ///   - configuration: The configuration for the session. The default is `URLSessionConfiguration.ephemeral`
     ///   - delegate: The delegate for the session. The default is `nil`.
@@ -58,7 +60,9 @@ extension URLMock {
     ///   - response: The mock response to return. The default is `.mock()`, an empty response with a `204` HTTP status code.
     /// - Returns: A session configured to return mock responses.
     ///
-    /// Any request made using this session will use the `URLProtocolMock` protocol, which will return a mock response without using the network.
+    /// Any request made using this session will use the ``URLMock`` class for responses, which will return a mock response without using the network.
+    /// ``URLMock`` will be set as the `protocolClasses` property for the `URLSessionConfiguration`.
+    ///
     /// Pass in the desired response for all requests to the `response` parameter, which defaults to a response with an HTTP status code of `200`, an empty
     /// data object (`Data()`) and no error. You can change the mocked response at any time after the session is created by setting the
     /// `URLProtocol.mock` property.
@@ -66,15 +70,15 @@ extension URLMock {
         configuration: URLSessionConfiguration = .ephemeral,
         delegate: URLSessionDelegate? = nil,
         delegateQueue: OperationQueue? = nil,
-        response: MockResponse = .mock()
+        mockResponse: MockResponse = .mock()
     ) -> URLSession {
         let sessionConfiguration = configuration
         sessionConfiguration.protocolClasses = [URLMock.self]
-        Self.response = response
+        Self.response = mockResponse
         return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
     
-    /// A URLSession configured to return mock responses.
+    /// A `URLSession` configured to return a mock response provided by a closure.
     /// - Parameters:
     ///   - configuration: The configuration for the session. The default is `URLSessionConfiguration.ephemeral`
     ///   - delegate: The delegate for the session. The default is `nil`.
@@ -82,16 +86,22 @@ extension URLMock {
     ///   - response: A closure returning a mock response.
     /// - Returns: A session configured to return mock responses.
     ///
-    /// Any request made using this session will use the `URLProtocolMock` protocol, which will return a mock response without using the network.
-    /// Pass in the desired response for all requests to the `response` parameter, which defaults to a response with an HTTP status code of `200`, an empty
-    /// data object (`Data()`) and no error. You can change the mocked response at any time after the session is created by setting the
-    /// `URLProtocol.mock` property.
+    /// Any request made using this session will use the ``URLMock`` class for responses, which will return a mock response without using the network.
+    /// ``URLMock`` will be set as the `protocolClasses` property for the `URLSessionConfiguration`.
+    ///
+    /// Pass in a closure returning a ``MockResponse/Response`` to the `response` parameter. You can change the mocked response at any time after
+    /// the session is created by setting the `URLProtocol.mock` property.
     public static func session(
         configuration: URLSessionConfiguration = .ephemeral,
         delegate: URLSessionDelegate? = nil,
         delegateQueue: OperationQueue? = nil,
-        response: () -> MockResponse
-    ) -> URLSession {
-        session(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue, response: response())
+        response: @escaping (URLRequest) throws -> MockResponse.Response
+    ) rethrows -> URLSession {
+        session(
+            configuration: configuration,
+            delegate: delegate,
+            delegateQueue: delegateQueue,
+            mockResponse: try .mock(response: response)
+        )
     }
 }

@@ -51,6 +51,7 @@ extension URLRequest {
     
     public func validate(body expected: Data) throws {
         let data = try XCTUnwrap(bodyStreamData())
+        XCTAssertEqual(data, expected)
     }
     
     public func validate<Model>(

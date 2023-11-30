@@ -1,6 +1,6 @@
 //
 //  MockResponse.swift
-//  
+//
 //
 //  Created by Thomas De Leon on 11/20/23.
 //
@@ -8,7 +8,7 @@
 import Foundation
 import Relax
 
-/// A structure that holds details of a mocked response.
+/// A structure that represents a mock response.
 ///
 /// A mocked response includes:
 ///
@@ -21,7 +21,7 @@ import Relax
 public struct MockResponse {
     /// The delay before a response is returned.
     ///
-    /// Any delay is applied *after* `onReceive` is called. The default value is `0`.
+    /// Any delay is applied *after* `onReceive` is called. The default value is `0` (no delay).
     public var delay: TimeInterval = 0
     /// Called just before the response is returned.
     ///
@@ -69,7 +69,7 @@ public struct MockResponse {
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) {
-            Response(statusCode, data: data, error: error, for: $0)
+            Response(statusCode: statusCode, data: data, error: error, for: $0)
         }
     }
     
@@ -95,7 +95,7 @@ public struct MockResponse {
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) {
-            try Response(model, encoder: encoder, statusCode: statusCode, error: error, for: $0)
+            try Response(model: model, encoder: encoder, statusCode: statusCode, error: error, for: $0)
         }
     }
     
@@ -120,7 +120,7 @@ public struct MockResponse {
     ) throws -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { request in
             try Response(
-                jsonObject,
+                jsonObject: jsonObject,
                 jsonWritingOptions: jsonWritingOptions,
                 statusCode: statusCode,
                 error: error,
@@ -147,7 +147,7 @@ public struct MockResponse {
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { _ in
-            { Response(httpURLResponse, data: data, error: error) }()
+            { Response(httpURLResponse: httpURLResponse, data: data, error: error) }()
         }
     }
     
@@ -166,7 +166,7 @@ public struct MockResponse {
         delay: TimeInterval = 0,
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
-        try mock(delay: delay, onReceive: onReceive) { Response(urlErrorCode, for: $0) }
+        try mock(delay: delay, onReceive: onReceive) { Response(code: urlErrorCode, for: $0) }
     }
     
     /// A mock response returning a `RequestError.HTTPError` of the given type
@@ -184,6 +184,6 @@ public struct MockResponse {
         delay: TimeInterval = 0,
         onReceive: ((_ request: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
-        try mock(delay: delay, onReceive: onReceive) { Response(httpErrorType, data: data, for: $0) }
+        try mock(delay: delay, onReceive: onReceive) { Response(httpErrorType: httpErrorType, data: data, for: $0) }
     }
 }

@@ -17,7 +17,7 @@ final class AsyncCancellationTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        session = URLMock.session(response: .mock(delay: 5))
+        session = URLMock.session(mockResponse: .mock(delay: 5))
     }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet
