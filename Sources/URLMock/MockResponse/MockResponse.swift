@@ -48,7 +48,7 @@ public struct MockResponse {
         data: Data = Data(),
         error: Error? = nil,
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) {
             Response(statusCode: statusCode, data: data, error: error, for: $0)
@@ -65,8 +65,8 @@ public struct MockResponse {
     /// Use this method to provide a mock response when you need to base the response on the request received.
     public static func mock(
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil,
-        response: @escaping (_ request: URLRequest) throws -> Response
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil,
+        response: @escaping (_ received: URLRequest) throws -> Response
     ) rethrows -> MockResponse {
         self.init(delay: delay, onReceive: onReceive) {
             try response($0)
@@ -92,7 +92,7 @@ public struct MockResponse {
         statusCode: Int = 204,
         error: Error? = nil,
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) {
             try Response(model: model, encoder: encoder, statusCode: statusCode, error: error, for: $0)
@@ -116,7 +116,7 @@ public struct MockResponse {
         statusCode: Int = 204,
         error: Error? = nil,
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) throws -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { request in
             try Response(
@@ -144,7 +144,7 @@ public struct MockResponse {
         data: Data = Data(),
         error: Error? = nil,
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { _ in
             { Response(httpURLResponse: httpURLResponse, data: data, error: error) }()
@@ -164,7 +164,7 @@ public struct MockResponse {
     public static func mock(
         _ urlErrorCode: URLError.Code,
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { Response(code: urlErrorCode, for: $0) }
     }
@@ -182,7 +182,7 @@ public struct MockResponse {
         _ httpErrorType: RequestError.HTTPError.ErrorType,
         data: Data = Data(),
         delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+        onReceive: ((_ received: URLRequest) throws -> Void)? = nil
     ) rethrows -> MockResponse {
         try mock(delay: delay, onReceive: onReceive) { Response(httpErrorType: httpErrorType, data: data, for: $0) }
     }
