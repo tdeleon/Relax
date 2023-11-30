@@ -11,8 +11,7 @@
 
 ### Creating a MockResponse
 
-- ``mock(statusCode:data:error:delay:onReceive:)``
-- ``mock(_:data:error:delay:onReceive:)``
+- ``mock(_:data:error:delay:onReceive:)-75apm``
 - ``mock(delay:onReceive:response:)``
 
 ### Creating a MockResponse with JSON

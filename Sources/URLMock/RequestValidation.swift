@@ -15,11 +15,6 @@ extension URLRequest {
         return URLComponents(url: url, resolvingAgainstBaseURL: true)
     }
     
-    public var queryItems: [URLQueryItem]? {
-        guard let urlComponents else { return nil }
-        return urlComponents.queryItems
-    }
-    
     func bodyStreamData() -> Data? {
         guard let httpBodyStream else { return nil }
         httpBodyStream.open()
@@ -34,6 +29,11 @@ extension URLRequest {
         httpBodyStream.close()
         
         return data
+    }
+    
+    public var queryItems: [URLQueryItem]? {
+        guard let urlComponents else { return nil }
+        return urlComponents.queryItems
     }
     
     //MARK: - Validation

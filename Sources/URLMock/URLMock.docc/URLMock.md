@@ -9,7 +9,6 @@
 ### Creating a Mocked Session
 
 - ``session(_:configuration:delegate:delegateQueue:)``
-- ``session(configuration:delegate:delegateQueue:response:)``
 
 ### URLProtocol Methods
 

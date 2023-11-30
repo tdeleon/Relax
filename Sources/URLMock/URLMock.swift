@@ -77,31 +77,4 @@ extension URLMock {
         Self.response = mockResponse
         return URLSession(configuration: configuration, delegate: delegate, delegateQueue: delegateQueue)
     }
-    
-    /// A `URLSession` configured to return a mock response provided by a closure.
-    /// - Parameters:
-    ///   - configuration: The configuration for the session. The default is `URLSessionConfiguration.ephemeral`
-    ///   - delegate: The delegate for the session. The default is `nil`.
-    ///   - delegateQueue: The delegateQueue for the session. The default is `nil`.
-    ///   - response: A closure returning a mock response.
-    /// - Returns: A session configured to return mock responses.
-    ///
-    /// Any request made using this session will use the ``URLMock`` class for responses, which will return a mock response without using the network.
-    /// ``URLMock`` will be set as the `protocolClasses` property for the `URLSessionConfiguration`.
-    ///
-    /// Pass in a closure returning a ``MockResponse/Response`` to the `response` parameter. You can change the mocked response at any time after
-    /// the session is created by setting the `URLProtocol.mock` property.
-    public static func session(
-        configuration: URLSessionConfiguration = .ephemeral,
-        delegate: URLSessionDelegate? = nil,
-        delegateQueue: OperationQueue? = nil,
-        response: @escaping (URLRequest) throws -> MockResponse.Response
-    ) rethrows -> URLSession {
-        session(
-            try .mock(response: response),
-            configuration: configuration,
-            delegate: delegate,
-            delegateQueue: delegateQueue
-        )
-    }
 }

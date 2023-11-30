@@ -27,7 +27,7 @@ parameter.
 
 ```swift
 // create a session with a 404 response code
-let session = URLMock.session(response: .mock(statusCode: 404)
+let session = URLMock.session(.mock(statusCode: 404))
 ```
 
 You can change the mocked response at any time by setting the ``URLMock/response`` property:
@@ -72,11 +72,10 @@ the parameter of the closure.
 
 ### Creating a Mocked Session
 
-- ``URLMock/URLMock/session(_:configuration:delegate:delegateQueue:)``
-- ``URLMock/URLMock/session(configuration:delegate:delegateQueue:response:)``
+- ``URLMock/session(_:configuration:delegate:delegateQueue:)``
 
 ### Mocking Responses
 
-- ``URLMock/MockResponse``
-- ``URLMock/MockResponse/mock(delay:onReceive:response:)``
-- ``URLMock/MockResponse/mock(statusCode:data:error:delay:onReceive:)``
+- ``MockResponse``
+- ``MockResponse/mock(delay:onReceive:response:)``
+- ``MockResponse/mock(_:data:error:delay:onReceive:)-75apm``

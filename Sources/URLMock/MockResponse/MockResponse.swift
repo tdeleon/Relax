@@ -32,6 +32,29 @@ public struct MockResponse {
     
     //MARK: - Mock Responses
     
+    /// A mock response with the given status code, data, and optional error.
+    /// - Parameters:
+    ///   - statusCode: The HTTP status code to return. The default is `204` (no content).
+    ///   - data: Data to return
+    ///   - error: Error to return
+    ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
+    ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
+    /// - Returns: A new mock response
+    ///
+    /// Use this method when you don't need to base the response on the request received. A response will be created from the properties provided and
+    /// returned.
+    public static func mock(
+        _ statusCode: Int = 204,
+        data: Data = Data(),
+        error: Error? = nil,
+        delay: TimeInterval = 0,
+        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
+    ) rethrows -> MockResponse {
+        try mock(delay: delay, onReceive: onReceive) {
+            Response(statusCode: statusCode, data: data, error: error, for: $0)
+        }
+    }
+    
     /// A ``MockResponse`` with a closure providing the ``Response`` to be returned.
     /// - Parameters:
     ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
@@ -47,29 +70,6 @@ public struct MockResponse {
     ) rethrows -> MockResponse {
         self.init(delay: delay, onReceive: onReceive) {
             try response($0)
-        }
-    }
-    
-    /// A mock response with the given status code, data, and optional error.
-    /// - Parameters:
-    ///   - statusCode: The HTTP status code to return. The default is `204` (no content).
-    ///   - data: Data to return
-    ///   - error: Error to return
-    ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
-    ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.
-    /// - Returns: A new mock response
-    ///
-    /// Use this method when you don't need to base the response on the request received. A response will be created from the properties provided and
-    /// returned.
-    public static func mock(
-        statusCode: Int = 204,
-        data: Data = Data(),
-        error: Error? = nil,
-        delay: TimeInterval = 0,
-        onReceive: ((_ request: URLRequest) throws -> Void)? = nil
-    ) rethrows -> MockResponse {
-        try mock(delay: delay, onReceive: onReceive) {
-            Response(statusCode: statusCode, data: data, error: error, for: $0)
         }
     }
     
