@@ -57,7 +57,7 @@ Providing a response from a URLError:
 
 ```swift
 // create a session which returns a response with a Not Connected To Internet code
-let session = URLMock.session(response: .mock(URLError.notConnectedToInternet))
+let session = URLMock.session(response: .mock(.notConnectedToInternet))
 ```
 
 To see all possible responses, see ``URLMock/URLMock/MockResponse``.

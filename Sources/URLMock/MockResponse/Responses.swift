@@ -8,7 +8,7 @@
 import Foundation
 import Relax
 
-extension URLMock.MockResponse {
+extension MockResponse {
     /// A structure defining the actual response provided to a `URLSession`
     public struct Response {
         /// `HTTPURLResponse` to return.
