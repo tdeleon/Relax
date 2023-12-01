@@ -18,7 +18,7 @@ lightweight built on protocols, easily allowing you to structure your requests f
 
 ### Full Reference Documentation
 
-https://swiftpackageindex.com/tdeleon/Relax/documentation
+https://swiftpackageindex.com/tdeleon/relax/documentation
 
 ### Features
 
@@ -47,6 +47,8 @@ Available for all Swift (5.7+) platforms, including:
 
 Relax supports the [Swift Package Manager](https://www.swift.org/package-manager/). To integrate in your project-
 
+#### Using a Package Manifest File
+
 1. Add the following to the **package** dependencies in the *Package.swift* manifest file:
 
     ```swift
@@ -65,14 +67,31 @@ Relax supports the [Swift Package Manager](https://www.swift.org/package-manager
     ]
     ```
 
+#### Using an Xcode Project
+
+1. In your project, choose **File > Add Package Dependencies...**
+
+2. Select the desired criteria, and click **Add Package**
+
+3. In the Package Product selection dialog, select **your target** in the *Add to Target* column for the *Package Product*
+**Relax**. Leave **URLMock** set to **None**, unless you have a test target.
+
+4. Click on **Add Package**
+
+>Tip: `URLMock` is an additional framework provided to aid in testing by mocking responses to requests, and should be
+added to your test targets only. For more information, see <doc:Relax#Testing> below.
+
+#### Import the framework
+
 In files where you will be using Relax, import the framework:
 
 ```swift
 import Relax
 ```
 
-### Make a Simple Request
+### Make Requests
 
+You can make very simple requests:
 ```swift
 do {
     let request = Request(.get, url: URL(string: "https://example.com/users")!)
@@ -81,6 +100,95 @@ do {
     print(error)
 }
 ```
+Or, more complex requests with multiple properties:
+```swift
+let request = Request(.post, url: URL(string: "https://example.com/users")!) {
+    Body {
+        // Send an Encodable user object as JSON in the request body
+        User(name: "firstname")
+    }
+    Headers {
+        Header.authorization(.basic, value: "secret-123")
+        Header.contentType(.applicationJSON)
+    }
+}
+```
 
-To get started using Relax, see the 
-[full documentation](https://swiftpackageindex.com/tdeleon/Relax/documentation).
+See <doc:DefiningRequests> for more details.
+
+### Define a Complex API Structure
+
+You can organize groups of requests into structures of ``Service``s and ``Endpoint``s, inheriting a common base URL and
+properties:
+
+```swift
+enum UserService: Service {
+    static let baseURL = URL(string: "https://example.com/")!
+    // Define shared properties for any request/endpoint children
+    static var sharedProperties: Request.Properties {
+        Headers {
+            Header.authorization(.basic, value: "secretpassword")
+        }
+    }
+
+    // define a /users endpoint
+    enum Users: Endpoint {
+        // /users appended to base URL: https://example.com/users
+        static let path = "users"
+        // connect Users to UserService
+        typealias Parent = UserService
+
+        // GET request
+        static var getAll = Request(.get, parent: UserService.self)
+    }
+}
+
+// make a get request to https://example.com/users
+let users = try await UserService.Users.getAll.send()
+```
+
+See <doc:DefiningAPIStructure> for more details.
+
+## Testing
+
+[URLMock](https://swiftpackageindex.com/tdeleon/relax/documentation/urlmock) is a framework for mocking responses to
+`URLSession` requests, and is included in the Relax package as a second library target. 
+
+This allows you to test all ``Request``s by using a `URLSession` that returns mock content only, never making a real
+request over the network. Convenience methods are provided for common responses such as HTTP status codes, JSON, and
+errors.
+
+To use, simply add `URLMock` as a dependency in your `Package.swift` file or in Xcode to your test target(s):
+
+```swift
+.testTarget(
+    name: "MyAppTests",
+    dependencies: ["Relax", "URLMock"]),
+```
+
+>Note: The `URLMock` framework is intended for testing use only. It is highly encouraged to include it as a
+dependency in your test targets only.
+
+Next, in your tests, include the `URLMock` framework along with `Relax` and the target being tested:
+
+```swift
+import XCTest
+import Relax
+import URLMock
+@testable import MyApp
+```
+Finally, create a `URLSession` providing a mocked response, and use it with a ``Request``:
+
+```swift
+// Create a session which returns a URLError
+let session = URLMock.session(.mock(.notConnectedToInternet))
+// Make a request using the modified session. An error should be thrown
+do {
+    try await MyAPIService.Endpoint.get.send(session: session)
+    XCTAssertFail("Should have failed")
+} catch {
+    // Validate error is handled correctly
+}
+```
+
+For further examples, see the [full documentation](https://swiftpackageindex.com/tdeleon/relax/documentation/urlmock).

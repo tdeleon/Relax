@@ -10,6 +10,9 @@ implementation of `URLProtocol` which returns the provided mocked response.
 Responses are fully customizable with an `HTTPURLResponse`, data, and optional error; or convenience responses can be
 used.
 
+>Note: `URLMock` is a companion to [Relax](https://swiftpackageindex.com/tdeleon/relax/documentation) and is intended to help testing when using the framework, however because
+it mocks responses to `URLSession` directly, it can also be used with requests not using `Relax`.
+
 ## Getting Started
 
 To configure a `URLSession` for using mocked responses, a convenience function is provided:
