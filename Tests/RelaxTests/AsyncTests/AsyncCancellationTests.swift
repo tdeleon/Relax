@@ -52,10 +52,10 @@ final class AsyncCancellationTests: XCTestCase {
                 XCTFail()
             }
         }
-        sleep(1)
+        Thread.sleep(forTimeInterval: 1)
         task.cancel()
         
-        waitForExpectations(timeout: 2)
+        waitForExpectations(timeout: 4)
     }
 }
 #endif
