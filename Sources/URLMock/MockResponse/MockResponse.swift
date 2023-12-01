@@ -12,12 +12,24 @@ import Relax
 ///
 /// A mocked response includes:
 ///
-/// - An optional delay (the default is 0s)
+/// - An optional delay (the default is `0`s)
 /// - An optional closure providing the request, which is called just before the response is returned. This can be used to validate the request.
 /// - A closure providing the request and returning a ``Response``. This is used to provide the actual response back to the request.
 ///
 /// ``Response``s consist of an `HTTPURLResponse`, `Data`, and optional `Error`. Convenience methods are provided to quickly create common
 /// responses such as JSON objects, HTTP status codes, and Errors.
+///
+/// >Tip: To assist in validating requests, extension methods on `URLRequest` are [provided for convenience](<doc:Foundation/URLRequest>). These
+/// methods utilize `XCTAssert` methods to validate values.
+///
+/// ```swift
+/// // create a mock response returning a 204 HTTP status code
+/// // implement the onReceive closure to validate the request properties
+/// let mock = .mock { received in
+///     XCTAssertEqual(recieved.httpMethod, "POST")
+///     try received.validateQueryItems(match: [URLQueryItem(name: "filter", value: "true")]
+/// }
+///
 public struct MockResponse {
     /// The delay before a response is returned.
     ///
@@ -55,7 +67,7 @@ public struct MockResponse {
         }
     }
     
-    /// A ``MockResponse`` with a closure providing the ``Response`` to be returned.
+    /// A mock response with a closure providing the ``Response`` to be returned.
     /// - Parameters:
     ///   - delay: A delay to wait after `onReceive` is called, but before the response is returned.
     ///   - onReceive: A closure called when the request is received, just before the response is returned. Use this to validate the request.

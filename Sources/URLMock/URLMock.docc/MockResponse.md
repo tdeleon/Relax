@@ -1,5 +1,9 @@
 # ``URLMock/MockResponse``
 
+@Options {
+    @AutomaticSeeAlso(disabled)
+}
+
 ## Topics
 
 ### MockResponse Properties
@@ -12,6 +16,7 @@
 ### Creating a MockResponse
 
 - ``mock(_:data:error:delay:onReceive:)-75apm``
+- ``mock(_:data:error:delay:onReceive:)-4b3lq``
 - ``mock(delay:onReceive:response:)``
 
 ### Creating a MockResponse with JSON
@@ -23,3 +28,7 @@
 
 - ``mock(_:delay:onReceive:)``
 - ``mock(_:data:delay:onReceive:)``
+
+## See Also
+
+- ``Foundation/URLRequest``

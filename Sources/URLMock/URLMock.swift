@@ -15,6 +15,9 @@ import FoundationNetworking
 /// This class subclasses `URLProtocol` in order to return a mocked response instead of using the network.
 public final class URLMock: URLProtocol {
     /// The mock object used to return the response
+    ///
+    /// Set this property to provide the response you want to be returned to `URLSession` clients using ``URLMock``.
+    /// - Important: Setting this property will apply to all instances of `URLSession` using ``URLMock``.
     public static var response: MockResponse = .mock()
     
     override public class func canInit(with request: URLRequest) -> Bool { true }
