@@ -32,7 +32,7 @@ public final class URLMock: URLProtocol {
             let response = try Self.response.responseHandler(request)
             // Sleep for any set delay
             if Self.response.delay > 0 {
-                sleep(UInt32(Self.response.delay))
+                Thread.sleep(forTimeInterval: Self.response.delay)
             }
             
             // Call did failWithError for an error
