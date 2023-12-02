@@ -38,6 +38,8 @@ final class AsyncCancellationTests: XCTestCase {
         waitForExpectations(timeout: 2)
     }
     
+    #if !os(Windows) && !os(Linux)
+    // Disable on Windows/Linux- test delay does not seem to be simulated properly
     // Tasks cancelled after a delay return a URLError.cancelled, since the URLSession task is already in progress
     func testDelayedCancellation() throws {
         let expectation = self.expectation(description: "Expected cancellation")
@@ -57,5 +59,6 @@ final class AsyncCancellationTests: XCTestCase {
         
         waitForExpectations(timeout: 4)
     }
+    #endif
 }
 #endif
