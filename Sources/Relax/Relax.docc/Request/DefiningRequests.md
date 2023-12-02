@@ -142,7 +142,7 @@ enum UserService: Service {
     // get user with name
     static func getUser(name: String) -> Request {
         Request(.get, parent: Self.self) {
-            QueryParameters { ("name", name) }
+            QueryItems { ("name", name) }
         }
     }
 }
@@ -173,7 +173,7 @@ enum UserService: Service {
         @RequestBuilder<Users>
         static func getUser(name: String) -> Request {
             Request.HTTPMethod.get
-            QueryParameters { ("name", name) }
+            QueryItems { ("name", name) }
         }
     }
 }

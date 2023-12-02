@@ -8,6 +8,7 @@
 #if canImport(Combine)
 import XCTest
 import Combine
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -17,18 +18,17 @@ final class CombineRequestTests: XCTestCase {
     var session: URLSession!
         
     override func setUp() {
-        session = URLSession.sessionWithMock
+        session = URLMock.session()
     }
     
     override func tearDown() {
         cancellable = nil
         session = nil
-        URLProtocolMock.mock = nil
     }
     
     private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.mock = URLProtocolMock.mockResponse()
+        URLMock.response = .mock()
         
         cancellable = request.send(session: session)
             .sink(receiveCompletion: { (completion) in

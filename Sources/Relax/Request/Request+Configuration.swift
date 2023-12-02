@@ -53,10 +53,10 @@ extension Request {
         /// ``networkServiceType``                              | `URLRequest.NetworkServiceType.default`
         /// ``timeoutInterval``                                     | `60`
         /// ``httpShouldHandleCookies``                   | `true`
+        /// ``allowsConstrainedNetworkAccess``* | `true`
+        /// ``allowsExpensiveNetworkAccess``*                    | `true`
         /// ``parseHTTPStatusErrors``                       | `false`
         /// ``appendTraillingSlashToPath``            | `false`
-        /// ``allowsConstrainedNetworkAccess``* | `true`
-        /// ``appendTraillingSlashToPath``*                          | `false`
         ///
         /// _*available on iOS, macOS, tvOS, and watchOS only._
         public static var `default`: Configuration {

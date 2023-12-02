@@ -31,10 +31,10 @@ extension RequestProperty {
 extension Request {
     /// A structure that groups properties of a request
     public struct Properties: Hashable {
-        var headers: Headers = Headers(value: [:])
-        var queryItems: QueryItems = QueryItems(value: [])
-        var pathComponents: PathComponents = PathComponents(value: [])
-        var body: Body = Body(value: nil)
+        public var headers: Headers = Headers(value: [:])
+        public var queryItems: QueryItems = QueryItems(value: [])
+        public var pathComponents: PathComponents = PathComponents(value: [])
+        public var body: Body = Body(value: nil)
         
         public static func +(lhs: Properties, rhs: Properties) -> Request.Properties {
             var new = rhs

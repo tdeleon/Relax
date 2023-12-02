@@ -8,6 +8,7 @@
 #if canImport(Combine)
 import XCTest
 import Combine
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
@@ -19,17 +20,16 @@ final class CombineCodableTests: XCTestCase {
     let service = ExampleService.Users.self
 
     override func setUpWithError() throws {
-        session = URLSession.sessionWithMock
+        session = URLMock.session()
     }
 
     override func tearDownWithError() throws {
         session = nil
-        URLProtocolMock.mock = nil
     }
 
     func testGet() throws {
         let sampleModel = [User(name: "1"), User(name: "2")]
-        URLProtocolMock.mock = URLProtocolMock.mockResponse(model: sampleModel)
+        URLMock.response = .mock(sampleModel)
         let expectation = self.expectation(description: "Expect")
         
         cancellable = service.getRequest

@@ -8,6 +8,7 @@
 #if canImport(Combine)
 import XCTest
 import Combine
+import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -21,7 +22,7 @@ final class CombineErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: expected)
+        URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -49,7 +50,7 @@ final class CombineErrorTests: ErrorTest {
     }
     
     func testDecodingError() throws {
-        URLProtocolMock.mock = URLProtocolMock.mockError(requestError: decodingError)
+        URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
 
         cancellable = request.send(session: session)

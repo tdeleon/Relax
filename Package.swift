@@ -16,6 +16,9 @@ let package = Package(
         .library(
             name: "Relax",
             targets: ["Relax"]),
+        .library(
+            name: "URLMock",
+            targets: ["URLMock"])
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -27,8 +30,12 @@ let package = Package(
         .target(
             name: "Relax",
             dependencies: []),
+        .target(
+            name: "URLMock",
+            dependencies: ["Relax"]
+        ),
         .testTarget(
             name: "RelaxTests",
-            dependencies: ["Relax"]),
+            dependencies: ["Relax", "URLMock"]),
     ]
 )
