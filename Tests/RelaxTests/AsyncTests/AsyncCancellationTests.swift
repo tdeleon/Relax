@@ -10,21 +10,14 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 final class AsyncCancellationTests: XCTestCase {
     var session: URLSession!
     
     override func setUpWithError() throws {
-        URLProtocolMock.mock = URLProtocolMock.mockResponse()
-        URLProtocolMock.delay = 5
-        session = URLSession.sessionWithMock
-    }
-    
-    override func tearDownWithError() throws {
-        session = nil
-        URLProtocolMock.mock = nil
-        URLProtocolMock.delay = 0
+        session = URLMock.session(.mock(delay: 5))
     }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet
@@ -45,6 +38,8 @@ final class AsyncCancellationTests: XCTestCase {
         waitForExpectations(timeout: 2)
     }
     
+    #if !os(Windows) && !os(Linux)
+    // Disable on Windows/Linux- test delay does not seem to be simulated properly
     // Tasks cancelled after a delay return a URLError.cancelled, since the URLSession task is already in progress
     func testDelayedCancellation() throws {
         let expectation = self.expectation(description: "Expected cancellation")
@@ -59,10 +54,11 @@ final class AsyncCancellationTests: XCTestCase {
                 XCTFail()
             }
         }
-        sleep(1)
+        Thread.sleep(forTimeInterval: 1)
         task.cancel()
         
-        waitForExpectations(timeout: 2)
+        waitForExpectations(timeout: 4)
     }
+    #endif
 }
 #endif

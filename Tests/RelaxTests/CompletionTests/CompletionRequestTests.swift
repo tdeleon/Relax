@@ -9,6 +9,7 @@ import XCTest
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 final class CompletionRequestTests: XCTestCase {
@@ -16,26 +17,17 @@ final class CompletionRequestTests: XCTestCase {
     
     override func setUp() {
         let configuration = URLSessionConfiguration.default
-        configuration.protocolClasses = [URLProtocolMock.self]
+        configuration.protocolClasses = [URLMock.self]
         session = URLSession(configuration: configuration)
     }
     
     override func tearDown() {
         session = nil
-        URLProtocolMock.mock = nil
     }
     
     private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
-        URLProtocolMock.mock = { request in
-            let response = HTTPURLResponse(
-                url: URL(string: "http://example.com/")!,
-                statusCode: 200,
-                httpVersion: nil,
-                headerFields: nil
-            )!
-            return (response, nil, nil)
-        }
+        URLMock.response = .mock()
         
         request.send(session: session) { result in
             switch result {
