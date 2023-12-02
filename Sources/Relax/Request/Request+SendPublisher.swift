@@ -61,7 +61,14 @@ extension Request {
         send(session: session)
             .map(\.data)
             .decode(type: ResponseModel.self, decoder: decoder)
-            .mapError { RequestError.decoding(request: self, error: $0 as! DecodingError) }
+            .mapError {
+                switch $0 {
+                case let error as DecodingError:
+                    return RequestError.decoding(request: self, error: error)
+                default:
+                    return RequestError.other(request: self, message: $0.localizedDescription)
+                }
+            }
             .eraseToAnyPublisher()
     }
 }

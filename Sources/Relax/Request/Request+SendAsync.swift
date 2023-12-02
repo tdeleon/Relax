@@ -69,8 +69,10 @@ extension Request {
         )
         do {
             return try decoder.decode(ResponseModel.self, from: response.data)
+        } catch let error as DecodingError {
+            throw RequestError.decoding(request: self, error: error)
         } catch {
-            throw RequestError.decoding(request: self, error: error as! DecodingError)
+            throw error
         }
     }
 }
