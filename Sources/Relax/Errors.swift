@@ -68,6 +68,8 @@ extension RequestError {
             case forbidden
             /// 404 Not found
             case notFound
+            /// 415 Unsupported media type
+            case unsupportedMediaType
             /// 429 Too many requests
             case tooManyRequests
             /// 5XX Server error
@@ -107,6 +109,8 @@ extension RequestError {
                 self.type = .forbidden
             case 404:
                 self.type = .notFound
+            case 415:
+                self.type = .unsupportedMediaType
             case 429:
                 self.type = .tooManyRequests
             case 500...599:

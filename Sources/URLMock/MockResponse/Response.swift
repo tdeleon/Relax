@@ -126,6 +126,8 @@ extension MockResponse {
                 statusCode = 403
             case .notFound:
                 statusCode = 404
+            case .unsupportedMediaType:
+                statusCode = 415
             case .tooManyRequests:
                 statusCode = 429
             case .server:
