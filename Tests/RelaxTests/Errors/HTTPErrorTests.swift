@@ -44,6 +44,7 @@ final class HTTPErrorTests: XCTestCase {
         try checkHTTPError(statusCode: 401, type: .unauthorized)
         try checkHTTPError(statusCode: 403, type: .forbidden)
         try checkHTTPError(statusCode: 404, type: .notFound)
+        try checkHTTPError(statusCode: 415, type: .unsupportedMediaType)
         try checkHTTPError(statusCode: 429, type: .tooManyRequests)
         for code in 500...599 {
             try checkHTTPError(statusCode: code, type: .server)
