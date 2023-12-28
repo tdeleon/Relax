@@ -16,30 +16,7 @@ let testMacros: [String: Macro.Type] = [
 ]
 #endif
 
-final class MacroTests: XCTestCase {
-    func testRestAPIWithBaseURL() throws {
-        #if canImport(RelaxMacros)
-        assertMacroExpansion(
-            """
-            @RestAPI("https://example.com/")
-            enum TestService {
-            }
-            """,
-            expandedSource: """
-            enum TestService {
-
-                static let baseURL: URL = URL(string: "https://example.com/")!
-            }
-
-            extension TestService: APIComponent {
-            }
-            """,
-            macros: ["RestAPI": RestAPIURLMacro.self])
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-    
+final class MacroTests: XCTestCase {    
     func testRestAPI() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
@@ -53,9 +30,11 @@ final class MacroTests: XCTestCase {
             }
             
             extension TestService: APIComponent {
+                static let baseURL: URL = URL(string: "https://example.com/")!
             }
             """,
-            macros: ["RestAPI": RestAPIMacro.self])
+            macros: testMacros
+        )
         #else
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif

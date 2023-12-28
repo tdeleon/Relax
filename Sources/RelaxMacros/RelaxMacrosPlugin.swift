@@ -11,7 +11,6 @@ import SwiftSyntaxMacros
 @main
 struct RelaxMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        RestAPIMacro.self,
-        RestAPIURLMacro.self
+        RestAPIMacro.self
     ]
 }
