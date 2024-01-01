@@ -1,5 +1,5 @@
 //
-//  RestAPIMacro.swift
+//  APIServiceMacro.swift
 //
 //
 //  Created by Thomas De Leon on 12/27/23.
@@ -9,7 +9,7 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-public struct RestAPIMacro: ExtensionMacro {
+public struct APIServiceMacro: ExtensionMacro {
     public static func expansion(
         of node: AttributeSyntax,
         attachedTo declaration: some DeclGroupSyntax,

@@ -12,7 +12,7 @@ import XCTest
 #if canImport(RelaxMacros)
 import RelaxMacros
 let testMacros: [String: Macro.Type] = [
-    "Service": RestAPIMacro.self
+    "APIService": APIServiceMacro.self
 ]
 #endif
 
@@ -21,7 +21,7 @@ final class MacroTests: XCTestCase {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """
-            @RestAPI
+            @APIService("https://example.com/")
             enum TestService {
             }
             """,

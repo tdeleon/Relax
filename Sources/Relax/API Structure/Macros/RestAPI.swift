@@ -8,4 +8,4 @@
 import Foundation
 
 @attached(extension, conformances: APIComponent, names: named(baseURL))
-public macro RestAPI(_ baseURL: String) = #externalMacro(module: "RelaxMacros", type: "RestAPIMacro")
+public macro APIService(_ baseURL: String) = #externalMacro(module: "RelaxMacros", type: "APIServiceMacro")
