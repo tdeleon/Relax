@@ -8,7 +8,7 @@ jobs:
       max-parallel: 5
       fail-fast: false
       matrix:
-        os: [macos-12, macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-13, macos-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -16,8 +16,8 @@ jobs:
       name: Setup Swift
       uses: compnerd/gha-setup-swift@main
       with:
-        branch: swift-5.7-release
-        tag: 5.7-RELEASE
+        branch: swift-5.9-release
+        tag: 5.9-RELEASE
         
     - name: Checkout
       uses: actions/checkout@v3
