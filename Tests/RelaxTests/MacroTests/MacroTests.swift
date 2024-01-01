@@ -9,6 +9,7 @@ import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
 
+#if !os(Windows) // Macro tests do not currently compile on windows https://github.com/apple/swift/issues/69302
 #if canImport(RelaxMacros)
 import RelaxMacros
 let testMacros: [String: Macro.Type] = [
@@ -40,3 +41,4 @@ final class MacroTests: XCTestCase {
         #endif
     }
 }
+#endif
