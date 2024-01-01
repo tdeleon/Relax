@@ -44,7 +44,7 @@ let package = Package(
         ),
         .testTarget(
             name: "RelaxTests",
-            dependencies: ["Relax", "URLMock", .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")]
+            dependencies: ["Relax", "URLMock", "RelaxMacros", .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")]
         ),
     ]
 )
