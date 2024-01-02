@@ -19,14 +19,14 @@ jobs:
       with:
         branch: swift-5.9.2-release
         tag: 5.9.2-RELEASE
-    
-    - name: Checkout
-      uses: actions/checkout@v3
 
     - if: runner.os != 'Windows'
       uses: swift-actions/setup-swift@v1
       with:
         swift-version: "5.9"
+
+    - name: Checkout
+      uses: actions/checkout@v3
       
     - name: Build
       run: swift build
