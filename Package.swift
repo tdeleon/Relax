@@ -4,6 +4,46 @@
 import PackageDescription
 import CompilerPluginSupport
 
+
+var targets: [Target] = [
+    .target(
+        name: "URLMock",
+        dependencies: ["Relax"]
+    ),
+    .testTarget(
+        name: "RelaxTests",
+        dependencies: ["Relax", "URLMock"]
+    ),
+]
+
+var dependencies = [Package.Dependency]()
+
+// Macros do not currently compile on windows when building tests: https://github.com/apple/swift/issues/69302
+#if canImport(XCTest) && os(Windows)
+targets.append(.target(name: "Relax"))
+#else
+targets.append(
+    contentsOf: [
+        .target(name: "Relax", dependencies: ["RelaxMacros"]),
+        .macro(
+            name: "RelaxMacros",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ]
+        ),
+        .testTarget(
+            name: "RelaxMacrosTests",
+            dependencies: ["RelaxMacros", .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")]
+        )
+    ]
+)
+dependencies = [
+    // Depend on the Swift 5.9 release of SwiftSyntax
+    .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
+]
+#endif
+
 let package = Package(
     name: "Relax",
     platforms: [
@@ -21,30 +61,6 @@ let package = Package(
             name: "URLMock",
             targets: ["URLMock"])
     ],
-    dependencies: [
-        // Depend on the Swift 5.9 release of SwiftSyntax
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-        .target(
-            name: "Relax",
-            dependencies: ["RelaxMacros"]),
-        .macro(
-            name: "RelaxMacros",
-            dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-            ]
-        ),
-        .target(
-            name: "URLMock",
-            dependencies: ["Relax"]
-        ),
-        .testTarget(
-            name: "RelaxTests",
-            dependencies: ["Relax", "URLMock", "RelaxMacros", .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax")]
-        ),
-    ]
+    dependencies: dependencies,
+    targets: targets
 )
