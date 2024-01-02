@@ -11,8 +11,8 @@ import FoundationNetworking
 #endif
 @testable import Relax
 
-@APIService("https://example.com")
-enum ExampleService {
+enum ExampleService: Service {
+    static let baseURL: URL = URL(string: "https://example.com")!
     static var session: URLSession = .shared
     
     @RequestBuilder<ExampleService>
@@ -135,8 +135,9 @@ enum ExampleService {
     }
 }
 
-@APIService("a://@@")
-enum BadURLService {    
+enum BadURLService: Service {
+    static let baseURL: URL = URL(string: "a://@@")!
+    
     @RequestBuilder<BadURLService>
     static var get: Request {
         Request.HTTPMethod.get
