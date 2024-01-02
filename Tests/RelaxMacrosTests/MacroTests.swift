@@ -17,7 +17,7 @@ let testMacros: [String: Macro.Type] = [
 #endif
 
 final class MacroTests: XCTestCase {    
-    func testRestAPI() throws {
+    func testAPIService() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """

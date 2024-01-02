@@ -18,7 +18,7 @@ var targets: [Target] = [
 
 var dependencies = [Package.Dependency]()
 
-// Macros do not currently compile on windows when building tests: https://github.com/apple/swift/issues/69302
+// Macros do not currently compile on windows when building tests: https://github.com/apple/swift-package-manager/issues/7174
 #if canImport(XCTest) && os(Windows)
 targets.append(.target(name: "Relax"))
 #else
