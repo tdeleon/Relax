@@ -8,6 +8,7 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
+@testable import RelaxMacros
 
 #if canImport(RelaxMacros)
 import RelaxMacros
@@ -33,6 +34,26 @@ final class MacroTests: XCTestCase {
                 static let baseURL: URL = URL(string: "https://example.com/")!
             }
             """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+    
+    func testAPIServiceInvalidBaseURL() throws {
+        #if canImport(RelaxMacros)
+        assertMacroExpansion(
+            """
+            @APIService("https:// .com")
+            enum TestService {
+            }
+            """,
+            expandedSource: """
+            enum TestService {
+            }
+            """,
+            diagnostics: [.init(message: RelaxMacroDiagnostic.invalidBaseURL.message, line: 1, column: 1)],
             macros: testMacros
         )
         #else
