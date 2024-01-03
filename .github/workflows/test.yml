@@ -5,25 +5,16 @@ on: [push]
 jobs:
   build:
     strategy:
-      max-parallel: 5
       fail-fast: false
       matrix:
         os: [macos-13, ubuntu-latest, windows-latest]
+	swift: ["5.7", "5.8", "5.9"]
     runs-on: ${{ matrix.os }}
 
     steps:
-    
-    - if: runner.os == 'Windows'
-      name: Setup Swift
-      uses: compnerd/gha-setup-swift@main
+    - uses: SwiftyLab/setup-swift@latest
       with:
-        branch: swift-5.9.2-release
-        tag: 5.9.2-RELEASE
-
-    - if: runner.os != 'Windows'
-      uses: swift-actions/setup-swift@v1
-      with:
-        swift-version: "5.9"
+        swift-version: ${{ matrix.swift }}
 
     - name: Checkout
       uses: actions/checkout@v4
@@ -33,3 +24,4 @@ jobs:
       
     - name: Test
       run: swift test
+
