@@ -1,4 +1,4 @@
-name: Test
+name: Build & Test
 
 on: [push]
 
@@ -24,6 +24,9 @@ jobs:
       with:
         branch: swift-5.7-release
         tag: 5.7-RELEASE
+
+    - name: Get Swift Version
+      run: swift --version
 
     - name: Checkout
       uses: actions/checkout@v4
