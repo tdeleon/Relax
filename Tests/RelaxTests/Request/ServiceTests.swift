@@ -49,7 +49,7 @@ final class ServiceTests: XCTestCase {
     }
 
     func testDefaults() {
-        enum Testing: Service {
+        enum Testing: APIComponent {
             static let baseURL = URL(string: "https://example.com")!
         }
         

@@ -12,7 +12,7 @@ import FoundationNetworking
 import XCTest
 @testable import Relax
 
-extension Service {
+extension APIComponent {
 //    func checkSuccess(request: some Request, received: URLRequest) {
 //        // check request method type
 //        XCTAssertEqual(received.httpMethod, request.httpMethod.rawValue)
