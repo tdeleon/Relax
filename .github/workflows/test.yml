@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-13, ubuntu-latest, windows-latest]
-	swift: ["5.7", "5.8", "5.9"]
+        swift: ["5.7", "5.8", "5.9"]
     runs-on: ${{ matrix.os }}
 
     steps:
