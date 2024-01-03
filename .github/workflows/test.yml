@@ -12,11 +12,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: SwiftyLab/setup-swift@latest
+    - if: (matrix.swift != "5.7") && (runner.os != 'Windows')
+      uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: ${{ matrix.swift }}
 
-    - if: runner.os == 'Windows' && ${{ matrix.swift }} == "5.7"
+    - if: (runner.os == 'Windows') && (matrix.swift == "5.7")
       uses: compnerd/gha-setup-swift@main
       with:
         branch: swift-5.7-release
