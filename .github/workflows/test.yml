@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - if: (matrix.swift != '5.7') && (runner.os != 'Windows')
+    - if: (runner.os != 'Windows') && (matrix.swift != '5.7')
       uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: ${{ matrix.swift }}
