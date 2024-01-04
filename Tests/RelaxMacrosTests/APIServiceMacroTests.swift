@@ -1,5 +1,5 @@
 //
-//  MacroTests.swift
+//  APIServiceMacroTests.swift
 //  
 //
 //  Created by Thomas De Leon on 12/27/23.
@@ -8,16 +8,16 @@
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 import XCTest
-@testable import RelaxMacros
-
 #if canImport(RelaxMacros)
-import RelaxMacros
-let testMacros: [String: Macro.Type] = [
-    "APIService": APIServiceMacro.self
-]
+@testable import RelaxMacros
 #endif
 
-final class MacroTests: XCTestCase {    
+final class APIServiceMacroTests: XCTestCase {
+    #if canImport(RelaxMacros)
+    let testMacros: [String: Macro.Type] = [
+        "APIService": APIServiceMacro.self
+    ]
+    #endif
     func testAPIService() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
