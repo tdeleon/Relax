@@ -18,7 +18,8 @@ final class APIServiceMacroTests: XCTestCase {
         "APIService": APIServiceMacro.self
     ]
     #endif
-    func testAPIService() throws {
+    
+    func testValid() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """
@@ -41,7 +42,7 @@ final class APIServiceMacroTests: XCTestCase {
         #endif
     }
     
-    func testAPIServiceInvalidBaseURL() throws {
+    func testInvalidURL() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """

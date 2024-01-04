@@ -18,7 +18,8 @@ final class APIEndpointMacroTests: XCTestCase {
         "APIEndpoint": APIEndpointMacro.self
     ]
     #endif
-    func testAPIEndpoint() throws {
+    
+    func testValid() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """
@@ -42,7 +43,7 @@ final class APIEndpointMacroTests: XCTestCase {
         #endif
     }
     
-    func testAPIEndpointInvalidPath() throws {
+    func testInvalidPath() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """
