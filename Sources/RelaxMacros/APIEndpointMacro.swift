@@ -18,16 +18,6 @@ public struct APIEndpointMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        guard let parent = node
-            .arguments?.as(LabeledExprListSyntax.self)?
-            .first(where: { $0.label?.text == "parent" })?
-            .expression.as(MemberAccessExprSyntax.self)?
-            .base?
-            .description 
-        else {
-            return []
-        }
-        
         guard let path = node
             .arguments?.as(LabeledExprListSyntax.self)?
             .first?.expression.as(StringLiteralExprSyntax.self)?
@@ -38,8 +28,20 @@ public struct APIEndpointMacro: ExtensionMacro {
             context.diagnose(error)
             return []
         }
-        
+        guard let parent = node.attributeName.as(IdentifierTypeSyntax.self)?
+            .genericArgumentClause?.as(GenericArgumentClauseSyntax.self)?
+            .arguments
+            .description else {
+            let fixIt = FixIt.replace(
+                message: RelaxFixItMessage.missingParent,
+                oldNode: Syntax(node),
+                newNode: FixItRewriter().visit(node)
+            )
+            let error = Diagnostic(node: node, message: RelaxMacroDiagnostic.missingParent, fixIt: fixIt)
+            context.diagnose(error)
 
+            return []
+        }
         let decl: DeclSyntax =
         """
         extension \(type.trimmed): Endpoint {
@@ -49,5 +51,21 @@ public struct APIEndpointMacro: ExtensionMacro {
         """
         guard let extensionDecl = decl.as(ExtensionDeclSyntax.self) else { return [] }
         return [extensionDecl]
+    }
+    
+    final private class FixItRewriter: SyntaxRewriter {
+        override func visitAny(_ node: Syntax) -> Syntax? {
+            guard let attributeName = node.as(IdentifierTypeSyntax.self),
+                  attributeName.genericArgumentClause == nil
+            else { return node }
+            let listSyntax = GenericArgumentListSyntax {
+                GenericArgumentSyntax(argument: TypeSyntax(stringLiteral: "<#APIComponent#>"))
+            }
+            let placeholder = GenericArgumentClauseSyntax(arguments: listSyntax)
+            guard let genericDecl = placeholder.as(GenericArgumentClauseSyntax.self) else { return node }
+            var newAttributeName = attributeName
+            newAttributeName.genericArgumentClause = genericDecl
+            return newAttributeName.as(Syntax.self)
+        }
     }
 }
