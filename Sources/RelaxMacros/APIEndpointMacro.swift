@@ -22,26 +22,20 @@ public struct APIEndpointMacro: ExtensionMacro {
             .arguments?.as(LabeledExprListSyntax.self)?
             .first?.expression.as(StringLiteralExprSyntax.self)?
             .segments.trimmedDescription,
-              !path.isEmpty
+              !(path.trimmingCharacters(in: .whitespacesAndNewlines)).isEmpty
         else {
             let error = Diagnostic(node: node, message: RelaxMacroDiagnostic.invalidPath)
             context.diagnose(error)
             return []
         }
+        
         guard let parent = node.attributeName.as(IdentifierTypeSyntax.self)?
             .genericArgumentClause?.as(GenericArgumentClauseSyntax.self)?
             .arguments
             .description else {
-            let fixIt = FixIt.replace(
-                message: RelaxFixItMessage.missingParent,
-                oldNode: Syntax(node),
-                newNode: FixItRewriter().visit(node)
-            )
-            let error = Diagnostic(node: node, message: RelaxMacroDiagnostic.missingParent, fixIt: fixIt)
-            context.diagnose(error)
-
             return []
         }
+        
         let decl: DeclSyntax =
         """
         extension \(type.trimmed): Endpoint {
@@ -49,23 +43,9 @@ public struct APIEndpointMacro: ExtensionMacro {
             static let path: String = \"\(raw: path)\"
         }
         """
+        
         guard let extensionDecl = decl.as(ExtensionDeclSyntax.self) else { return [] }
+        
         return [extensionDecl]
-    }
-    
-    final private class FixItRewriter: SyntaxRewriter {
-        override func visitAny(_ node: Syntax) -> Syntax? {
-            guard let attributeName = node.as(IdentifierTypeSyntax.self),
-                  attributeName.genericArgumentClause == nil
-            else { return node }
-            let listSyntax = GenericArgumentListSyntax {
-                GenericArgumentSyntax(argument: TypeSyntax(stringLiteral: "<#APIComponent#>"))
-            }
-            let placeholder = GenericArgumentClauseSyntax(arguments: listSyntax)
-            guard let genericDecl = placeholder.as(GenericArgumentClauseSyntax.self) else { return node }
-            var newAttributeName = attributeName
-            newAttributeName.genericArgumentClause = genericDecl
-            return newAttributeName.as(Syntax.self)
-        }
     }
 }

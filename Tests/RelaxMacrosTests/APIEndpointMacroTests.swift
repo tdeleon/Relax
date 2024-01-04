@@ -42,11 +42,11 @@ final class APIEndpointMacroTests: XCTestCase {
         #endif
     }
     
-    func testAPIEndpointNoParent() throws {
+    func testAPIEndpointInvalidPath() throws {
         #if canImport(RelaxMacros)
         assertMacroExpansion(
             """
-            @APIEndpoint("path")
+            @APIEndpoint<Parent>("")
             enum TestService {
             }
             """,
@@ -54,28 +54,13 @@ final class APIEndpointMacroTests: XCTestCase {
             enum TestService {
             }
             """,
-            diagnostics: [
-                DiagnosticSpec(
-                    message: RelaxMacroDiagnostic.missingParent.message,
-                    line: 1,
-                    column: 1,
-                    fixIts: [
-                        FixItSpec(message: RelaxFixItMessage.missingParent.message)
-                    ]
-                )
-            ],
+            diagnostics: [.init(message: RelaxMacroDiagnostic.invalidPath.message, line: 1, column: 1)],
             macros: testMacros
         )
-        #else
-        throw XCTSkip("macros are only supported when running tests for the host platform")
-        #endif
-    }
-    
-    func testAPIEndpointInvalidPath() throws {
-        #if canImport(RelaxMacros)
+        
         assertMacroExpansion(
             """
-            @APIEndpoint<Parent>("")
+            @APIEndpoint<Parent>(" ")
             enum TestService {
             }
             """,
