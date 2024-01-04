@@ -9,5 +9,5 @@
 import Foundation
 
 @attached(extension, conformances: Endpoint, names: named(Parent), named(path))
-public macro APIEndpoint<APIComponent>(_ path: String) = #externalMacro(module: "RelaxMacros", type: "APIEndpointMacro")
+public macro APIEndpoint(_ path: String, parent: APIComponent.Type) = #externalMacro(module: "RelaxMacros", type: "APIEndpointMacro")
 #endif
