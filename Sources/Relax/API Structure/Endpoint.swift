@@ -22,8 +22,4 @@ extension Endpoint {
     public static var baseURL: URL {
         Parent.baseURL.appendingPathComponent(path)
     }
-    
-//    public static var configuration: Request.Configuration {
-//        Parent.configuration
-//    }
 }
