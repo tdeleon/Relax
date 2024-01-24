@@ -1,5 +1,5 @@
 //
-//  RequestValidation.swift
+//  URLRequestValidation.swift
 //
 //
 //  Created by Thomas De Leon on 11/29/23.
@@ -138,5 +138,17 @@ extension URLRequest {
         let names = Set(allHTTPHeaderFields?.map(\.key) ?? [])
         XCTAssertTrue(names.isSuperset(of: contain))
         XCTAssertTrue(names.intersection(doNotContain).isEmpty)
+    }
+    
+    /// Validate the path of the request
+    /// - Parameter path: The path to match
+    public func validate(path: String) {
+        XCTAssertEqual(urlComponents?.path, path)
+    }
+    
+    /// Validate the request HTTP
+    /// - Parameter httpMethod: The http method string to match. If nil is provided, the request should have nil for the http method
+    public func validate(httpMethod: String?) {
+        XCTAssertEqual(self.httpMethod, httpMethod)
     }
 }
