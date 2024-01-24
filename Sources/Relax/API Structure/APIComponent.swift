@@ -30,6 +30,9 @@ public protocol APIComponent {
     
     /// The configuration to use for any Requests provided by this component or its children
     static var configuration: Request.Configuration { get }
+    
+    /// The URLSession to use for any Requests defined in this component or its children. The default is `URLSession.shared`.
+    static var session: URLSession { get }
 }
 
 //MARK: Default Implementation
@@ -39,9 +42,9 @@ extension APIComponent {
     @Request.Properties.Builder
     public static var sharedProperties: Request.Properties { .empty }
     
-    public static var allProperties: Request.Properties {
-        sharedProperties
-    }
+    public static var allProperties: Request.Properties { sharedProperties }
+    
+    public static var session: URLSession { .shared }
 }
 
 //MARK: - APISubComponent
@@ -58,6 +61,10 @@ extension APISubComponent {
     
     public static var configuration: Request.Configuration {
         Parent.configuration
+    }
+    
+    public static var session: URLSession {
+        Parent.session
     }
 }
 

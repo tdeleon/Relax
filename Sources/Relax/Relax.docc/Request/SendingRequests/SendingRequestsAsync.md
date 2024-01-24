@@ -4,8 +4,8 @@ Send a Request asynchronously with Swift concurrency.
 
 ## Overview
 
-You can send a ``Request`` which will [`await`](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html) completion
-in concurrent code. Errors are thrown from the method, which you catch in a `do/catch` block.
+You can send a ``Request`` which will [`await`](https://docs.swift.org/swift-book/LanguageGuide/Concurrency.html)
+completion in concurrent code. Errors are thrown from the method, which you catch in a `do/catch` block.
 
 ## Sending a Request
 
@@ -15,7 +15,7 @@ You can optionally provide your own `URLSession` to use, otherwise `URLSession.s
 
 ### Sending the Request
 
-Use ``Request/send(session:)-43n5v`` to receive `Data` from a request.
+Use ``Request/send(session:)-74uav`` to receive `Data` from a request.
 
 ```swift
 Task {
@@ -32,7 +32,8 @@ Task {
 
 ### Decoding JSON
 
-You can automatically decode JSON into an expected `Decodable` instance using the ``Request/send(decoder:session:)-3h323`` method.
+You can automatically decode JSON into an expected `Decodable` instance using the
+``Request/send(decoder:session:)-2kid8`` method.
 
 > Tip: By default, `JSONDecoder()` is used, but you
 can also pass in your own to the `decoder` parameter.
@@ -52,4 +53,8 @@ Task {
 
 ### Handling Errors
 
-When a failure occurs, ``RequestError`` is thrown. By default, HTTP status codes (`4XX`, `5XX`, etc) returned from the server are not parsed for errors. As a convenience, you can set the ``Request/Configuration-swift.struct/parseHTTPStatusErrors`` parameter in ``Request/Configuration-swift.struct`` to `true` in order to enable this. If enabled, then any HTTP status code outside the `1XX`-`3XX` range will be treated as an error.
+When a failure occurs, ``RequestError`` is thrown. By default, HTTP status codes (`4XX`, `5XX`, etc) returned from the
+server are not parsed for errors. As a convenience, you can set the
+``Request/Configuration-swift.struct/parseHTTPStatusErrors`` parameter in ``Request/Configuration-swift.struct`` to
+`true` in order to enable this. If enabled, then any HTTP status code outside the `1XX`-`3XX` range will be treated as
+an error.

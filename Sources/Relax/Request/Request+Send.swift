@@ -35,7 +35,7 @@ extension Request {
     
     /// Send a request with a completion handler, returning a data task
     /// - Parameters:
-    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - session: When provided, overrides the session defined in the Request.
     ///   - autoResumeTask: Whether to call `resume()` on the created task. The default is `true`.
     ///   - completion: A completion handler with the response from the server.
     /// - Returns: The task used to make the request
@@ -43,11 +43,11 @@ extension Request {
     /// will result in the request being sent again.
     @discardableResult
     public func send(
-        session: URLSession = .shared,
+        session: URLSession? = nil,
         autoResumeTask: Bool = true,
         completion: @escaping Request.Completion
     ) -> URLSessionDataTask {
-        let task = session.dataTask(with: urlRequest) { data, response, error in
+        let task = (session ?? self.session).dataTask(with: urlRequest) { data, response, error in
             guard error == nil,
                   let data = data else {
                 // Check for URLErrors
@@ -87,12 +87,12 @@ extension Request {
     /// Send a request with a completion handler, decoding the received data to a Decodable instance
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - session: When provided, overrides the session defined in the Request.
     ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared,
+        session: URLSession? = nil,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
         send(

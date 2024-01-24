@@ -101,9 +101,16 @@ public struct Request: Hashable {
     ///
     /// The default value is ``Configuration-swift.struct/default``.
     ///
-    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``)
-    /// when provided
+    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``) when provided.
     public var configuration: Configuration
+    
+    /// The URLSession to use for this request
+    ///
+    /// The default value is `URLSession.default`
+    /// 
+    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``) when provided. The session can also be
+    /// overridden when sending requests.
+    public var session: URLSession
     
     /// The request URL
     public var url: URL {
@@ -149,15 +156,23 @@ public struct Request: Hashable {
     ///   - httpMethod: The HTTP method to use
     ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
     ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
+    ///   - session: The session to use for the request. The default is `URLSession.shared`
     ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
     ///   ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration = .default,
+        session: URLSession = .shared,
         @Request.Properties.Builder properties: () -> Properties = { .empty }
     ) {
-        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
+        self.init(
+            httpMethod: httpMethod,
+            url: url,
+            configuration: configuration,
+            sesssion: session,
+            properties: properties()
+        )
     }
     
     /// Creates a request using a provided HTTP method, using the base URL, configuration, and any shared properties provided by a parent ``APIComponent``
@@ -167,18 +182,21 @@ public struct Request: Hashable {
     ///   - parent: A parent which provides the base URL, ``Configuration-swift.struct``, and
     ///   ``APIComponent/sharedProperties-5764x``.
     ///   - configuration: An optional configuration to override what is provided by the parent.
+    ///   - session: Overrides the session provided by the parent.
     ///   - properties: A ``Request/Properties/Builder`` closure which provides properties to use in this request. Any provided here will be
     ///   appended to any provided by `parent`. The default value is ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
         configuration: Configuration? = nil,
+        session: URLSession? = nil,
         @Request.Properties.Builder properties: () -> Properties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
             url: parent.baseURL,
             configuration: configuration ?? parent.configuration,
+            sesssion: session ?? parent.session,
             properties: parent.allProperties + properties()
         )
     }
@@ -187,13 +205,14 @@ public struct Request: Hashable {
         httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration,
+        sesssion: URLSession,
         properties: Properties
     ) {
         self._url = url
         
         self.httpMethod = httpMethod
         self.configuration = configuration
-        
+        self.session = sesssion
         self._properties = properties
     }
 }
