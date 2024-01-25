@@ -6,11 +6,25 @@
 //
 
 import XCTest
+import URLMock
 @testable import Relax
 
 final class ServiceTests: XCTestCase {
     typealias Complex = ExampleService.ComplexRequests
     typealias SubComplex = ExampleService.ComplexRequests.SubComplex
+    
+    enum InheritService: Service {
+        static let baseURL = URL(string: "https://example.com")!
+        static var configuration: Request.Configuration = Request.Configuration(allowsCellularAccess: false)
+        static let session: URLSession = URLSession(configuration: .ephemeral)
+        
+        enum User: Endpoint {
+            static var path: String = "users"
+            typealias Parent = InheritService
+            
+            static let get = Request(.get, parent: User.self)
+        }
+    }
 
     func testBasic() {
         let basic = ExampleService.get
@@ -55,6 +69,39 @@ final class ServiceTests: XCTestCase {
         
         XCTAssertEqual(Testing.allProperties, .empty)
         XCTAssertEqual(Testing.configuration, .default)
+    }
+    
+    func testInheritance() {
+        XCTAssertEqual(InheritService.User.get.configuration, InheritService.configuration)
+        XCTAssertEqual(InheritService.User.get.session, InheritService.session)
+    }
+    
+    func testOverrideConfiguration() async throws {
+        let expectedConfiguration = Request.Configuration(cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        let override = Request(.get, parent: InheritService.User.self, configuration: expectedConfiguration)
+        XCTAssertEqual(override.configuration, expectedConfiguration)
+    }
+    
+    func testOverrideSession() async throws {
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
+        try await override.send()
+        
+        await fulfillment(of: [expectation])
+    }
+    
+    func testOverrideSessionOnSend() async throws {
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        try await InheritService.User.get.send(session: expectedSession)
+        
+        await fulfillment(of: [expectation])
     }
 }
 
