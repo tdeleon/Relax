@@ -127,12 +127,19 @@ public struct Request: Hashable {
         _properties.headers.value.forEach { request.addValue($0.value, forHTTPHeaderField: $0.key) }
         request.httpBody = _properties.body.value
         
+        // configuration properties
         request.allowsCellularAccess = configuration.allowsCellularAccess
         request.cachePolicy = configuration.cachePolicy
         request.httpShouldUsePipelining = configuration.httpShouldUsePipelining
         request.networkServiceType = configuration.networkServiceType
         request.timeoutInterval = configuration.timeoutInterval
         request.httpShouldHandleCookies = configuration.httpShouldHandleCookies
+        
+        // properties not available in FoundationNetworking (non-Apple)
+        #if !canImport(FoundationNetworking)
+        request.allowsConstrainedNetworkAccess = configuration.allowsConstrainedNetworkAccess
+        request.allowsExpensiveNetworkAccess = configuration.allowsExpensiveNetworkAccess
+        #endif
         
         return request
     }
