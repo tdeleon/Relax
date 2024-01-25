@@ -59,9 +59,9 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
 }
 ```
 
-### Session
+### Request Session
 
-When sending requests, a `URLSession` is used, and can be configured through the ``Request/session`` property. If not
+When sending requests, a `URLSession` is used, which can be configured through the ``Request/session`` property. If not
 specified, this property will inherit from the
 [`parent`](<doc:Request/init(_:parent:configuration:session:properties:)>) if defined, otherwise it will be set to
 `URLSession.shared` by default. See <doc:DefiningAPIStructure> for more on inheritance.
@@ -89,19 +89,32 @@ let request = Request(.get, url: URL(string: "https://example.com/")!)
 // a request using a specific URLSession
 let customSessionRequest = Request(.get, url: URL(string: "https://example.com/")!, session: mySession)
 ```
+### Configuring a Request
 
-### Configuration
+Sometimes you need more control on a request to modify things such as the timeout interval or cache policy. This can
+be done using the ``Request/Configuration-swift.struct`` structure. The following example changes the timeout interval
+to 90 seconds instead of the default 60.
 
-A request uses a ``Request/Configuration-swift.struct`` to configure how the request is sent using `URLSession` (the
-configuration is used to set the properties on the underlying `URLRequest` used in making the request). The
-``Request/configuration-swift.property`` can be defined in the
- [`parent`](<doc:Request/init(_:parent:configuration:session:properties:)>) if set, or it can be defined when creating
-a request. If no configuration is defined, a [``default``](<doc:Request/Configuration-swift.struct/default>) set of
-options is used.
+```swift
+let request = Request(
+        .post, 
+        url: URL(string: "https://example.com/users")!,
+        configuration: Request.Configuration(timeout: 90)
+    ) {
+    Body {
+        // Assume that User is an Encodable type
+        User(name: "firstname")
+    }
+}
+```
+
+If no configuration is specified, then the configuration will be inherited from the requests parent ``APIComponent``.
+If the request is standalone (not linked to a parent), then a
+ [`default`](<doc:Request/Configuration-swift.struct/default>) configuration will be used.
 
 See <doc:DefiningAPIStructure> for more on inheritance.
 
-### Modifying Requests
+### Modifying a Request
 
 While many properties can be pre-defined on requests, there may be cases where values need to be changed after
 the request is defined, but before it is sent. In this case, there are modifier style methods available for
@@ -128,25 +141,6 @@ try await request
 ```
 
 For more information on modifying requests, see ``Request``.
-
-### Configuring Requests
-
-Sometimes you need more control on a request to modify things such as the timeout interval or cache policy. This can
-be done using the ``Request/Configuration-swift.struct`` structure. The following example changes the timeout interval
-to 90 seconds instead of the default 60.
-
-```swift
-let request = Request(
-        .post, 
-        url: URL(string: "https://example.com/users")!,
-        configuration: Request.Configuration(timeout: 90)
-    ) {
-    Body {
-        // Assume that User is an Encodable type
-        User(name: "firstname")
-    }
-}
-```
 
 ## Requests in a Complex Structure
 

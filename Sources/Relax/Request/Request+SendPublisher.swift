@@ -28,7 +28,7 @@ extension Request {
     
     /// Send a request, returning a Combine publisher
     /// - Parameters:
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
         session: URLSession? = nil
@@ -52,7 +52,7 @@ extension Request {
     /// Send a request and decode received data to a Decodable instance, returning a Combine publisher
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),

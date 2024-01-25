@@ -100,17 +100,16 @@ public struct Request: Hashable {
     
     /// The configuration of the request
     ///
-    /// The default value is ``Configuration-swift.struct/default``.
-    ///
-    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``) when provided.
+    /// This value will be inherited from the parent ``APIComponent`` (``Service``/``Endpoint``), if the request is linked to a parent. If there is no parent,
+    /// the default value is ``Request/Configuration-swift.struct/default``.
     public var configuration: Configuration
     
     /// The URLSession to use for this request
     ///
-    /// The default value is `URLSession.default`
-    /// 
-    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``) when provided. The session can also be
-    /// overridden when sending requests.
+    /// This value will be inherited from the parent ``APIComponent`` (``Service``/``Endpoint``), if the request is linked to a parent. If there is no parent,
+    /// the default value is `URLSession.shared`.
+    ///
+    /// - Tip: The session can also be overridden when sending requests.
     public var session: URLSession
     
     /// The request URL

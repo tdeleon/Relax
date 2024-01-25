@@ -30,6 +30,32 @@ Task {
 }
 ```
 
+### Overriding the Request Session
+
+Requests are sent using a `URLSession`, which is customizable through the ``Request/session`` property. If
+the request is linked to a `parent` ``APIComponent``, then the session will inherit from the ``APIComponent/session`` by
+default. This can be overridden when a request is sent by passing in a specific `URLSession`:
+
+```swift
+// Uses the session and configuration defined on MyService by default
+let response = try await MyService.get.send()
+
+// Uses a custom URLSession & Configuration for this send only
+let response = try await MyService.get.send(session: customSession)
+```
+
+For detached requests (with no parent), `URLSession.shared` is used by default if no other session is specified:
+
+```swift
+// Uses URLSession.shared
+let response = try await Request(.get, url: URL(string: "https://example.com/")!)
+
+// Uses a specific URLSession
+let response = try await Request(.get, url: URL(string: "https://example.com/")!, session: customSession)
+```
+
+See <doc:DefiningAPIStructure> for more on inheritance.
+
 ### Decoding JSON
 
 You can automatically decode JSON into an expected `Decodable` instance using the

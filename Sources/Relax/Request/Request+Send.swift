@@ -35,7 +35,7 @@ extension Request {
     
     /// Send a request with a completion handler, returning a data task
     /// - Parameters:
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     ///   - autoResumeTask: Whether to call `resume()` on the created task. The default is `true`.
     ///   - completion: A completion handler with the response from the server.
     /// - Returns: The task used to make the request
@@ -87,7 +87,7 @@ extension Request {
     /// Send a request with a completion handler, decoding the received data to a Decodable instance
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
     ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
     public func send<ResponseModel: Decodable>(

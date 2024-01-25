@@ -20,21 +20,77 @@ upon receiving a response from the server, will publish a ``Request/PublisherRes
 
 ```swift
 let request = Request(.get, url: URL(string: "https://example.com")!)
-do {
-    cancellable = request.send()
-        .sink(receiveCompletion: { completion in
-            switch completion {
-            case .failure(let error):
-                print("Request failed - \(error.localizedDescription)")
-            case .finished:
-                break
-            }
-        }, receiveValue: { response in
-            print("Data: \(String(data: response.data, encoding: .utf8))")
-            print("Status: \(response.urlResponse.statusCode)")
-        })
-}
+cancellable = request.send()
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Request failed - \(error.localizedDescription)")
+        case .finished:
+            break
+        }
+    }, receiveValue: { response in
+        print("Data: \(String(data: response.data, encoding: .utf8))")
+        print("Status: \(response.urlResponse.statusCode)")
+    })
 ```
+
+### Overriding the Request Session
+
+Requests are sent using a `URLSession`, which is customizable through the ``Request/session`` property. If
+the request is linked to a `parent` ``APIComponent``, then the session will inherit from the ``APIComponent/session`` by
+default. This can be overridden when a request is sent by passing in a specific `URLSession`:
+
+```swift
+// Uses the session and configuration defined on MyService by default
+cancellable = MyService.get.send()
+    .sink(receiveCompletion: { completion in
+        ...
+    }, receiveValue: { response in
+        ...
+    })
+
+// Uses a custom URLSession & Configuration for this send only
+cancellable = MyService.get.send(session: customSession)
+    .sink(receiveCompletion: { completion in
+        ...
+    }, receiveValue: { response in
+        ...
+    })
+```
+
+For detached requests (with no parent), `URLSession.shared` is used by default if no other session is specified:
+
+```swift
+// Uses URLSession.shared
+let request = Request(.get, url: URL(string: "https://example.com")!)
+cancellable = request.send()
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Request failed - \(error.localizedDescription)")
+        case .finished:
+            break
+        }
+    }, receiveValue: { response in
+        print("User: \(response.responseModel)")
+    })
+
+// Uses a specific URLSession
+let request = Request(.get, url: URL(string: "https://example.com")!)
+cancellable = request.send(session: customSession)
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Request failed - \(error.localizedDescription)")
+        case .finished:
+            break
+        }
+    }, receiveValue: { response in
+        print("User: \(response.responseModel)")
+    })
+```
+
+See <doc:DefiningAPIStructure> for more on inheritance.
 
 ### Decoding JSON
 
@@ -45,19 +101,17 @@ which will publish a ``Request/PublisherModelResponse`` with the decoded data.
 
 ```swift
 let request = Request(.get, url: URL(string: "https://example.com")!)
-do {
-    cancellable = request.send()
-        .sink(receiveCompletion: { completion in
-            switch completion {
-            case .failure(let error):
-                print("Request failed - \(error.localizedDescription)")
-            case .finished:
-                break
-            }
-        }, receiveValue: { response in
-            print("User: \(response.responseModel)")
-        })
-}
+cancellable = try request.send()
+    .sink(receiveCompletion: { completion in
+        switch completion {
+        case .failure(let error):
+            print("Request failed - \(error.localizedDescription)")
+        case .finished:
+            break
+        }
+    }, receiveValue: { response in
+        print("User: \(response.responseModel)")
+    })
 ```
 
 ### Handling Errors

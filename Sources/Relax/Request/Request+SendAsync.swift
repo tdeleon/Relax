@@ -23,7 +23,7 @@ extension Request {
     /// Send a request asynchronously
     ///
     /// - Parameters:
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: A response containing the request sent, url response, and data.
     /// - Throws: A `RequestError` on error.
     @discardableResult
@@ -57,7 +57,7 @@ extension Request {
     /// Send a request asynchronously, decoding data received to a Decodable instance.
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: When provided, overrides the session defined in the Request.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: The model, decoded from received data.
     /// - Throws: A `RequestError` on error.
     public func send<ResponseModel: Decodable>(
