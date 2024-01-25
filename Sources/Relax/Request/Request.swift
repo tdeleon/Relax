@@ -19,12 +19,12 @@ import FoundationNetworking
 /// let request = Request(.get, url: URL(string: "https://example.com/")!)
 /// ```
 ///
-/// When reuqests are nested as part of an ``APIComponent`` (``Service`` or ``Endpoint``), you specify the `Parent` type to the initializer or
-/// ``RequestBuilder`` result builder. In the following example, both `request1` and `request2` are equivalent:
+/// When reuqests are nested as part of an ``APIComponent`` (``Service`` or ``Endpoint``), you specify the ``APISubComponent/Parent``  type to
+/// the initializer or ``RequestBuilder`` result builder. In the following example, both `request1` and `request2` are equivalent:
 ///
 /// ```swift
 /// enum MyService: Service {
-///     static let baseURL = URL(string: https://example.com/)!
+///     static let baseURL = URL(string: "https://example.com/")!
 ///
 ///     // Uses the baseURL defined on MyService
 ///     @RequestBuilder<MyService>
@@ -45,7 +45,8 @@ import FoundationNetworking
 ///         .settingHeader(name: "name", value: "value")
 ///         .send()
 /// ```
-/// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
+/// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>,
+/// <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
 ///
 public struct Request: Hashable {    
     /// The HTTP method of the request

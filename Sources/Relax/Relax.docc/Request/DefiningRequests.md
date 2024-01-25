@@ -59,6 +59,48 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
 }
 ```
 
+### Session
+
+When sending requests, a `URLSession` is used, and can be configured through the ``Request/session`` property. If not
+specified, this property will inherit from the
+[`parent`](<doc:Request/init(_:parent:configuration:session:properties:)>) if defined, otherwise it will be set to
+`URLSession.shared` by default. See <doc:DefiningAPIStructure> for more on inheritance.
+
+```swift
+enum MyService: Service {
+     static let baseURL = URL(string: "https://example.com/")!
+     static let session: URLSession = mySession // use a specific URLSession already defined
+
+     // request will use session defined in MyService, mySession
+     static let get = Request(.get, parent: MyService.self)
+
+     // request will use URLSession.shared, overriding the parent session
+     static let getSharedSession = Request(.get, parent: MyService.self, session: .shared)
+ }
+ ```
+
+If a request does not have a parent set, then the session will default to `URLSession.shared`, if not otherwise
+specified.
+
+```swift
+// a request using URLSession.shared
+let request = Request(.get, url: URL(string: "https://example.com/")!)
+
+// a request using a specific URLSession
+let customSessionRequest = Request(.get, url: URL(string: "https://example.com/")!, session: mySession)
+```
+
+### Configuration
+
+A request uses a ``Request/Configuration-swift.struct`` to configure how the request is sent using `URLSession` (the
+configuration is used to set the properties on the underlying `URLRequest` used in making the request). The
+``Request/configuration-swift.property`` can be defined in the
+ [`parent`](<doc:Request/init(_:parent:configuration:session:properties:)>) if set, or it can be defined when creating
+a request. If no configuration is defined, a [``default``](<doc:Request/Configuration-swift.struct/default>) set of
+options is used.
+
+See <doc:DefiningAPIStructure> for more on inheritance.
+
 ### Modifying Requests
 
 While many properties can be pre-defined on requests, there may be cases where values need to be changed after
