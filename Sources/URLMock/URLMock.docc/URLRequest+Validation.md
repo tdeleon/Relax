@@ -26,3 +26,9 @@ the request received is correct.
 - ``Foundation/URLRequest/validateBody(matches:)-9rwxp``
 - ``Foundation/URLRequest/validateBody(matches:decoder:)``
 - ``Foundation/URLRequest/validateBody(matches:)-5ihb5``
+
+### Validating Request Path
+- ``Foundation/URLRequest/validate(path:)``
+
+### Validating Request HTTP Method
+- ``Foundation/URLRequest/validate(httpMethod:)``
