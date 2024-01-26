@@ -6,6 +6,9 @@
 //
 
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import URLMock
 @testable import Relax
 
@@ -83,6 +86,7 @@ final class ServiceTests: XCTestCase {
         XCTAssertEqual(override.configuration, expectedConfiguration)
     }
     
+#if swift(>=5.9)
     func testOverrideSession() async throws {
         let expectation = self.expectation(description: "Mock received")
         let expectedSession = URLMock.session(.mock { _ in
@@ -92,7 +96,7 @@ final class ServiceTests: XCTestCase {
         let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
         try await override.send()
         
-        await fulfillment(of: [expectation])
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     func testOverrideSessionOnSend() async throws {
@@ -102,8 +106,9 @@ final class ServiceTests: XCTestCase {
         })
         try await InheritService.User.get.send(session: expectedSession)
         
-        await fulfillment(of: [expectation])
+        await fulfillment(of: [expectation], timeout: 1)
     }
+#endif
 }
 
 extension URL {
