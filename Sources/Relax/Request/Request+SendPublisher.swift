@@ -28,10 +28,10 @@ extension Request {
     
     /// Send a request, returning a Combine publisher
     /// - Parameters:
-    ///   - session: The session to use
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(
-        session: URLSession = .shared
+        session: URLSession? = nil
     ) -> AnyPublisher<PublisherResponse, RequestError> {
         Future<PublisherResponse, RequestError> { promise in
             send(
@@ -52,11 +52,11 @@ extension Request {
     /// Send a request and decode received data to a Decodable instance, returning a Combine publisher
     /// - Parameters:
     ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared
+        session: URLSession? = nil
     ) -> AnyPublisher<ResponseModel, RequestError> {
         send(session: session)
             .map(\.data)

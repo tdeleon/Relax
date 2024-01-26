@@ -23,13 +23,6 @@ public struct Body: RequestProperty {
         self.init(value: try? encoder.encode(value))
     }
     
-    /// Creates a body from a dictionary
-    /// - Parameter dictionary: Dictionary to serialize as JSON
-    /// - Parameter options: Options for JSONSerialization
-    public init(_ dictionary: [String: Any], options: JSONSerialization.WritingOptions = []) {
-        self.init(value: try? JSONSerialization.data(withJSONObject: dictionary, options: options))
-    }
-    
     /// Creates a body from any number of `Data` or `Encodable` instances using a ``Builder``.
     ///
     /// This initializer combines all `Data` or `Encodable` instances specified in `content`. Each instance will be appended to each other (from top to
@@ -104,10 +97,6 @@ extension Body {
         }
         
         public static func buildExpression<T: Encodable>(_ expression: T) -> Body {
-            .init(expression)
-        }
-        
-        public static func buildExpression(_ expression: [String: Any]) -> Body {
             .init(expression)
         }
     }

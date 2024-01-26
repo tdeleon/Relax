@@ -5,8 +5,8 @@
 ### Creating a Request
 
 - <doc:DefiningRequests>
-- ``init(_:url:configuration:properties:)``
-- ``init(_:parent:configuration:properties:)``
+- ``init(_:url:configuration:session:properties:)``
+- ``init(_:parent:configuration:session:properties:)``
 - ``HTTPMethod-swift.struct``
 - ``Configuration-swift.struct``
 - ``RequestBuilder``
@@ -17,6 +17,7 @@
 - ``url``
 - ``urlRequest``
 - ``configuration-swift.property``
+- ``session``
 - ``headers``
 - ``queryItems``
 - ``pathComponents``
@@ -43,15 +44,16 @@
 ### Sending Requests Asynchronously
 
 - <doc:SendingRequestsAsync>
-- ``send(session:)-43n5v``
-- ``send(decoder:session:)-3h323``
+- ``send(session:)-74uav``
+- ``send(decoder:session:)-2kid8``
 - ``AsyncResponse``
 
 ### Sending Requests with a Publisher
 
 - <doc:SendingRequestsPublisher>
-- ``send(session:)-488d1``
-- ``send(decoder:session:)-6f0kg``
+
+- ``send(session:)-8vwky``
+- ``send(decoder:session:)-9jzsp``
 - ``PublisherResponse``
 - ``PublisherModelResponse``
 
