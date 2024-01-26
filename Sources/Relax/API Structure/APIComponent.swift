@@ -28,11 +28,20 @@ public protocol APIComponent {
     /// - Important: You should not override this property, doing so will not allow properties to be properly inherited by child components.
     static var allProperties: Request.Properties { get }
     
-    /// The configuration to use for any Requests provided by this component or its children
+    /// The configuration to use for any Requests provided by this component or its children.
+    ///
+    /// The default value  is ``Request/Configuration-swift.struct/default``
     static var configuration: Request.Configuration { get }
     
-    /// The URLSession to use for any Requests defined in this component or its children. The default is `URLSession.shared`.
+    /// The URLSession to use for any Requests defined in this component or its children.
+    ///
+    /// The default value is `URLSession.shared`.
     static var session: URLSession { get }
+    
+    /// The decoder to use for any Requests provided by this component or its childern.
+    ///
+    /// The default value is `JSONDecoder()`.
+    static var decoder: JSONDecoder { get }
 }
 
 //MARK: Default Implementation
@@ -45,6 +54,8 @@ extension APIComponent {
     public static var allProperties: Request.Properties { sharedProperties }
     
     public static var session: URLSession { .shared }
+        
+    public static var decoder: JSONDecoder { JSONDecoder() }
 }
 
 //MARK: - APISubComponent
@@ -65,6 +76,10 @@ extension APISubComponent {
     
     public static var session: URLSession {
         Parent.session
+    }
+    
+    public static var decoder: JSONDecoder {
+        Parent.decoder
     }
 }
 

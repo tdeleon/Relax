@@ -86,12 +86,11 @@ extension Request {
     
     /// Send a request with a completion handler, decoding the received data to a Decodable instance
     /// - Parameters:
-    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
+    ///   - decoder: When set, overrides the ``Request/decoder`` used to decode received data.
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
     ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
     public func send<ResponseModel: Decodable>(
-        decoder: JSONDecoder = JSONDecoder(),
+        decoder: JSONDecoder? = nil,
         session: URLSession? = nil,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
@@ -101,7 +100,7 @@ extension Request {
         ) { result in
             do {
                 let success = try result.get()
-                let decoded = try decoder.decode(ResponseModel.self, from: success.data)
+                let decoded = try (decoder ?? self.decoder).decode(ResponseModel.self, from: success.data)
                 completion(.success((self, success.urlResponse, decoded)))
             } catch let error as DecodingError {
                 completion(.failure(.decoding(request: self, error: error)))
