@@ -125,6 +125,15 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(body, Body(model))
     }
     
+    func testBuildDictionary() throws {
+        let content = ["name": "value"]
+        @Body.Builder
+        var body: Body {
+            content
+        }
+        XCTAssertEqual(body, Body(content))
+    }
+    
     func testBuildLimitedAvailability() {
         @Body.Builder
         var body: Body {
