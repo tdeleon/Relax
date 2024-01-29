@@ -148,7 +148,7 @@ enum UserService: Service {
 let users = try await UserService.Users.getAll.send()
 ```
 
-See [Defining an APIStructure](https://swiftpackageindex.com/tdeleon/relax/documentation/relax/definingapistructure) for
+See [Defining an API Structure](https://swiftpackageindex.com/tdeleon/relax/documentation/relax/definingapistructure) for
 more details.
 
 ## Testing
