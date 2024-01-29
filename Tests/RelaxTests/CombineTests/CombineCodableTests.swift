@@ -53,7 +53,7 @@ final class CombineCodableTests: XCTestCase {
     func testOverrideDecoderOnSend() throws {
         let success = self.expectation(description: "Success")
         let failure = self.expectation(description: "Failure")
-        let model = InheritService.User.Response(date: .now)
+        let model = InheritService.User.Response(date: Date())
 
         let session = URLMock.session(.mock(model, encoder: InheritService.iso8601Encoder))
         

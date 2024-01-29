@@ -68,7 +68,7 @@ final class CompletionRequestTests: XCTestCase {
     func testOverrideDecoderOnSend() throws {
         let success = self.expectation(description: "success")
         let fail = self.expectation(description: "fail")
-        let model = InheritService.User.Response(date: .now)
+        let model = InheritService.User.Response(date: Date())
         
         let session = URLMock.session(.mock(model, encoder: InheritService.iso8601Encoder))
         

@@ -84,7 +84,7 @@ final class AsyncRequestTests: XCTestCase {
     #endif
     
     func testOverrideDecoderOnSend() async throws {
-        let model = InheritService.User.Response(date: .now)
+        let model = InheritService.User.Response(date: Date())
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let session = URLMock.session(.mock(model, encoder: encoder))
