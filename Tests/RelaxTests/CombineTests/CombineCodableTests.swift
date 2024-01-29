@@ -15,7 +15,7 @@ import URLMock
 final class CombineCodableTests: XCTestCase {
     typealias User = ExampleService.Users.User
     var session: URLSession!
-    var cancellable: AnyCancellable?
+    var cancellables = Set<AnyCancellable>()
     
     let service = ExampleService.Users.self
 
@@ -32,7 +32,7 @@ final class CombineCodableTests: XCTestCase {
         URLMock.response = .mock(sampleModel)
         let expectation = self.expectation(description: "Expect")
         
-        cancellable = service.getRequest
+        service.getRequest
             .send(session: session)
             .sink(receiveCompletion: { completion in
                 defer { expectation.fulfill() }
@@ -45,8 +45,45 @@ final class CombineCodableTests: XCTestCase {
             }, receiveValue: { (response: [User]) in
                 XCTAssertEqual(response, sampleModel)
             })
+            .store(in: &cancellables)
+        
         waitForExpectations(timeout: 1)
     }
+    
+    func testOverrideDecoderOnSend() throws {
+        let success = self.expectation(description: "Success")
+        let failure = self.expectation(description: "Failure")
+        let model = InheritService.User.Response(date: .now)
 
+        let session = URLMock.session(.mock(model, encoder: InheritService.iso8601Encoder))
+        
+        InheritService.User.get.send(session: session)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure:
+                    XCTFail("Should succeed")
+                }
+            }, receiveValue: { (response: InheritService.User.Response) in
+                success.fulfill()
+            })
+            .store(in: &cancellables)
+        
+        InheritService.User.get.send(decoder: JSONDecoder(), session: session)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure:
+                    failure.fulfill()
+                }
+            }, receiveValue: { (response: InheritService.User.Response) in
+                XCTFail()
+            })
+            .store(in: &cancellables)
+        
+        waitForExpectations(timeout: 1)
+    }
 }
 #endif

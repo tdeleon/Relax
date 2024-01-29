@@ -24,7 +24,7 @@ cancellable = request.send()
     .sink(receiveCompletion: { completion in
         switch completion {
         case .failure(let error):
-            print("Request failed - \(error.localizedDescription)")
+            print("Request failed - \(error)")
         case .finished:
             break
         }
@@ -109,7 +109,7 @@ cancellable = try request.send()
         case .finished:
             break
         }
-    }, receiveValue: { response in
+    }, receiveValue: { (response: User) in
         print("User: \(response.responseModel)")
     })
 ```

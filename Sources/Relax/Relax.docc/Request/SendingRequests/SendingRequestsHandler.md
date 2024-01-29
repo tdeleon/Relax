@@ -82,12 +82,12 @@ returns the data decoded to a `Decodable` type.
 
 ```swift
 let request = Request(.get, url: URL(string: "https://example.com")!)
-request.send { (result: Result<User, RequestError> in
+request.send { (result: Result<User, RequestError>) in
     switch result {
     case .success(let user):
         print("User: \(user)")
     case .failure(let error):
-        print("Request failed - \(error.localizedDescription)")
+        print("Request failed - \(error)")
     }
 }
 ```
