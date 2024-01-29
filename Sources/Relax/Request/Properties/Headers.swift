@@ -27,7 +27,7 @@ public struct Header: CustomStringConvertible {
     /// - Parameters:
     ///   - name: The header name
     ///   - value: The header value
-    internal init(_ name: Header.Name, _ value: String) {
+    public init(_ name: Header.Name, _ value: String) {
         self.init(name.rawValue, value)
     }
     
