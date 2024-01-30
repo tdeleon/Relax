@@ -35,7 +35,9 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testURLError() throws {
-        #if !os(watchOS)
+        #if os(watchOS)
+        throw XCTSkip("Not supported on watchOS")
+        #else
         try requestError(expected: urlError)
         #endif
     }
@@ -58,7 +60,9 @@ final class CompletionErrorTests: ErrorTest {
     }
     
     func testOtherError() throws {
-        #if !os(watchOS)
+        #if os(watchOS)
+        throw XCTSkip("Not supported on watchOS")
+        #else
         try requestError(expected: otherError)
         #endif
     }

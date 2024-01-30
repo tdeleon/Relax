@@ -58,9 +58,10 @@ final class AsyncRequestTests: XCTestCase {
         try await makeSuccess(request: service.ComplexRequests.complex)
     }
     
-    #if swift(>=5.9)
-    // fulfillment(of:) only available on swift 5.9+
     func testOverrideSession() async throws {
+        #if swift(<5.9)
+        throw XCTSkip("await fulfillment() not available before Swift 5.9")
+        #else
         let expectation = self.expectation(description: "Mock received")
         let expectedSession = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -70,9 +71,13 @@ final class AsyncRequestTests: XCTestCase {
         try await override.send()
         
         await fulfillment(of: [expectation], timeout: 1)
+        #endif
     }
     
     func testOverrideSessionOnSendAsync() async throws {
+        #if swift(<5.9)
+        throw XCTSkip("await fulfillment() not available before Swift 5.9")
+        #else
         let expectation = self.expectation(description: "Mock received")
         let expectedSession = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -80,8 +85,8 @@ final class AsyncRequestTests: XCTestCase {
         try await InheritService.User.get.send(session: expectedSession)
         
         await fulfillment(of: [expectation], timeout: 1)
+        #endif
     }
-    #endif
     
     func testOverrideDecoderOnSend() async throws {
         let model = InheritService.User.Response(date: Date())
