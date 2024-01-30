@@ -44,17 +44,17 @@ extension URLRequest {
     /// Validates the request query items match the provided query items
     /// - Parameter match: The expected query items
     ///
-    /// This method validates that the query items match the expected using `XCTAssertEqual()`
+    /// This method validates that the query items match the expected using `XCTAssertEqual()`. Sets are used so order is not required to match.
     public func validateQueryItems(match expected: [URLQueryItem]) throws {
         let query = try XCTUnwrap(queryItems)
-        XCTAssertEqual(query, expected)
+        XCTAssertEqual(Set(query), Set(expected))
         
     }
     /// Validates the request query items contain and/or do not contain the provided query item names
     /// - Parameters:
     ///   - contain: The names that the query items *must* include
     ///   - doNotContain: The names that the query items *must not* include
-    public func validateQueryItemNames(contain: [String], doNotContain: [String] = []) throws {
+    public func validateQueryItemNames(contain: [String] = [], doNotContain: [String] = []) throws {
         let query = try XCTUnwrap(queryItems)
         let names = Set(query.map(\.name))
         XCTAssertTrue(names.isSuperset(of: contain))
@@ -134,7 +134,7 @@ extension URLRequest {
     /// - Parameters:
     ///   - contain: Header names that `allHTTPHeaderFields` *must* contain
     ///   - doNotContain: Header names that `allHTTPHeaderFields` *must not* contain
-    public func validateHeaderNames(contain: [String], doNotContain: [String] = []) {
+    public func validateHeaderNames(contain: [String] = [], doNotContain: [String] = []) {
         let names = Set(allHTTPHeaderFields?.map(\.key) ?? [])
         XCTAssertTrue(names.isSuperset(of: contain))
         XCTAssertTrue(names.intersection(doNotContain).isEmpty)
