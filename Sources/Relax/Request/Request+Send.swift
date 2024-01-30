@@ -86,12 +86,52 @@ extension Request {
     
     /// Send a request with a completion handler, decoding the received data to a Decodable instance
     /// - Parameters:
-    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: When provided, overrides the ``Request/session`` defined in the Request.
-    ///   - parseHTTPStatusErrors: Whether to parse HTTP status codes returned for errors. The default is `false`.
-    ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
+    ///   - decoder: When set, overrides the ``Request/decoder`` used to decode received data.
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
+    ///   - completion: A completion handler with a `Result` of the model type decoded from received data, or ``RequestError`` on failure.
+    ///
+    ///
+    /// Use this method when you want to decode data into a given model type, and do not need the full `HTTPURLResponse` from the server.
+    ///
+    /// ```swift
+    /// let request = Request(.get, url: URL(string: "https://example.com")!)
+    /// request.send { (result: Result<User, RequestError>) in
+    ///     switch result {
+    ///     case .success(let user):
+    ///         print("User: \(user)")
+    ///     case .failure(let error):
+    ///         print("Request failed - \(error)")
+    ///     }
+    /// }
+    /// ```
+    ///
     public func send<ResponseModel: Decodable>(
-        decoder: JSONDecoder = JSONDecoder(),
+        decoder: JSONDecoder? = nil,
+        session: URLSession? = nil,
+        completion: @escaping (_ result: Result<ResponseModel, RequestError>) -> Void
+    ) {
+        send(
+            decoder: decoder,
+            session: session
+        ) { (result: Result<Request.ResponseModel<ResponseModel>, RequestError>) in
+            switch result {
+            case .success(let success):
+                completion(.success(success.responseModel))
+            case .failure(let failure):
+                completion(.failure(failure))
+            }
+        }
+    }
+    
+    /// Send a request with a completion handler, decoding the received data to a Decodable instance
+    /// - Parameters:
+    ///   - decoder: When set, overrides the ``Request/decoder`` used to decode received data.
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
+    ///   - completion: A completion handler with the response from the server, including the decoded data as the Decodable type.
+    ///
+    /// Use this method when decoding a model `Decodable` type and you also need the full `HTTPURLResponse` from the server.
+    public func send<ResponseModel: Decodable>(
+        decoder: JSONDecoder? = nil,
         session: URLSession? = nil,
         completion: @escaping Request.ModelCompletion<ResponseModel>
     ) {
@@ -101,7 +141,7 @@ extension Request {
         ) { result in
             do {
                 let success = try result.get()
-                let decoded = try decoder.decode(ResponseModel.self, from: success.data)
+                let decoded = try (decoder ?? self.decoder).decode(ResponseModel.self, from: success.data)
                 completion(.success((self, success.urlResponse, decoded)))
             } catch let error as DecodingError {
                 completion(.failure(.decoding(request: self, error: error)))

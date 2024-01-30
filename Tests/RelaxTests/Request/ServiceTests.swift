@@ -15,19 +15,6 @@ import URLMock
 final class ServiceTests: XCTestCase {
     typealias Complex = ExampleService.ComplexRequests
     typealias SubComplex = ExampleService.ComplexRequests.SubComplex
-    
-    enum InheritService: Service {
-        static let baseURL = URL(string: "https://example.com")!
-        static var configuration: Request.Configuration = Request.Configuration(allowsCellularAccess: false)
-        static let session: URLSession = URLSession(configuration: .ephemeral)
-        
-        enum User: Endpoint {
-            static var path: String = "users"
-            typealias Parent = InheritService
-            
-            static let get = Request(.get, parent: User.self)
-        }
-    }
 
     func testBasic() {
         let basic = ExampleService.get
@@ -85,30 +72,6 @@ final class ServiceTests: XCTestCase {
         let override = Request(.get, parent: InheritService.User.self, configuration: expectedConfiguration)
         XCTAssertEqual(override.configuration, expectedConfiguration)
     }
-    
-#if swift(>=5.9)
-    func testOverrideSession() async throws {
-        let expectation = self.expectation(description: "Mock received")
-        let expectedSession = URLMock.session(.mock { _ in
-            expectation.fulfill()
-        })
-        
-        let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
-        try await override.send()
-        
-        await fulfillment(of: [expectation], timeout: 1)
-    }
-    
-    func testOverrideSessionOnSend() async throws {
-        let expectation = self.expectation(description: "Mock received")
-        let expectedSession = URLMock.session(.mock { _ in
-            expectation.fulfill()
-        })
-        try await InheritService.User.get.send(session: expectedSession)
-        
-        await fulfillment(of: [expectation], timeout: 1)
-    }
-#endif
 }
 
 extension URL {

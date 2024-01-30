@@ -79,7 +79,7 @@ Relax supports the [Swift Package Manager](https://www.swift.org/package-manager
 4. Click on **Add Package**
 
 >Tip: `URLMock` is an additional framework provided to aid in testing by mocking responses to requests, and should be
-added to your test targets only. For more information, see <doc:Relax#Testing> below.
+added to your test targets only. For more information, see [Testing](#testing) below.
 
 #### Import the framework
 
@@ -114,7 +114,8 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
 }
 ```
 
-See <doc:DefiningRequests> for more details.
+See [Defining Requests](https://swiftpackageindex.com/tdeleon/relax/documentation/relax/definingrequests) for more
+details.
 
 ### Define a Complex API Structure
 
@@ -147,7 +148,8 @@ enum UserService: Service {
 let users = try await UserService.Users.getAll.send()
 ```
 
-See <doc:DefiningAPIStructure> for more details.
+See [Defining an API Structure](https://swiftpackageindex.com/tdeleon/relax/documentation/relax/definingapistructure) for
+more details.
 
 ## Testing
 
