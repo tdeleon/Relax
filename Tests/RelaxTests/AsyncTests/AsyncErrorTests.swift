@@ -31,8 +31,10 @@ final class AsyncErrorTests: ErrorTest {
         await requestError(expected: httpError)
     }
     
-    func testURLError() async {
-        #if !os(watchOS)
+    func testURLError() async throws {
+        #if os(watchOS)
+        throw XCTSkip("Not supported on watchOS")
+        #else
         await requestError(expected: urlError)
         #endif
     }
@@ -48,8 +50,10 @@ final class AsyncErrorTests: ErrorTest {
         }
     }
     
-    func testOtherError() async {
-        #if !os(watchOS)
+    func testOtherError() async throws {
+        #if os(watchOS)
+        throw XCTSkip("Not supported on watchOS")
+        #else
         await requestError(expected: otherError)
         #endif
     }
