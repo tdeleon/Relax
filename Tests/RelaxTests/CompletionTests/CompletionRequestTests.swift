@@ -65,6 +65,59 @@ final class CompletionRequestTests: XCTestCase {
         makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
+    func testOverrideDecoderOnSend() throws {
+        let success = self.expectation(description: "success")
+        let fail = self.expectation(description: "fail")
+        let model = InheritService.User.Response(date: Date())
+        
+        let session = URLMock.session(.mock(model, encoder: InheritService.iso8601Encoder))
+        
+        InheritService.User.get.send(session: session) { (result: Result<InheritService.User.Response, RequestError>) in
+            switch result {
+            case .success:
+                success.fulfill()
+            case .failure:
+                XCTFail("Failed")
+            }
+        }
+        
+        InheritService.User.get.send(decoder: JSONDecoder(), session: session) { (result: Result<InheritService.User.Response, RequestError>) in
+            switch result {
+            case .success:
+                XCTFail("Should fail")
+            case .failure:
+                fail.fulfill()
+            }
+        }
+        
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testOverrideSession() throws {
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
+        override.send(session: expectedSession) { _ in
+        }
+        
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testOverrideSessionOnSend() throws {
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        InheritService.User.get.send(session: expectedSession) { _ in
+        }
+        
+        waitForExpectations(timeout: 1)
+    }
+    
     func testGetPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.get)

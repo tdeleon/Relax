@@ -24,7 +24,7 @@ cancellable = request.send()
     .sink(receiveCompletion: { completion in
         switch completion {
         case .failure(let error):
-            print("Request failed - \(error.localizedDescription)")
+            print("Request failed - \(error)")
         case .finished:
             break
         }
@@ -94,10 +94,10 @@ See <doc:DefiningAPIStructure> for more on inheritance.
 
 ### Decoding JSON
 
-You can automatically decode received data into a `Decodable` instance with the``Request/send(decoder:session:)-9jzsp``,
+You can automatically decode received data into a `Decodable` instance with the``Request/send(decoder:session:)-3j2hs``,
 which will publish a ``Request/PublisherModelResponse`` with the decoded data.
 
-> Tip: By default, `JSONDecoder()` is used, but you can also pass in your own to the `decoder` parameter.
+> Tip: The ``Request/decoder`` defined in the request is used by default, but you can pass in your own to override this.
 
 ```swift
 let request = Request(.get, url: URL(string: "https://example.com")!)
@@ -109,7 +109,7 @@ cancellable = try request.send()
         case .finished:
             break
         }
-    }, receiveValue: { response in
+    }, receiveValue: { (response: User) in
         print("User: \(response.responseModel)")
     })
 ```

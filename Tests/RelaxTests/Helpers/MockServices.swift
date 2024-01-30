@@ -153,3 +153,31 @@ struct BadURLService: Service {
         }
     }
 }
+
+enum InheritService: Service {
+    static let baseURL = URL(string: "https://example.com")!
+    static var configuration: Request.Configuration = Request.Configuration(allowsCellularAccess: false)
+    static let session: URLSession = URLSession(configuration: .ephemeral)
+    static let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
+    
+    static let iso8601Encoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        return encoder
+    }()
+    
+    enum User: Endpoint {
+        static var path: String = "users"
+        typealias Parent = InheritService
+        
+        static let get = Request(.get, parent: User.self)
+        
+        struct Response: Codable, Hashable {
+            var date: Date
+        }
+    }
+}

@@ -59,10 +59,9 @@ See <doc:DefiningAPIStructure> for more on inheritance.
 ### Decoding JSON
 
 You can automatically decode JSON into an expected `Decodable` instance using the
-``Request/send(decoder:session:)-2kid8`` method.
+``Request/send(decoder:session:)-667nw`` method.
 
-> Tip: By default, `JSONDecoder()` is used, but you
-can also pass in your own to the `decoder` parameter.
+> Tip: The ``Request/decoder`` defined in the request is used by default, but you can pass in your own to override this.
 
 ```swift
 Task {

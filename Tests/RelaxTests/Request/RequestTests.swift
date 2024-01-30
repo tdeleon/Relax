@@ -142,4 +142,14 @@ final class RequestTests: XCTestCase {
         XCTAssertEqual(request._properties, properties)
     }
     
+    func testHashable() {
+        let request1 = Request(.get, url: URL(string: "https://example.com/")!)
+        let request2 = request1
+        let request3 = Request(.delete, url: URL(string: "https://example.com/")!)
+        let request4 = Request(.get, url: URL(string: "https://example.org/")!)
+        
+        XCTAssertEqual(request1.hashValue, request2.hashValue)
+        XCTAssertNotEqual(request1.hashValue, request3.hashValue)
+        XCTAssertNotEqual(request1.hashValue, request4.hashValue)
+    }
 }

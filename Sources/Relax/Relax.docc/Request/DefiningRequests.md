@@ -8,7 +8,8 @@ You can create Requests in several different ways, ranging from as simple as a o
 definition of an entire REST API service. They can be either pre-defined and static, or accept dynamic parameters at
 runtime, depending on your needs.
 
-Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler> on how to send them and receive a response.
+Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or
+<doc:SendingRequestsHandler> on how to send them and receive a response.
 
 ## Request Basics
 
@@ -30,7 +31,8 @@ Usually, you will need to customize at least some other properties on the reques
 - ``PathComponents``
 
 These can be set using the `properties` parameter on the init method, which takes a ``Request/Properties/Builder``
-closure where you set any number of properties to be used in the request using a [result builder](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630).
+closure where you set any number of properties to be used in the request using a
+[result builder](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630).
 
 The following builds on the previous example by adding a `Content-Type: application/json` header and appending a query
 parameter to the URL, so the final URL will be `https://example.com/users?name=firstname`.
@@ -63,8 +65,8 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
 
 When sending requests, a `URLSession` is used, which can be configured through the ``Request/session`` property. If not
 specified, this property will inherit from the
-[`parent`](<doc:Request/init(_:parent:configuration:session:properties:)>) if defined, otherwise it will be set to
-`URLSession.shared` by default. See <doc:DefiningAPIStructure> for more on inheritance.
+[`parent`](<doc:Request/init(_:parent:configuration:session:decoder:properties:)>) if defined, otherwise it will be set
+to `URLSession.shared` by default. See <doc:DefiningAPIStructure> for more on inheritance.
 
 ```swift
 enum MyService: Service {
@@ -111,6 +113,14 @@ let request = Request(
 If no configuration is specified, then the configuration will be inherited from the requests parent ``APIComponent``.
 If the request is standalone (not linked to a parent), then a
  [`default`](<doc:Request/Configuration-swift.struct/default>) configuration will be used.
+
+See <doc:DefiningAPIStructure> for more on inheritance.
+
+### Decoding Data
+
+When decoding received data from the request, the ``Request/decoder`` property on the request will be used. This
+property defaults to either the ``APIComponent/decoder-74ja3`` of the parent if linked, or `JSONDecoder()` if not. You
+can override this for a particular request by specifying a different value for the ``Request/decoder`` property.
 
 See <doc:DefiningAPIStructure> for more on inheritance.
 

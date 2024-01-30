@@ -78,16 +78,16 @@ You can automatically decode received data into a `Decodable` instance with the
 ``Request/send(decoder:session:completion:)`` method. This method also uses a completion handler, but instead of `Data`,
 returns the data decoded to a `Decodable` type.
 
-> Tip: By default, `JSONDecoder()` is used, but you can also pass in your own to the `decoder` parameter.
+> Tip: The ``Request/decoder`` defined in the request is used by default, but you can pass in your own to override this.
 
 ```swift
 let request = Request(.get, url: URL(string: "https://example.com")!)
-request.send { (result: Result<User, RequestError> in
+request.send { (result: Result<User, RequestError>) in
     switch result {
     case .success(let user):
         print("User: \(user)")
     case .failure(let error):
-        print("Request failed - \(error.localizedDescription)")
+        print("Request failed - \(error)")
     }
 }
 ```
