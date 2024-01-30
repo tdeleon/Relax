@@ -125,6 +125,29 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(body, Body(model))
     }
     
+    func testBuildDictionary() throws {
+        let content = ["name": "value"]
+        @Body.Builder
+        var body: Body {
+            content
+        }
+        XCTAssertEqual(body, Body(content))
+    }
+    
+    func testBuildHeterogenousDictionary() throws {
+
+        let content: [String: Any] = ["name": "value", "status": false]
+        @Body.Builder
+        var body: Body {
+            content
+        }
+        #if os(Windows) && swift(>=5.7) && swift(<5.9)
+        throw XCTSkip("Comparison does not work correctly on Windows with Swift 5.8")
+        #else
+        XCTAssertEqual(body, Body(content))
+        #endif
+    }
+    
     func testBuildLimitedAvailability() {
         @Body.Builder
         var body: Body {

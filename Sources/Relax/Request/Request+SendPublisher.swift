@@ -24,20 +24,19 @@ extension Request {
     ///    - request: The request made
     ///    - urlResponse: The response received
     ///    - responseModel: The model decoded from received data
-    public typealias PublisherModelResponse<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
+    public typealias PublisherModelResponse<Model: Decodable> = (
+        request: Request,
+        urlResponse: HTTPURLResponse,
+        responseModel: Model
+    )
     
     /// Send a request, returning a Combine publisher
     /// - Parameters:
-    ///   - session: The session to use
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
-    public func send(
-        session: URLSession = .shared
-    ) -> AnyPublisher<PublisherResponse, RequestError> {
+    public func send(session: URLSession? = nil) -> AnyPublisher<PublisherResponse, RequestError> {
         Future<PublisherResponse, RequestError> { promise in
-            send(
-                session: session,
-                autoResumeTask: true
-            ) { result in
+            send(session: session ?? self.session,autoResumeTask: true) { result in
                     switch result {
                     case .success(let successResponse):
                         promise(.success(successResponse))
@@ -51,16 +50,16 @@ extension Request {
     
     /// Send a request and decode received data to a Decodable instance, returning a Combine publisher
     /// - Parameters:
-    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - decoder: When set, overrides the ``Request/decoder`` used to decode received data.
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
     /// - Returns: A Pubisher which returns the received data, or a ``RequestError`` on failure.
     public func send<ResponseModel: Decodable>(
-        decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared
+        decoder: JSONDecoder? = nil,
+        session: URLSession? = nil
     ) -> AnyPublisher<ResponseModel, RequestError> {
         send(session: session)
             .map(\.data)
-            .decode(type: ResponseModel.self, decoder: decoder)
+            .decode(type: ResponseModel.self, decoder: decoder ?? self.decoder)
             .mapError {
                 switch $0 {
                 case let error as DecodingError:

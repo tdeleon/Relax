@@ -19,12 +19,12 @@ import FoundationNetworking
 /// let request = Request(.get, url: URL(string: "https://example.com/")!)
 /// ```
 ///
-/// When reuqests are nested as part of an ``APIComponent`` (``Service`` or ``Endpoint``), you specify the `Parent` type to the initializer or
-/// ``RequestBuilder`` result builder. In the following example, both `request1` and `request2` are equivalent:
+/// When reuqests are nested as part of an ``APIComponent`` (``Service`` or ``Endpoint``), you specify the ``APISubComponent/Parent``  type to
+/// the initializer or ``RequestBuilder`` result builder. In the following example, both `request1` and `request2` are equivalent:
 ///
 /// ```swift
 /// enum MyService: Service {
-///     static let baseURL = URL(string: https://example.com/)!
+///     static let baseURL = URL(string: "https://example.com/")!
 ///
 ///     // Uses the baseURL defined on MyService
 ///     @RequestBuilder<MyService>
@@ -45,9 +45,10 @@ import FoundationNetworking
 ///         .settingHeader(name: "name", value: "value")
 ///         .send()
 /// ```
-/// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
+/// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>,
+/// <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
 ///
-public struct Request: Hashable {    
+public struct Request {
     /// The HTTP method of the request
     public var httpMethod: HTTPMethod
     
@@ -99,11 +100,25 @@ public struct Request: Hashable {
     
     /// The configuration of the request
     ///
-    /// The default value is ``Configuration-swift.struct/default``.
-    ///
-    /// - Note: This value will be inherited by the parent ``APIComponent`` (``Service``/``Endpoint``)
-    /// when provided
+    /// This value will be inherited from the parent ``APIComponent/configuration-5p4i`` property, if the request is linked to a parent. If there is no
+    /// parent, the default value is ``Request/Configuration-swift.struct/default``.
     public var configuration: Configuration
+    
+    /// The URLSession to use for this request
+    ///
+    /// This value will be inherited from the parent ``APIComponent/session-3qjsw`` property, if the request is linked to a parent. If there is no parent, the
+    /// default value is `URLSession.shared`.
+    ///
+    /// - Tip: The session can also be overridden when sending requests.
+    public var session: URLSession
+    
+    /// The decoder to use for this request
+    ///
+    /// This value will be inherited from the parent ``APIComponent/decoder-bxgv`` property, if the request is linked to a parent. If there is no parent, the
+    /// default value is `JSONEncoder()`.
+    ///
+    /// - Tip: The decoder can also be overridden when sending requests.
+    public var decoder: JSONDecoder
     
     /// The request URL
     public var url: URL {
@@ -156,36 +171,65 @@ public struct Request: Hashable {
     ///   - httpMethod: The HTTP method to use
     ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
     ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
+    ///   - session: The session to use for the request. The default is `URLSession.shared`
+    ///   - decoder: The decoder to use for the request when receiving data. The default is `JSONDecoder()`.
     ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
     ///   ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration = .default,
-        @Request.Properties.Builder properties: () -> Properties = { .empty }
+        session: URLSession = .shared,
+        decoder: JSONDecoder = JSONDecoder(),
+        @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
     ) {
-        self.init(httpMethod: httpMethod, url: url, configuration: configuration, properties: properties())
+        self.init(
+            httpMethod: httpMethod,
+            url: url,
+            configuration: configuration,
+            sesssion: session,
+            decoder: decoder,
+            properties: properties()
+        )
     }
     
     /// Creates a request using a provided HTTP method, using the base URL, configuration, and any shared properties provided by a parent ``APIComponent``
     /// and its' parents. Properties are provided with a ``Request/Properties/Builder``.
     /// - Parameters:
     ///   - httpMethod: The HTTP method for the request
-    ///   - parent: A parent which provides the base URL, ``Configuration-swift.struct``, and
-    ///   ``APIComponent/sharedProperties-5764x``.
+    ///   - parent: A parent which provides various attributes that the request inherits from.
     ///   - configuration: An optional configuration to override what is provided by the parent.
-    ///   - properties: A ``Request/Properties/Builder`` closure which provides properties to use in this request. Any provided here will be
-    ///   appended to any provided by `parent`. The default value is ``Request/Properties/empty`` (no properties).
+    ///   - session: Overrides the ``APIComponent/session-3qjsw`` provided by the parent.
+    ///   - decoder: Overrides the ``APIComponent/decoder-bxgv`` provided by the parent.
+    ///   - properties: A ``Request/Properties/Builder`` closure which provides properties to use in this request. The default value is
+    ///   ``Request/Properties/empty`` (no properties).
+    ///
+    ///   - Note: Any `properties` provided are appended to the ``APIComponent/allProperties-7xy23`` defined on the parent, not replaced.
+    ///
+    /// The request will inherit attributes defined on the `parent`, including:
+    /// * ``APIComponent/baseURL``
+    /// * ``APIComponent/configuration-5p4i``
+    /// * ``APIComponent/session-36tuc``
+    /// * ``APIComponent/decoder-74ja3``
+    /// * ``APIComponent/allProperties-7xy23``
+    ///
+    /// You can override any of the above attributes (except for the `baseURL` and `allProperties`) by passing in the corresponding parameters to this
+    /// method.
+    ///
     public init(
         _ httpMethod: HTTPMethod,
         parent: APIComponent.Type,
         configuration: Configuration? = nil,
-        @Request.Properties.Builder properties: () -> Properties = { .empty }
+        session: URLSession? = nil,
+        decoder: JSONDecoder? = nil,
+        @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
             url: parent.baseURL,
             configuration: configuration ?? parent.configuration,
+            sesssion: session ?? parent.session,
+            decoder: decoder ?? parent.decoder,
             properties: parent.allProperties + properties()
         )
     }
@@ -194,13 +238,16 @@ public struct Request: Hashable {
         httpMethod: HTTPMethod,
         url: URL,
         configuration: Configuration,
+        sesssion: URLSession,
+        decoder: JSONDecoder,
         properties: Properties
     ) {
         self._url = url
         
         self.httpMethod = httpMethod
         self.configuration = configuration
-        
+        self.session = sesssion
+        self.decoder = decoder
         self._properties = properties
     }
 }
@@ -247,5 +294,27 @@ public enum RequestBuilder<Parent: APIComponent> {
         fatalError()
     }
     
+}
+
+// JSONEncoder/JSONDecoder are not Hashable, so leave it out of the conformance
+extension Request: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(_properties)
+        hasher.combine(configuration)
+        hasher.combine(httpMethod)
+        hasher.combine(url)
+        hasher.combine(session)
+    }
+}
+
+// JSONEncoder/JSONDecoder are not Equatable, so leave it out of the conformance
+extension Request: Equatable {
+    public static func == (lhs: Request, rhs: Request) -> Bool {
+        lhs._properties == rhs._properties &&
+        lhs.configuration == rhs.configuration &&
+        lhs.httpMethod == rhs.httpMethod &&
+        lhs.url == rhs.url &&
+        lhs.session == rhs.session
+    }
 }
 

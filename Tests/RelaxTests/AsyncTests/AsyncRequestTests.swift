@@ -57,5 +57,53 @@ final class AsyncRequestTests: XCTestCase {
     func testComplexRequest() async throws {
         try await makeSuccess(request: service.ComplexRequests.complex)
     }
+    
+    func testOverrideSession() async throws {
+        #if swift(<5.9)
+        throw XCTSkip("await fulfillment() not available before Swift 5.9")
+        #else
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
+        try await override.send()
+        
+        await fulfillment(of: [expectation], timeout: 1)
+        #endif
+    }
+    
+    func testOverrideSessionOnSendAsync() async throws {
+        #if swift(<5.9)
+        throw XCTSkip("await fulfillment() not available before Swift 5.9")
+        #else
+        let expectation = self.expectation(description: "Mock received")
+        let expectedSession = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        try await InheritService.User.get.send(session: expectedSession)
+        
+        await fulfillment(of: [expectation], timeout: 1)
+        #endif
+    }
+    
+    func testOverrideDecoderOnSend() async throws {
+        let model = InheritService.User.Response(date: Date())
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let session = URLMock.session(.mock(model, encoder: encoder))
+        
+        // send request - the defined JSONDecoder on InheritService has 8601 date decoding strategy
+        let _: InheritService.User.Response = try await InheritService.User.get.send(session: session)
+        
+        do {
+            // send request, overriding the inherited decoder with default - should fail to parse
+            let _: InheritService.User.Response = try await InheritService.User.get.send(decoder: JSONDecoder(), session: session)
+            XCTFail("Should have failed")
+        } catch {
+            XCTAssertTrue(error is RequestError)
+        }
+    }
 }
 #endif
