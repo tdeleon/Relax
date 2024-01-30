@@ -134,6 +134,15 @@ final class BodyTests: XCTestCase {
         XCTAssertEqual(body, Body(content))
     }
     
+    func testBuildHeterogenousDictionary() throws {
+        let content: [String: Any] = ["name": "value", "status": false]
+        @Body.Builder
+        var body: Body {
+            content
+        }
+        XCTAssertEqual(body, Body(content))
+    }
+    
     func testBuildLimitedAvailability() {
         @Body.Builder
         var body: Body {
