@@ -23,12 +23,12 @@ extension Request {
     /// Send a request asynchronously
     ///
     /// - Parameters:
-    ///   - session: The session to use (default is `URLSession.shared`
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
     /// - Returns: A response containing the request sent, url response, and data.
     /// - Throws: A `RequestError` on error.
     @discardableResult
     public func send(
-        session: URLSession = .shared
+        session: URLSession? = nil
     ) async throws -> AsyncResponse {
         var task: URLSessionDataTask?
         let onCancel = { task?.cancel() }
@@ -38,7 +38,7 @@ extension Request {
             
             return try await withCheckedThrowingContinuation { continuation in
                 task = send(
-                    session: session,
+                    session: session ?? self.session,
                     autoResumeTask: true
                 ) { result in
                         switch result {
@@ -56,19 +56,17 @@ extension Request {
     
     /// Send a request asynchronously, decoding data received to a Decodable instance.
     /// - Parameters:
-    ///   - decoder: The decoder to decode received data with. Default is `JSONDecoder()`.
-    ///   - session: The session to use to send the request. Default is `URLSession.shared`.
+    ///   - decoder: When set, overrides the ``Request/decoder`` used to decode received data.
+    ///   - session: When set, overrides the ``Request/session`` used to send the request.
     /// - Returns: The model, decoded from received data.
     /// - Throws: A `RequestError` on error.
     public func send<ResponseModel: Decodable>(
-        decoder: JSONDecoder = JSONDecoder(),
-        session: URLSession = .shared
+        decoder: JSONDecoder? = nil,
+        session: URLSession? = nil
     ) async throws -> ResponseModel {
-        let response: AsyncResponse = try await send(
-            session: session
-        )
+        let response: AsyncResponse = try await send(session: session)
         do {
-            return try decoder.decode(ResponseModel.self, from: response.data)
+            return try (decoder ?? self.decoder).decode(ResponseModel.self, from: response.data)
         } catch let error as DecodingError {
             throw RequestError.decoding(request: self, error: error)
         } catch {

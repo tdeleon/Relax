@@ -8,7 +8,8 @@ You can create Requests in several different ways, ranging from as simple as a o
 definition of an entire REST API service. They can be either pre-defined and static, or accept dynamic parameters at
 runtime, depending on your needs.
 
-Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler> on how to send them and receive a response.
+Once you've created your request, see <doc:SendingRequestsAsync>, <doc:SendingRequestsPublisher>, or
+<doc:SendingRequestsHandler> on how to send them and receive a response.
 
 ## Request Basics
 
@@ -30,7 +31,8 @@ Usually, you will need to customize at least some other properties on the reques
 - ``PathComponents``
 
 These can be set using the `properties` parameter on the init method, which takes a ``Request/Properties/Builder``
-closure where you set any number of properties to be used in the request using a [result builder](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630).
+closure where you set any number of properties to be used in the request using a
+[result builder](https://docs.swift.org/swift-book/LanguageGuide/AdvancedOperators.html#ID630).
 
 The following builds on the previous example by adding a `Content-Type: application/json` header and appending a query
 parameter to the URL, so the final URL will be `https://example.com/users?name=firstname`.
@@ -59,7 +61,70 @@ let request = Request(.post, url: URL(string: "https://example.com/users")!) {
 }
 ```
 
-### Modifying Requests
+### Request Session
+
+When sending requests, a `URLSession` is used, which can be configured through the ``Request/session`` property. If not
+specified, this property will inherit from the
+[`parent`](<doc:Request/init(_:parent:configuration:session:decoder:properties:)>) if defined, otherwise it will be set
+to `URLSession.shared` by default. See <doc:DefiningAPIStructure> for more on inheritance.
+
+```swift
+enum MyService: Service {
+     static let baseURL = URL(string: "https://example.com/")!
+     static let session: URLSession = mySession // use a specific URLSession already defined
+
+     // request will use session defined in MyService, mySession
+     static let get = Request(.get, parent: MyService.self)
+
+     // request will use URLSession.shared, overriding the parent session
+     static let getSharedSession = Request(.get, parent: MyService.self, session: .shared)
+ }
+ ```
+
+If a request does not have a parent set, then the session will default to `URLSession.shared`, if not otherwise
+specified.
+
+```swift
+// a request using URLSession.shared
+let request = Request(.get, url: URL(string: "https://example.com/")!)
+
+// a request using a specific URLSession
+let customSessionRequest = Request(.get, url: URL(string: "https://example.com/")!, session: mySession)
+```
+### Configuring a Request
+
+Sometimes you need more control on a request to modify things such as the timeout interval or cache policy. This can
+be done using the ``Request/Configuration-swift.struct`` structure. The following example changes the timeout interval
+to 90 seconds instead of the default 60.
+
+```swift
+let request = Request(
+        .post, 
+        url: URL(string: "https://example.com/users")!,
+        configuration: Request.Configuration(timeout: 90)
+    ) {
+    Body {
+        // Assume that User is an Encodable type
+        User(name: "firstname")
+    }
+}
+```
+
+If no configuration is specified, then the configuration will be inherited from the requests parent ``APIComponent``.
+If the request is standalone (not linked to a parent), then a
+ [`default`](<doc:Request/Configuration-swift.struct/default>) configuration will be used.
+
+See <doc:DefiningAPIStructure> for more on inheritance.
+
+### Decoding Data
+
+When decoding received data from the request, the ``Request/decoder`` property on the request will be used. This
+property defaults to either the ``APIComponent/decoder-74ja3`` of the parent if linked, or `JSONDecoder()` if not. You
+can override this for a particular request by specifying a different value for the ``Request/decoder`` property.
+
+See <doc:DefiningAPIStructure> for more on inheritance.
+
+### Modifying a Request
 
 While many properties can be pre-defined on requests, there may be cases where values need to be changed after
 the request is defined, but before it is sent. In this case, there are modifier style methods available for
@@ -86,25 +151,6 @@ try await request
 ```
 
 For more information on modifying requests, see ``Request``.
-
-### Configuring Requests
-
-Sometimes you need more control on a request to modify things such as the timeout interval or cache policy. This can
-be done using the ``Request/Configuration-swift.struct`` structure. The following example changes the timeout interval
-to 90 seconds instead of the default 60.
-
-```swift
-let request = Request(
-        .post, 
-        url: URL(string: "https://example.com/users")!,
-        configuration: Request.Configuration(timeout: 90)
-    ) {
-    Body {
-        // Assume that User is an Encodable type
-        User(name: "firstname")
-    }
-}
-```
 
 ## Requests in a Complex Structure
 

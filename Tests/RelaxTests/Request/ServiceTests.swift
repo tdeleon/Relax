@@ -6,6 +6,10 @@
 //
 
 import XCTest
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+import URLMock
 @testable import Relax
 
 final class ServiceTests: XCTestCase {
@@ -55,6 +59,18 @@ final class ServiceTests: XCTestCase {
         
         XCTAssertEqual(Testing.allProperties, .empty)
         XCTAssertEqual(Testing.configuration, .default)
+        XCTAssertEqual(Testing.session, .shared)
+    }
+    
+    func testInheritance() {
+        XCTAssertEqual(InheritService.User.get.configuration, InheritService.configuration)
+        XCTAssertEqual(InheritService.User.get.session, InheritService.session)
+    }
+    
+    func testOverrideConfiguration() async throws {
+        let expectedConfiguration = Request.Configuration(cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        let override = Request(.get, parent: InheritService.User.self, configuration: expectedConfiguration)
+        XCTAssertEqual(override.configuration, expectedConfiguration)
     }
 }
 

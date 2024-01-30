@@ -69,6 +69,35 @@ final class CombineRequestTests: XCTestCase {
         makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
+    func testOverrideSession() throws {
+        let expectation = self.expectation(description: "Mock received")
+        let session = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        let override = Request(.get, parent: InheritService.User.self, session: session)
+        cancellable = override.send()
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { _ in
+            })
+        
+        waitForExpectations(timeout: 1)
+    }
+    
+    func testOverrideSessionOnSend() throws {
+        let expectation = self.expectation(description: "Mock received")
+        let session = URLMock.session(.mock { _ in
+            expectation.fulfill()
+        })
+        
+        cancellable = InheritService.User.get.send(session: session)
+            .sink(receiveCompletion: { _ in
+            }, receiveValue: { _ in
+            })
+        
+        waitForExpectations(timeout: 1)
+    }
+    
     func testGetPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.get)
