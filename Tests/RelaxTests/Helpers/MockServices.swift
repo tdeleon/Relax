@@ -156,7 +156,7 @@ struct BadURLService: Service {
 
 enum InheritService: Service {
     static let baseURL = URL(string: "https://example.com")!
-    static var configuration: Request.Configuration = Request.Configuration(allowsCellularAccess: false)
+    static let configuration: Request.Configuration = Request.Configuration(allowsCellularAccess: false)
     static let session: URLSession = URLSession(configuration: .ephemeral)
     static let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
@@ -171,7 +171,7 @@ enum InheritService: Service {
     }()
     
     enum User: Endpoint {
-        static var path: String = "users"
+        static let path: String = "users"
         typealias Parent = InheritService
         
         static let get = Request(.get, parent: User.self)

@@ -26,7 +26,7 @@ final class CombineRequestTests: XCTestCase {
         session = nil
     }
     
-    private func makeSuccess(request: Request) {
+    @MainActor private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
         URLMock.response = .mock()
         
@@ -45,31 +45,31 @@ final class CombineRequestTests: XCTestCase {
         waitForExpectations(timeout: 3)
     }
     
-    func testGet() throws {
+    @MainActor func testGet() throws {
         makeSuccess(request: ExampleService.get)
     }
     
-    func testPost() throws {
+    @MainActor func testPost() throws {
         makeSuccess(request: ExampleService.BasicRequests.post)
     }
     
-    func testPatch() throws {
+    @MainActor func testPatch() throws {
         makeSuccess(request: ExampleService.BasicRequests.patch)
     }
     
-    func testPut() throws {
+    @MainActor func testPut() throws {
         makeSuccess(request: ExampleService.BasicRequests.put)
     }
     
-    func testDelete() throws {
+    @MainActor func testDelete() throws {
         makeSuccess(request: ExampleService.BasicRequests.delete)
     }
     
-    func testComplexRequest() throws {
+    @MainActor func testComplexRequest() throws {
         makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
-    func testOverrideSession() throws {
+    @MainActor func testOverrideSession() throws {
         let expectation = self.expectation(description: "Mock received")
         let session = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -84,7 +84,7 @@ final class CombineRequestTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    func testOverrideSessionOnSend() throws {
+    @MainActor func testOverrideSessionOnSend() throws {
         let expectation = self.expectation(description: "Mock received")
         let session = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -98,37 +98,37 @@ final class CombineRequestTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    func testGetPerformance() throws {
+    @MainActor func testGetPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.get)
         }
     }
     
-    func testPostPerformance() throws {
+    @MainActor func testPostPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.post)
         }
     }
     
-    func testPatchPerformance() throws {
+    @MainActor func testPatchPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.patch)
         }
     }
     
-    func testPutPerformance() throws {
+    @MainActor func testPutPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.put)
         }
     }
     
-    func testDeletePerformance() throws {
+    @MainActor func testDeletePerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.delete)
         }
     }
     
-    func testComplexRequestPerformance() throws {
+    @MainActor func testComplexRequestPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.ComplexRequests.complex)
         }

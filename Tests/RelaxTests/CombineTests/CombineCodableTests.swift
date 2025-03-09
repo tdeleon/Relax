@@ -27,7 +27,7 @@ final class CombineCodableTests: XCTestCase {
         session = nil
     }
 
-    func testGet() throws {
+    @MainActor func testGet() throws {
         let sampleModel = [User(name: "1"), User(name: "2")]
         URLMock.response = .mock(sampleModel)
         let expectation = self.expectation(description: "Expect")
@@ -50,7 +50,7 @@ final class CombineCodableTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    func testOverrideDecoderOnSend() throws {
+    @MainActor func testOverrideDecoderOnSend() throws {
         let success = self.expectation(description: "Success")
         let failure = self.expectation(description: "Failure")
         let model = InheritService.User.Response(date: Date())

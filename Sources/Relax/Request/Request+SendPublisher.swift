@@ -35,17 +35,13 @@ extension Request {
     ///   - session: When set, overrides the ``Request/session`` used to send the request.
     /// - Returns: A Publisher which returns the received data, or a ``RequestError`` on failure.
     public func send(session: URLSession? = nil) -> AnyPublisher<PublisherResponse, RequestError> {
-        Future<PublisherResponse, RequestError> { promise in
-            send(session: session ?? self.session,autoResumeTask: true) { result in
-                    switch result {
-                    case .success(let successResponse):
-                        promise(.success(successResponse))
-                    case .failure(let error):
-                        promise(.failure(error))
-                    }
-                }
-        }
-        .eraseToAnyPublisher()
+        (session ?? self.session).dataTaskPublisher(for: urlRequest)
+            .mapError { RequestError.urlError(request: self, error: $0) }
+            .tryMap { try handleURLSessionResponse($0) }
+            .mapError { error in
+                return error as? RequestError ?? RequestError.other(request: self, message: error.localizedDescription)
+            }
+            .eraseToAnyPublisher()
     }
     
     /// Send a request and decode received data to a Decodable instance, returning a Combine publisher

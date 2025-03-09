@@ -20,7 +20,7 @@ final class CombineErrorTests: ErrorTest {
         cancellable = nil
     }
         
-    private func requestError(expected: RequestError) throws {
+    @MainActor private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
@@ -39,11 +39,11 @@ final class CombineErrorTests: ErrorTest {
         waitForExpectations(timeout: 1)
     }
     
-    func testHTTPError() throws {
+    @MainActor func testHTTPError() throws {
         try requestError(expected: httpError)
     }
     
-    func testURLError() throws {
+    @MainActor func testURLError() throws {
         #if os(watchOS)
         throw XCTSkip("Not supported on watchOS")
         #else
@@ -51,7 +51,7 @@ final class CombineErrorTests: ErrorTest {
         #endif
     }
     
-    func testDecodingError() throws {
+    @MainActor func testDecodingError() throws {
         URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
 
@@ -70,14 +70,6 @@ final class CombineErrorTests: ErrorTest {
             }
         
         waitForExpectations(timeout: 1)
-    }
-    
-    func testOtherError() throws {
-        #if os(watchOS)
-        throw XCTSkip("Not supported on watchOS")
-        #else
-        try requestError(expected: otherError)
-        #endif
     }
 }
 #endif

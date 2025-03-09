@@ -27,30 +27,17 @@ extension Request {
     /// - Returns: A response containing the request sent, url response, and data.
     /// - Throws: A `RequestError` on error.
     @discardableResult
-    public func send(
-        session: URLSession? = nil
-    ) async throws -> AsyncResponse {
-        var task: URLSessionDataTask?
-        let onCancel = { task?.cancel() }
-        
-        return try await withTaskCancellationHandler {
-            try Task.checkCancellation()
-            
-            return try await withCheckedThrowingContinuation { continuation in
-                task = send(
-                    session: session ?? self.session,
-                    autoResumeTask: true
-                ) { result in
-                        switch result {
-                        case .success(let success):
-                            continuation.resume(returning: success)
-                        case .failure(let failure):
-                            continuation.resume(throwing: failure)
-                        }
-                    }
-            }
-        } onCancel: {
-            onCancel()
+    public func send(session: URLSession? = nil) async throws -> AsyncResponse {
+        try Task.checkCancellation()
+        do {
+            let response = try await (session ?? self.session).data(for: urlRequest)
+            return try handleURLSessionResponse(response)
+        } catch let error as URLError {
+            throw RequestError.urlError(request: self, error: error)
+        } catch let error as RequestError {
+            throw error
+        } catch {
+            throw RequestError.other(request: self, message: error.localizedDescription)
         }
     }
     

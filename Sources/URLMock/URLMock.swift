@@ -18,7 +18,7 @@ public final class URLMock: URLProtocol {
     ///
     /// Set this property to provide the response you want to be returned to `URLSession` clients using ``URLMock``.
     /// - Important: Setting this property will apply to all instances of `URLSession` using ``URLMock``.
-    public static var response: MockResponse = .mock()
+    public static nonisolated(unsafe) var response: MockResponse = .mock()
     
     override public class func canInit(with request: URLRequest) -> Bool { true }
     

@@ -14,7 +14,7 @@ import URLMock
 
 final class CompletionErrorTests: ErrorTest {
         
-    private func requestError(expected: RequestError) throws {
+    @MainActor private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLMock.response = .mock(error: expected)
         request.send(session: session) { result in
@@ -30,11 +30,11 @@ final class CompletionErrorTests: ErrorTest {
         waitForExpectations(timeout: 1)
     }
     
-    func testHTTPError() throws {
+    @MainActor func testHTTPError() throws {
         try requestError(expected: httpError)
     }
     
-    func testURLError() throws {
+    @MainActor func testURLError() throws {
         #if os(watchOS)
         throw XCTSkip("Not supported on watchOS")
         #else
@@ -42,7 +42,7 @@ final class CompletionErrorTests: ErrorTest {
         #endif
     }
     
-    func testDecodingError() throws {
+    @MainActor func testDecodingError() throws {
         URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
         
@@ -59,7 +59,7 @@ final class CompletionErrorTests: ErrorTest {
         waitForExpectations(timeout: 1)
     }
     
-    func testOtherError() throws {
+    @MainActor func testOtherError() throws {
         #if os(watchOS)
         throw XCTSkip("Not supported on watchOS")
         #else

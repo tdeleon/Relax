@@ -28,10 +28,10 @@ extension Request {
     public typealias ResponseModel<Model: Decodable> = (request: Request, urlResponse: HTTPURLResponse, responseModel: Model)
 
     /// Completion handler response for a request
-    public typealias Completion = (_ result: Result<Response, RequestError>) -> Void
+    public typealias Completion = @Sendable (_ result: Result<Response, RequestError>) -> Void
     
     /// Completion handler response for decoding a Decodable object from a request
-    public typealias ModelCompletion<Model: Decodable> = (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
+    public typealias ModelCompletion<Model: Decodable> = @Sendable (_ result: Result<ResponseModel<Model>, RequestError>) -> Void
     
     /// Send a request with a completion handler, returning a data task
     /// - Parameters:
@@ -45,7 +45,7 @@ extension Request {
     public func send(
         session: URLSession? = nil,
         autoResumeTask: Bool = true,
-        completion: @escaping Request.Completion
+        completion: @escaping @Sendable Request.Completion
     ) -> URLSessionDataTask {
         let task = (session ?? self.session).dataTask(with: urlRequest) { data, response, error in
             guard error == nil,
@@ -108,7 +108,7 @@ extension Request {
     public func send<ResponseModel: Decodable>(
         decoder: JSONDecoder? = nil,
         session: URLSession? = nil,
-        completion: @escaping (_ result: Result<ResponseModel, RequestError>) -> Void
+        completion: @escaping @Sendable (_ result: Result<ResponseModel, RequestError>) -> Void
     ) {
         send(
             decoder: decoder,

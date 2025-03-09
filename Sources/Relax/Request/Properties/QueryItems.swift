@@ -8,7 +8,7 @@
 import Foundation
 
 /// A structure which represents a single query item
-public struct QueryItem {
+public struct QueryItem: Sendable {
     /// The query item name
     public var name: String
     /// The query item value
@@ -47,7 +47,7 @@ extension QueryItem {
     /// A structure representing a query item name.
     ///
     /// You can use this to define commonly used query item names in your requests by adding static constant properties in an extension.
-    public struct Name: RawRepresentable {
+    public struct Name: RawRepresentable, Sendable {
         public var rawValue: String
         
         public init(rawValue: String) {
