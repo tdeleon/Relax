@@ -5,10 +5,13 @@
 //  Created by Thomas De Leon on 1/20/23.
 //
 
-import XCTest
+import Foundation
+import Testing
+
 @testable import Relax
 
-final class BodyTests: XCTestCase {
+@Suite("Request Body Tests")
+struct BodyTests {
 
     let stringData1 = "Test".data(using: .utf8)
     let stringData2 = "Test2".data(using: .utf8)
@@ -19,67 +22,76 @@ final class BodyTests: XCTestCase {
     
     let model = Test(name: "abc")
     
+    @Test("Init with Data value")
     func testInit() {
         let body = Body(value: stringData1)
-        
-        XCTAssertEqual(body.value, stringData1)
+        #expect(body.value == stringData1)
     }
     
+    @Test("Init with Codable Model")
     func testInitModel() throws {
         let encoder = JSONEncoder()
         
         let body = Body(model, encoder: encoder)
-        let bodyData = try XCTUnwrap(body.value)
-        XCTAssertEqual(try? JSONDecoder().decode(Test.self, from: bodyData), model)
+        
+        let bodyData = try #require(body.value)
+        #expect((try? JSONDecoder().decode(Test.self, from: bodyData)) == model)
     }
     
+    @Test("Init with Dictionary")
     func testInitDictionary() throws {
         let dictionary = ["key": "value"]
         let body = Body(dictionary)
-        XCTAssertEqual(body.value, try JSONSerialization.data(withJSONObject: dictionary))
+        #expect(try JSONSerialization.data(withJSONObject: dictionary) == body.value)
     }
     
+    @Test("Multiple Data values should be appended")
     func testAppend() throws {
         let body1 = Body { stringData1 }
         let body2 = Body { stringData2 }
         
-        XCTAssertEqual(body1 + body2, Body(value: stringData1! + stringData2!))
+        let combined = stringData1! + stringData2!
+        
+        #expect((body1 + body2) == Body(value: combined))
         
         let bodyNil = Body {}
         
-        XCTAssertEqual(body1 + bodyNil, Body(value: stringData1!))
-        XCTAssertEqual(bodyNil + body2, Body(value: stringData2!))
-        XCTAssertEqual(bodyNil + bodyNil, Body(value: nil))
+        #expect((body1 + bodyNil) == Body(value: stringData1))
+        #expect((bodyNil + body2) == Body(value: stringData2))
+        #expect((bodyNil + bodyNil) == Body(value: nil))
         
         let bodyAppended = Body {
             Body(value: stringData1)
             Body(value: stringData2)
         }
-        XCTAssertEqual(bodyAppended.value, stringData1! + stringData2!)
+        #expect(bodyAppended.value == combined)
     }
     
+    @Test("Empty body should have a nil value")
     func testBuildEmpty() {
-        XCTAssertEqual(Body {}, Body(value: nil))
+        #expect(Body {} == Body(value: nil))
     }
     
+    @Test("Builder with value")
     func testBuild() throws {
         let body1 = Body(value: stringData1)
         
-        XCTAssertEqual(Body { body1 }.value, body1.value)
+        #expect(Body { body1 }.value == body1.value)
         
-        let nonOptionalData = try XCTUnwrap(stringData2)
+        let nonOptionalData = try #require(stringData2)
         let body2 = Body {
             nonOptionalData
         }
-        XCTAssertEqual(body2.value, nonOptionalData)
+        #expect(body2.value == nonOptionalData)
         
         let dictionary = ["key": "value"]
         let body3 = Body {
             dictionary
         }
-        XCTAssertEqual(body3.value, try JSONSerialization.data(withJSONObject: dictionary))
+        #expect(try JSONSerialization.data(withJSONObject: dictionary) == body3.value)
     }
     
+    @Test("Builder with optional value")
     func testBuildOptional() {
         @Body.Builder
         func body(include: Bool) -> Body {
@@ -87,10 +99,11 @@ final class BodyTests: XCTestCase {
                 stringData1
             }
         }
-        XCTAssertEqual(body(include: true), Body(value: stringData1))
-        XCTAssertEqual(body(include: false), Body(value: nil))
+        #expect(body(include: true) == Body(value: stringData1))
+        #expect(body(include: false) == Body(value: nil))
     }
     
+    @Test("Builder with if-else")
     func testBuildEither() {
         @Body.Builder
         func body(include: Bool) -> Body {
@@ -101,10 +114,11 @@ final class BodyTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(body(include: true), Body(value: stringData1))
-        XCTAssertEqual(body(include: false), Body(value: stringData2))
+        #expect(body(include: true) == Body(value: stringData1))
+        #expect(body(include: false) == Body(value: stringData2))
     }
     
+    @Test("Builder with array")
     func testBuildArray() {
         let data = [stringData1, stringData2]
         
@@ -114,26 +128,32 @@ final class BodyTests: XCTestCase {
                 item
             }
         }
-        XCTAssertEqual(body, Body(value: data.compactMap { $0 }.reduce(Data(), +)))
+        
+        #expect(Body(value: data.compactMap({ $0 }).reduce(Data(), +)) == body)
     }
     
+    @Test("Builder with Codable")
     func testBuildCodable() throws {
         @Body.Builder
         var body: Body {
             model
         }
-        XCTAssertEqual(body, Body(model))
+        
+        #expect(Body(model) == body)
     }
     
+    @Test("Builder with dictionary")
     func testBuildDictionary() throws {
         let content = ["name": "value"]
         @Body.Builder
         var body: Body {
             content
         }
-        XCTAssertEqual(body, Body(content))
+        
+        #expect(Body(content) == body)
     }
     
+    @Test("Builder with heterogenous dictionary")
     func testBuildHeterogenousDictionary() throws {
 
         let content: [String: Any] = ["name": "value", "status": false]
@@ -144,10 +164,11 @@ final class BodyTests: XCTestCase {
         #if os(Windows) && swift(>=5.7) && swift(<5.9)
         throw XCTSkip("Comparison does not work correctly on Windows with Swift 5.8")
         #else
-        XCTAssertEqual(body, Body(content))
+        #expect(Body(content) == body)
         #endif
     }
     
+    @Test("Builder with limited availability")
     func testBuildLimitedAvailability() {
         @Body.Builder
         var body: Body {
@@ -155,6 +176,7 @@ final class BodyTests: XCTestCase {
                 model
             }
         }
-        XCTAssertEqual(body, Body(model))
+        
+        #expect(Body(model) == body)
     }
 }
