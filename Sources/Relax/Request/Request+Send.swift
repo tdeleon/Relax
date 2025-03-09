@@ -45,7 +45,7 @@ extension Request {
     public func send(
         session: URLSession? = nil,
         autoResumeTask: Bool = true,
-        completion: @escaping @Sendable Request.Completion
+        completion: @escaping Request.Completion
     ) -> URLSessionDataTask {
         let task = (session ?? self.session).dataTask(with: urlRequest) { data, response, error in
             guard error == nil,
