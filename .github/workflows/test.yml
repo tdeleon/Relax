@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, ubuntu-latest, windows-latest]
-        swift: ["5.10", "6.0.2"]
+        os: [macos-13, ubuntu-latest]
+        swift: ["5.10", "6.0.3"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -36,18 +36,10 @@ jobs:
       name: Setup MSVC
       uses: ilammy/msvc-dev-cmd@v1
       
-    - if: ${{ (runner.os != 'Windows') || (runner.os == 'Windows' && matrix.swift != '5.7') }}
-      name: Setup Swift Version
+    - name: Setup Swift Version
       uses: SwiftyLab/setup-swift@latest
       with:
         swift-version: ${{ matrix.swift }}
-
-    - if: ${{ (runner.os == 'Windows') && (matrix.swift == '5.7') }}
-      name: Setup Swift Version (5.7 on Windows)
-      uses: compnerd/gha-setup-swift@main
-      with:
-        branch: swift-5.7-release
-        tag: 5.7-RELEASE
 
     - name: Get Swift Version
       run: swift --version
