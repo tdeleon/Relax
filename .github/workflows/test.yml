@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, ubuntu-latest]
+        os: [macos-15, ubuntu-latest]
         swift: ["5.10", "6.0.3"]
     runs-on: ${{ matrix.os }}
 
