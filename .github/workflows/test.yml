@@ -41,6 +41,14 @@ jobs:
       with:
         swift-version: ${{ matrix.swift }}
 
+    - name: SPM Cache
+      uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+
     - name: Get Swift Version
       run: swift --version
 
