@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -39,8 +39,8 @@ targets.append(
     ]
 )
 dependencies = [
-    // Depend on the Swift 5.9 release of SwiftSyntax
-    .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
+    // Depend on the Swift 5.10 release of SwiftSyntax
+    .package(url: "https://github.com/apple/swift-syntax.git", exact: "510.0.3"),
 ]
 #endif
 
@@ -62,5 +62,6 @@ let package = Package(
             targets: ["URLMock"])
     ],
     dependencies: dependencies,
-    targets: targets
+    targets: targets,
+    swiftLanguageVersions: [.v5]
 )
