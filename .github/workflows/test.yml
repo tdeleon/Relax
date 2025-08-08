@@ -27,9 +27,12 @@ jobs:
 
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Build
+      run: xcodebuild -scheme Relax-Package -destination '${{ matrix.destination }}' build-for-testing
       
     - name: Test
-      run: xcodebuild -scheme Relax-Package -destination '${{ matrix.destination }}' test
+      run: xcodebuild -scheme Relax-Package -destination '${{ matrix.destination }}' test-without-building
 
   build:
     strategy:
