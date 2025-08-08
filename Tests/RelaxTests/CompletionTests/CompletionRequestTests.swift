@@ -14,20 +14,15 @@ import URLMock
 
 @MainActor
 final class CompletionRequestTests: XCTestCase {
-    var session: URLSession!
-    
-    override func setUp() {
+    private var mockSession: URLSession {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [URLMock.self]
-        session = URLSession(configuration: configuration)
+        return URLSession(configuration: configuration)
     }
     
-    override func tearDown() {
-        session = nil
-    }
-    
-    @MainActor private func makeSuccess(request: Request) {
+    private func makeSuccess(request: Request) {
         let expectation = self.expectation(description: "Expect")
+        let session = mockSession
         URLMock.response = .mock()
         
         request.send(session: session) { result in
