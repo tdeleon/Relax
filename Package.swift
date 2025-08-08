@@ -39,5 +39,6 @@ let package = Package(
             name: "RelaxTests",
             dependencies: ["Relax", "URLMock"]
         ),
-    ]
+    ],
+    swiftLanguageVersions: [.version("6"), .v5]
 )
