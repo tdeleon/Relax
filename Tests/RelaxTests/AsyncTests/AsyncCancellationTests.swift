@@ -15,14 +15,10 @@ import URLMock
 
 @MainActor
 final class AsyncCancellationTests: XCTestCase {
-    var session: URLSession!
-    
-    override func setUpWithError() throws {
-        session = URLMock.session(.mock(delay: 5))
-    }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet
     func testImmediateCancellation() throws {
+        let session = URLMock.session(.mock(delay: 5))
         let expectation = self.expectation(description: "Cancellation")
         let task = Task {
             do {
@@ -43,6 +39,7 @@ final class AsyncCancellationTests: XCTestCase {
     // Disable on Windows/Linux- test delay does not seem to be simulated properly
     // Tasks cancelled after a delay return a URLError.cancelled, since the URLSession task is already in progress
     func testDelayedCancellation() throws {
+        let session = URLMock.session(.mock(delay: 5))
         let expectation = self.expectation(description: "Expected cancellation")
         let task = Task {
             do {

@@ -23,6 +23,7 @@ final class CombineErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
+        let session = URLMock.session()
         URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
             .sink(receiveCompletion: { completion in
@@ -56,7 +57,7 @@ final class CombineErrorTests: ErrorTest {
         URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
 
-        cancellable = request.send(session: session)
+        cancellable = request.send(session: URLMock.session())
             .sink { completion in
                 defer { expectation.fulfill() }
                 switch completion {

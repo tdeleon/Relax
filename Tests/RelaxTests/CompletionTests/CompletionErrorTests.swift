@@ -17,6 +17,7 @@ final class CompletionErrorTests: ErrorTest {
         
     private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
+        let session = URLMock.session()
         URLMock.response = .mock(error: expected)
         request.send(session: session) { result in
             switch result {

@@ -17,7 +17,6 @@ import URLMock
 final class AsyncCodableTests: XCTestCase {
     typealias Users = ExampleService.Users
     typealias User = Users.User
-    var session: URLSession!
     
     override func setUpWithError() throws {
         ExampleService.session = URLMock.session()

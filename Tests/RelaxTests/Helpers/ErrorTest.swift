@@ -13,18 +13,6 @@ import URLMock
 @testable import Relax
 
 class ErrorTest: XCTestCase {
-    var session: URLSession!
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        session = URLMock.session()
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        session = nil
-    }
-    
     struct TestItem: Codable {
         let name: String
     }

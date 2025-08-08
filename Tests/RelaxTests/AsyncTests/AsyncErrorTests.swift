@@ -17,6 +17,7 @@ import URLMock
 final class AsyncErrorTests: ErrorTest {
     
     private func requestError(expected: RequestError) async {
+        let session = URLMock.session()
         URLMock.response = .mock(error: expected)
         
         do {
@@ -42,7 +43,7 @@ final class AsyncErrorTests: ErrorTest {
     func testDecodingError() async {
         URLMock.response = .mock()
         do {
-            let _: TestItem = try await request.send(session: session)
+            let _: TestItem = try await request.send(session: URLMock.session())
             XCTFail("Should fail")
         } catch {
             if case .decoding(_, _) = (error as? RequestError) { return }
