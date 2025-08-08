@@ -18,10 +18,6 @@ final class AsyncCodableTests: XCTestCase {
     typealias Users = ExampleService.Users
     typealias User = Users.User
     
-    override func setUpWithError() throws {
-        ExampleService.session = URLMock.session()
-    }
-    
     let users = ExampleService.Users.self
     
     func testGet() async throws {

@@ -9,12 +9,13 @@ import Foundation
 #if canImport(FoundationNetworking)
 @preconcurrency import FoundationNetworking
 #endif
+import URLMock
 @testable import Relax
 
 enum ExampleService: Service {
     static let baseURL: URL = URL(string: "https://www.example.com")!
     
-    static var session: URLSession = .shared
+    static let session: URLSession = URLMock.session()
     
     @RequestBuilder<ExampleService>
     static var get: Request {

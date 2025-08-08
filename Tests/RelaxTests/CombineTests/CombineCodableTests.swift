@@ -20,11 +20,11 @@ final class CombineCodableTests: XCTestCase {
     
     let service = ExampleService.Users.self
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         session = URLMock.session()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         session = nil
     }
 
@@ -35,6 +35,7 @@ final class CombineCodableTests: XCTestCase {
         
         service.getRequest
             .send(session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { completion in
                 defer { expectation.fulfill() }
                 switch completion {
@@ -59,6 +60,7 @@ final class CombineCodableTests: XCTestCase {
         let session = URLMock.session(.mock(model, encoder: InheritService.iso8601Encoder))
         
         InheritService.User.get.send(session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
@@ -72,6 +74,7 @@ final class CombineCodableTests: XCTestCase {
             .store(in: &cancellables)
         
         InheritService.User.get.send(decoder: JSONDecoder(), session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:

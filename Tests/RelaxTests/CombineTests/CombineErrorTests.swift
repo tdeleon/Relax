@@ -16,8 +16,7 @@ import URLMock
 final class CombineErrorTests: ErrorTest {
     var cancellable: AnyCancellable?
     
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
         cancellable = nil
     }
         
@@ -26,6 +25,7 @@ final class CombineErrorTests: ErrorTest {
         let session = URLMock.session()
         URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let receivedError):
@@ -58,6 +58,7 @@ final class CombineErrorTests: ErrorTest {
         let expectation = self.expectation(description: "Expect")
 
         cancellable = request.send(session: URLMock.session())
+            .receive(on: RunLoop.main)
             .sink { completion in
                 defer { expectation.fulfill() }
                 switch completion {

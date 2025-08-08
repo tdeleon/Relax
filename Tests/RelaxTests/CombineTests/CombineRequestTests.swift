@@ -18,11 +18,11 @@ final class CombineRequestTests: XCTestCase {
     
     var session: URLSession!
         
-    override func setUp() {
+    override func setUp() async throws {
         session = URLMock.session()
     }
     
-    override func tearDown() {
+    override func tearDown() async throws {
         cancellable = nil
         session = nil
     }
@@ -32,6 +32,7 @@ final class CombineRequestTests: XCTestCase {
         URLMock.response = .mock()
         
         cancellable = request.send(session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { (completion) in
                 switch completion {
                 case .failure(let error):
@@ -78,6 +79,7 @@ final class CombineRequestTests: XCTestCase {
         
         let override = Request(.get, parent: InheritService.User.self, session: session)
         cancellable = override.send()
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { _ in
             }, receiveValue: { _ in
             })
@@ -92,6 +94,7 @@ final class CombineRequestTests: XCTestCase {
         })
         
         cancellable = InheritService.User.get.send(session: session)
+            .receive(on: RunLoop.main)
             .sink(receiveCompletion: { _ in
             }, receiveValue: { _ in
             })
