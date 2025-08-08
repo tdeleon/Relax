@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Select Xcode
-      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+      run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
     - name: Checkout
       uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-15, ubuntu-latest]
-        swift: ["5.10", "6.1.2"]
+        swift: ["5.10", "6.0.3"]
     runs-on: ${{ matrix.os }}
 
     steps:
