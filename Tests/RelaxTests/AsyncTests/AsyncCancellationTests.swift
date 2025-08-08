@@ -13,6 +13,7 @@ import XCTest
 import URLMock
 @testable import Relax
 
+@MainActor
 final class AsyncCancellationTests: XCTestCase {
     var session: URLSession!
     
@@ -21,7 +22,7 @@ final class AsyncCancellationTests: XCTestCase {
     }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet
-    @MainActor func testImmediateCancellation() throws {
+    func testImmediateCancellation() throws {
         let expectation = self.expectation(description: "Cancellation")
         let task = Task {
             do {
@@ -41,7 +42,7 @@ final class AsyncCancellationTests: XCTestCase {
     #if !os(Windows) && !os(Linux)
     // Disable on Windows/Linux- test delay does not seem to be simulated properly
     // Tasks cancelled after a delay return a URLError.cancelled, since the URLSession task is already in progress
-    @MainActor func testDelayedCancellation() throws {
+    func testDelayedCancellation() throws {
         let expectation = self.expectation(description: "Expected cancellation")
         let task = Task {
             do {

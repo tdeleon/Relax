@@ -12,6 +12,7 @@ import URLMock
 @testable import Relax
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+@MainActor
 final class CombineErrorTests: ErrorTest {
     var cancellable: AnyCancellable?
     
@@ -20,7 +21,7 @@ final class CombineErrorTests: ErrorTest {
         cancellable = nil
     }
         
-    @MainActor private func requestError(expected: RequestError) throws {
+    private func requestError(expected: RequestError) throws {
         let expectation = self.expectation(description: "Expect")
         URLMock.response = .mock(error: expected)
         cancellable = request.send(session: session)
@@ -39,11 +40,11 @@ final class CombineErrorTests: ErrorTest {
         waitForExpectations(timeout: 1)
     }
     
-    @MainActor func testHTTPError() throws {
+    func testHTTPError() throws {
         try requestError(expected: httpError)
     }
     
-    @MainActor func testURLError() throws {
+    func testURLError() throws {
         #if os(watchOS)
         throw XCTSkip("Not supported on watchOS")
         #else
@@ -51,7 +52,7 @@ final class CombineErrorTests: ErrorTest {
         #endif
     }
     
-    @MainActor func testDecodingError() throws {
+    func testDecodingError() throws {
         URLMock.response = .mock()
         let expectation = self.expectation(description: "Expect")
 

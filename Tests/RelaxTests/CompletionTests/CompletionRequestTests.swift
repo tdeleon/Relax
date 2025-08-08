@@ -12,6 +12,7 @@ import XCTest
 import URLMock
 @testable import Relax
 
+@MainActor
 final class CompletionRequestTests: XCTestCase {
     var session: URLSession!
     
@@ -41,31 +42,31 @@ final class CompletionRequestTests: XCTestCase {
         waitForExpectations(timeout: 3)
     }
     
-    @MainActor func testGet() throws {
+    func testGet() throws {
         makeSuccess(request: ExampleService.get)
     }
     
-    @MainActor func testPost() throws {
+    func testPost() throws {
         makeSuccess(request: ExampleService.BasicRequests.get)
     }
     
-    @MainActor func testPatch() throws {
+    func testPatch() throws {
         makeSuccess(request: ExampleService.BasicRequests.patch)
     }
     
-    @MainActor func testPut() throws {
+    func testPut() throws {
         makeSuccess(request: ExampleService.BasicRequests.put)
     }
     
-    @MainActor func testDelete() throws {
+    func testDelete() throws {
         makeSuccess(request: ExampleService.BasicRequests.delete)
     }
     
-    @MainActor func testComplexRequest() throws {
+    func testComplexRequest() throws {
         makeSuccess(request: ExampleService.ComplexRequests.complex)
     }
     
-    @MainActor func testOverrideDecoderOnSend() throws {
+    func testOverrideDecoderOnSend() throws {
         let success = self.expectation(description: "success")
         let fail = self.expectation(description: "fail")
         let model = InheritService.User.Response(date: Date())
@@ -93,7 +94,7 @@ final class CompletionRequestTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    @MainActor func testOverrideSession() throws {
+    func testOverrideSession() throws {
         let expectation = self.expectation(description: "Mock received")
         let expectedSession = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -106,7 +107,7 @@ final class CompletionRequestTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    @MainActor func testOverrideSessionOnSend() throws {
+    func testOverrideSessionOnSend() throws {
         let expectation = self.expectation(description: "Mock received")
         let expectedSession = URLMock.session(.mock { _ in
             expectation.fulfill()
@@ -118,37 +119,37 @@ final class CompletionRequestTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    @MainActor func testGetPerformance() throws {
+    func testGetPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.get)
         }
     }
     
-    @MainActor func testPostPerformance() throws {
+    func testPostPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.post)
         }
     }
     
-    @MainActor func testPatchPerformance() throws {
+    func testPatchPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.patch)
         }
     }
     
-    @MainActor func testPutPerformance() throws {
+    func testPutPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.put)
         }
     }
     
-    @MainActor func testDeletePerformance() throws {
+    func testDeletePerformance() throws {
         measure {
             makeSuccess(request: ExampleService.BasicRequests.delete)
         }
     }
     
-    @MainActor func testComplexRequestPerformance() throws {
+    func testComplexRequestPerformance() throws {
         measure {
             makeSuccess(request: ExampleService.ComplexRequests.complex)
         }
