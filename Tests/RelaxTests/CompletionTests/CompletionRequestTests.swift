@@ -96,7 +96,7 @@ final class CompletionRequestTests: XCTestCase {
         })
         
         let override = Request(.get, parent: InheritService.User.self, session: expectedSession)
-        override.send(session: expectedSession) { _ in
+        override.send() { _ in
         }
         
         waitForExpectations(timeout: 1)
