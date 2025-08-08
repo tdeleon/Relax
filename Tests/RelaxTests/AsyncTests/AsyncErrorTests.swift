@@ -8,7 +8,7 @@
 #if swift(>=5.5)
 import XCTest
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 import URLMock
 @testable import Relax

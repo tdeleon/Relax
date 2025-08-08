@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 /// A structure representing an HTTP request to a REST API

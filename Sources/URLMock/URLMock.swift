@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 /// A class which returns a mocked response for all requests made.

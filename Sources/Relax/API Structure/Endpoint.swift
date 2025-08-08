@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 /// A type that defines a particular resource on a ``Service``, where requests can be made.
