@@ -39,8 +39,8 @@ targets.append(
     ]
 )
 dependencies = [
-    // Depend on the Swift 5.10 release of SwiftSyntax
-    .package(url: "https://github.com/apple/swift-syntax.git", exact: "510.0.3"),
+    // Depend on the Swift 6.0 release of SwiftSyntax
+    .package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.1"),
 ]
 #endif
 
@@ -62,5 +62,6 @@ let package = Package(
             targets: ["URLMock"])
     ],
     dependencies: dependencies,
-    targets: targets
+    targets: targets,
+    swiftLanguageModes: [.v6]
 )
