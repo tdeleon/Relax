@@ -8,7 +8,7 @@
 import Foundation
 
 /// A structure which represents a single request header
-public struct Header: CustomStringConvertible {
+public struct Header: CustomStringConvertible, Sendable {
     /// The header name
     public var name: String
     /// The header value
@@ -40,7 +40,7 @@ extension Header {
     /// Represents a request header name
     ///
     /// Common header names are provided, but additional can be added through an extension.
-    public struct Name: RawRepresentable {
+    public struct Name: RawRepresentable, Sendable {
         public var rawValue: String
         
         public init(rawValue: String) {
@@ -65,7 +65,7 @@ extension Header {
     /// Header authorization types
     ///
     /// Common authorization types are provided, but additional can be added through an extension.
-    public struct AuthorizationType: RawRepresentable, Hashable {
+    public struct AuthorizationType: RawRepresentable, Hashable, Sendable {
         public var rawValue: String
         
         public init(rawValue: String) {
@@ -87,7 +87,7 @@ extension Header {
     /// A struct representing request content types
     ///
     /// Additional content types may be added as needed.
-    public struct ContentType: RawRepresentable, Hashable {
+    public struct ContentType: RawRepresentable, Hashable, Sendable {
         public var rawValue: String
 
         ///

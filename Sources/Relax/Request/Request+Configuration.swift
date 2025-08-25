@@ -7,12 +7,12 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 extension Request {
     /// Defines configuration options for requests to use
-    public struct Configuration: Hashable {
+    public struct Configuration: Hashable, Sendable {
         /// Allow access on cellular networks
         ///
         /// See [`allowsCellularAccess`](https://developer.apple.com/documentation/foundation/urlrequest/2011607-allowscellularaccess)

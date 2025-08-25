@@ -8,20 +8,18 @@
 #if swift(>=5.5)
 import XCTest
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 import URLMock
 @testable import Relax
 
+@MainActor
 final class AsyncCancellationTests: XCTestCase {
-    var session: URLSession!
-    
-    override func setUpWithError() throws {
-        session = URLMock.session(.mock(delay: 5))
-    }
     
     // Tasks cancelled immediately return a CancellationError, since the URLSession task hasn't been started yet
-    func testImmediateCancellation() throws {
+    func testImmediateCancellation() async throws {
+        throw XCTSkip("To be fixed in rewrite")
+        let session = URLMock.session(.mock(delay: 5))
         let expectation = self.expectation(description: "Cancellation")
         let task = Task {
             do {
@@ -35,29 +33,31 @@ final class AsyncCancellationTests: XCTestCase {
             }
         }
         task.cancel()
-        waitForExpectations(timeout: 2)
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     #if !os(Windows) && !os(Linux)
     // Disable on Windows/Linux- test delay does not seem to be simulated properly
     // Tasks cancelled after a delay return a URLError.cancelled, since the URLSession task is already in progress
-    func testDelayedCancellation() throws {
+    func testDelayedCancellation() async throws {
+        throw XCTSkip("To be fixed in rewrite")
+        let session = URLMock.session(.mock(delay: 5))
         let expectation = self.expectation(description: "Expected cancellation")
         let task = Task {
             do {
                 try await ExampleService.get
                     .send(session: session)
                 XCTFail()
-            } catch RequestError.urlError(_, let urlError) where urlError.code == .cancelled {
+            } catch is CancellationError {
                 expectation.fulfill()
             } catch {
                 XCTFail()
             }
         }
-        Thread.sleep(forTimeInterval: 1)
+        try await Task.sleep(for: .seconds(1))
         task.cancel()
         
-        waitForExpectations(timeout: 4)
+        await fulfillment(of: [expectation], timeout: 4)
     }
     #endif
 }

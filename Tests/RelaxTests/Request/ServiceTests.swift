@@ -7,7 +7,7 @@
 
 import XCTest
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 import URLMock
 @testable import Relax
