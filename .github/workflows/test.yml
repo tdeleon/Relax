@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
        os: [macos-15]
-       destination: ["platform=macOS,name=My Mac", "platform=iOS Simulator,name=iPhone 16 Pro", "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)", "platform=watchOS Simulator,name=Apple Watch Series 10 (42mm)", "platform=visionOS Simulator,name=Apple Vision Pro"]
+       destination: ["platform=macOS,name=My Mac", "platform=iOS Simulator,name=iPhone 16 Pro", "platform=tvOS Simulator,name=Apple TV 4K (3rd generation)", "platform=watchOS Simulator,name=Apple Watch Series 10 (42mm)", "platform=visionOS Simulator,name=Any visionOS Simulator Device"]
 
     runs-on: ${{ matrix.os }}
 
@@ -36,7 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-15, ubuntu-latest]
-        swift: ["5.10", "6.0.3"]
+        swift: ["6.0.3"]
     runs-on: ${{ matrix.os }}
 
     steps:
