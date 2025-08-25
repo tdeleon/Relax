@@ -33,7 +33,7 @@ final class AsyncCancellationTests: XCTestCase {
             }
         }
         task.cancel()
-        await fulfillment(of: [expectation])
+        await fulfillment(of: [expectation], timeout: 1)
     }
     
     #if !os(Windows) && !os(Linux)
@@ -57,7 +57,7 @@ final class AsyncCancellationTests: XCTestCase {
         try await Task.sleep(for: .seconds(1))
         task.cancel()
         
-        await fulfillment(of: [expectation])
+        await fulfillment(of: [expectation], timeout: 4)
     }
     #endif
 }
