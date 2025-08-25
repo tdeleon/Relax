@@ -8,7 +8,7 @@
 import Foundation
 
 /// A type describing a property of a request
-public protocol RequestProperty<PropertyType>: Hashable {
+public protocol RequestProperty<PropertyType>: Hashable, Sendable {
     associatedtype PropertyType
     /// The base value type of the property
     var value: PropertyType { get }
@@ -30,7 +30,7 @@ extension RequestProperty {
 
 extension Request {
     /// A structure that groups properties of a request
-    public struct Properties: Hashable {
+    public struct Properties: Hashable, Sendable {
         public var headers: Headers = Headers(value: [:])
         public var queryItems: QueryItems = QueryItems(value: [])
         public var pathComponents: PathComponents = PathComponents(value: [])

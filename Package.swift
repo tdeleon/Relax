@@ -29,13 +29,16 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
             name: "Relax",
-            dependencies: []),
+            dependencies: []
+        ),
         .target(
             name: "URLMock",
             dependencies: ["Relax"]
         ),
         .testTarget(
             name: "RelaxTests",
-            dependencies: ["Relax", "URLMock"]),
-    ]
+            dependencies: ["Relax", "URLMock"]
+        ),
+    ],
+    swiftLanguageVersions: [.version("6"), .v5]
 )

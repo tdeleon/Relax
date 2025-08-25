@@ -7,14 +7,14 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 //MARK: - Handling Errors
 /// An error that occurs when making a `ServiceRequest`
 ///
 /// This encapsulates errors while making a request (i.e. network connection issues), and does not include HTTP status  errors.
-public enum RequestError: Error, Hashable {
+public enum RequestError: Error, Hashable, Sendable {
     public static func ==(lhs: RequestError, rhs: RequestError) -> Bool {
         lhs.hashValue == rhs.hashValue
     }
@@ -50,7 +50,7 @@ extension RequestError {
     /// An HTTP status code error
     ///
     /// Any HTTP status code which is considered an error- i.e. 3xx-5xx range
-    public struct HTTPError: Error, Hashable {
+    public struct HTTPError: Error, Hashable, Sendable {
         public static func ==(lhs: HTTPError, rhs: HTTPError) -> Bool {
             lhs.hashValue == rhs.hashValue
         }
@@ -59,7 +59,7 @@ extension RequestError {
             hasher.combine(statusCode)
         }
         
-        public enum ErrorType {
+        public enum ErrorType: Sendable {
             /// 400 Bad request
             case badRequest
             /// 401 Unauthorized

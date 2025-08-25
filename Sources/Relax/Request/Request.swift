@@ -7,7 +7,7 @@
 
 import Foundation
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+@preconcurrency import FoundationNetworking
 #endif
 
 /// A structure representing an HTTP request to a REST API
@@ -48,7 +48,7 @@ import FoundationNetworking
 /// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>,
 /// <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
 ///
-public struct Request {
+public struct Request: Sendable {
     /// The HTTP method of the request
     public var httpMethod: HTTPMethod
     
@@ -256,7 +256,7 @@ extension Request {
     /// HTTP Request type
     ///
     /// The main request types are provided (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`); additional ones can be added as static properties in an extension.
-    public struct HTTPMethod: RawRepresentable, Hashable {
+    public struct HTTPMethod: RawRepresentable, Hashable, Sendable {
         public var rawValue: String
         
         public init(rawValue: String) {
@@ -318,3 +318,16 @@ extension Request: Equatable {
     }
 }
 
+extension Request {
+    internal func handleURLSessionResponse(_ response: (Data, URLResponse)) throws -> (Request, HTTPURLResponse, Data) {
+        guard let httpResponse = response.1 as? HTTPURLResponse else {
+            throw RequestError.urlError(request: self, error: URLError(.unknown))
+        }
+        let requestResponse = (self, httpResponse, response.0)
+        if configuration.parseHTTPStatusErrors,
+           let httpError = RequestError.HTTPError(response: requestResponse) {
+            throw(RequestError.httpStatus(request: self, error: httpError))
+        }
+        return requestResponse
+    }
+}
