@@ -21,7 +21,7 @@ package struct APIEndpointMacro: ExtensionMacro {
         
         // Get the parent generic argument
         guard let parent = node.attributeName.as(IdentifierTypeSyntax.self)?
-            .genericArgumentClause?.as(GenericArgumentClauseSyntax.self)?
+            .genericArgumentClause?
             .arguments
             .description else {
             return []

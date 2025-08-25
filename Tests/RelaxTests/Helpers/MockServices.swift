@@ -13,8 +13,9 @@ import URLMock
 @testable import Relax
 
 enum ExampleService: Service {
-    static let baseURL: URL = URL(string: "https://example.com")!
-    static var session: URLSession = .shared
+    static let baseURL: URL = URL(string: "https://www.example.com")!
+    
+    static let session: URLSession = URLMock.session()
     
     @RequestBuilder<ExampleService>
     static var get: Request {
