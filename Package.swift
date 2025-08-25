@@ -62,6 +62,5 @@ let package = Package(
             targets: ["URLMock"])
     ],
     dependencies: dependencies,
-    targets: targets,
-    swiftLanguageModes: [.v6]
+    targets: targets
 )
