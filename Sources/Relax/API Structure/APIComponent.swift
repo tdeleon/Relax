@@ -82,4 +82,3 @@ extension APISubComponent {
         Parent.decoder
     }
 }
-
