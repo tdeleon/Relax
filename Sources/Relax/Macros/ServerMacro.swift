@@ -12,7 +12,7 @@ import Foundation
 /// - Parameter urlTemplate: A template defining the base URL for the server. This can optionally contain variables inside `{}` which
 ///     are replaced with the values of their matching properties at runtime. Properties can be any type conforming to [`CustomStringConvertible`](https://developer.apple.com/documentation/Swift/CustomStringConvertible).
 ///
-/// Conforms a type to the ``Server`` protocol to provide a customized server definition. Provide a ``urlTemplate`` with the base URL for the server to use,
+/// Conforms a type to the ``Server`` protocol to provide a customized server definition. Provide a `urlTemplate` with the base URL for the server to use,
 /// optionally including variables. You then add matching properties of the same name as the template variables to the attached type, and the value will be replaced
 /// at runtime.
 ///
@@ -30,5 +30,9 @@ import Foundation
 @attached(extension, conformances: Server, names: arbitrary)
 public macro Server(_ urlTemplate: StaticString) = #externalMacro(module: "RelaxMacros", type: "ServerMacro")
 
-//@freestanding(expression)
-//public macro Server(_ name: String, _ url: URL) = #externalMacro(module: "RelaxMacros", type: "ServerMacro")
+/// Generates a type defining a server with a static base URL
+///
+/// - Parameter name: The name of the server
+/// - Parameter url: The base URL of the server
+@freestanding(expression)
+public macro Server(_ name: String, url: StaticString, description: String? = nil) = #externalMacro(module: "RelaxMacros", type: "ServerMacro")

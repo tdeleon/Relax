@@ -14,6 +14,7 @@ struct RelaxMacrosPlugin: CompilerPlugin {
         APIServiceMacro.self,
         APIEndpointMacro.self,
         ServerVariableMacro.self,
-        ServerMacro.self
+        ServerMacro.self,
+        VariableMacro.self
     ]
 }
