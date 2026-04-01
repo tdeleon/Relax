@@ -8,7 +8,7 @@
 import Foundation
 
 /// A structure which represents a single request header
-public struct Header: CustomStringConvertible, Sendable {
+public struct Header: CustomStringConvertible, Sendable, Hashable {
     /// The header name
     public var name: String
     /// The header value
@@ -103,6 +103,10 @@ extension Header {
         public static let applicationJSON = ContentType("application/json")
         /// Content type of `text/plain`
         public static let textPlain = ContentType("text/plain")
+        /// Content type of `application/octet-stream`
+        public static let applicationOctetStream = ContentType("application/octet-stream")
+        /// Content type of `application/x-www-form-urlencoded`
+        public static let applicationFormURLEncoded = ContentType("application/x-www-form-urlencoded")
         
     }
     

@@ -269,14 +269,22 @@ extension Request {
         
         /// `GET` request type
         public static let get = HTTPMethod("GET")
-        /// `POST` request type
-        public static let post = HTTPMethod("POST")
         /// `PUT` request type
         public static let put = HTTPMethod("PUT")
-        /// `PATCH` request type
-        public static let patch = HTTPMethod("PATCH")
+        /// `POST` request type
+        public static let post = HTTPMethod("POST")
         /// `DELETE` request type
         public static let delete = HTTPMethod("DELETE")
+        /// `OPTIONS` request type
+        public static let options = HTTPMethod("OPTIONS")
+        /// `HEAD` request type
+        public static let head = HTTPMethod("HEAD")
+        /// `PATCH` request type
+        public static let patch = HTTPMethod("PATCH")
+        /// `TRACE` request type
+        public static let trace = HTTPMethod("TRACE")
+        /// `QUERY` request type
+        public static let query = HTTPMethod("QUERY")
     }
 }
 

@@ -13,7 +13,7 @@ public macro Variable<T: CustomStringConvertible>(
     ofType type: T.Type,
     defaultValue: T? = nil,
     description: StaticString? = nil
-) -> ServerDescription.Variable = #externalMacro(module: "RelaxMacros", type: "VariableMacro")
+) -> Server.Variable = #externalMacro(module: "RelaxMacros", type: "VariableMacro")
 
 
 @freestanding(expression)
@@ -22,4 +22,4 @@ public macro Variable<T: RawRepresentable>(
     ofType type: T.Type,
     defaultValue: T? = nil,
     description: StaticString? = nil
-) -> ServerDescription.Variable = #externalMacro(module: "RelaxMacros", type: "VariableMacro") where T.RawValue: CustomStringConvertible
+) -> Server.Variable = #externalMacro(module: "RelaxMacros", type: "VariableMacro") where T.RawValue: CustomStringConvertible

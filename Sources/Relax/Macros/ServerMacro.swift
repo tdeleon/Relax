@@ -27,8 +27,8 @@ import Foundation
 ///
 /// - Important: Template placeholder variables cannot have duplicates, and **must** have a matching non-optional property defined in the attached type.
 
-@attached(extension, conformances: Server, names: arbitrary)
-public macro Server(_ urlTemplate: StaticString) = #externalMacro(module: "RelaxMacros", type: "ServerMacro")
+//@attached(extension, conformances: Server, names: arbitrary)
+//public macro Server(_ urlTemplate: StaticString) = #externalMacro(module: "RelaxMacros", type: "ServerMacro")
 
 /// Generates a type defining a server with a static base URL
 ///
