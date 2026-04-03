@@ -15,6 +15,11 @@ struct UserError: Codable {
     let error: String
 }
 
+extension Tag {
+    static let nav = Tag("nav")
+}
+
+@API
 struct MyAPI: API {
     static let name = ""
     enum Region: String {
@@ -37,6 +42,8 @@ struct MyAPI: API {
         "The default error response for all operations"
     }
     
+    nonisolated static let navigationTag = Tag("nav")
+    
     var paths: [Path] {
         Path("/users") {
             Path.Operation(.get) {
@@ -44,6 +51,8 @@ struct MyAPI: API {
                     Response.Content.jsonDictionary()
                 }
                 Self.defaultErrorResponse
+            } tags: {
+                Tag.nav
             }
             
             Path.Operation(.post) {
