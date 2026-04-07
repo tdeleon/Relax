@@ -271,22 +271,3 @@ public enum OAuthFlow: Hashable, Sendable {
         scopes: [String: String] = [:]
     )
 }
-
-let bearerScheme = SecurityScheme.http(.bearer) {
-    "Authorization using a bearer token"
-}
-
-let apiKeyScheme = SecurityScheme.apiKey("Api-Key", in: .header) {
-    "An API key located in the header"
-}
-
-let oauthScheme = SecurityScheme.oauth2 {
-    OAuthFlow.authorizationCode(
-        authorizationURL: "https://example.com/authorization",
-        tokenURL: "https://example.com/token",
-        scopes: ["read":"data", "write":"data"]
-    )
-    OAuthFlow.password(tokenURL: "https://example.com/token", refreshURL: "https://example.com/refresh")
-} description: {
-    "OAuth scheme with authorization code and password flows"
-}
