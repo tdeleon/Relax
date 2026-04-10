@@ -34,6 +34,12 @@ struct MyAPI: API {
         }
     }
     
+    var security: [SecurityScheme] {
+        SecurityScheme.apiKey("api", in: .cookie)
+        SecurityScheme.http(.basic)
+        SecurityScheme.mutualTLS()
+    }
+    
     struct ErrorResponse: Codable, Sendable {
         let error: String
     }
@@ -63,6 +69,10 @@ struct MyAPI: API {
         Path("/user/{id}", summary: "Short summary") {
             Path.Operation(.get) {
                 
+            } security: {
+                SecurityScheme.http(.basic)
+            } servers: {
+                Server("main", url: "https://main.example.com/")
             }
         } parameters: {
             Parameter.query("id", ofType: Int.self)
@@ -72,7 +82,6 @@ struct MyAPI: API {
         } description: {
             "Longer description here."
         }
-
         
         Path("/users/{id}") {
             Path.Operation(.get) {

@@ -10,6 +10,11 @@ import Foundation
 public protocol API {
     @ServersBuilder var servers: [Server] { get }
     @PathsBuilder var paths: [Path] { get }
+    @SecurityBuilder var security: [SecurityScheme] { get }
+}
+
+extension API {
+    public var security: [SecurityScheme] { [] }
 }
 
 @resultBuilder
@@ -46,6 +51,25 @@ public enum ServersBuilder {
     }
     
     public static func buildExpression(_ expression: Server) -> [Server] {
+        [expression]
+    }
+}
+
+@resultBuilder
+public enum SecurityBuilder {
+    public static func buildBlock() -> [SecurityScheme] {
+        []
+    }
+    
+    public static func buildPartialBlock(first: [SecurityScheme]) -> [SecurityScheme] {
+        first
+    }
+    
+    public static func buildPartialBlock(accumulated: [SecurityScheme], next: [SecurityScheme]) -> [SecurityScheme] {
+        accumulated + next
+    }
+    
+    public static func buildExpression(_ expression: SecurityScheme) -> [SecurityScheme] {
         [expression]
     }
 }

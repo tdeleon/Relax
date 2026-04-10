@@ -16,6 +16,8 @@ extension Path {
         public let tags: [Tag]
         public let parameters: [Parameter]
         public let responses: [Response.HTTPStatus: Response]
+        public let security: [SecurityScheme]
+        public let servers: [Server]
         
         public init(
             _ method: Request.HTTPMethod,
@@ -24,6 +26,8 @@ extension Path {
             @ResponsesBuilder responses: () -> [Response.HTTPStatus : Response],
             @Parameter.Builder parameters: () -> [Parameter] = { [] },
             @TagsBuilder tags: () -> [Tag] = { [] },
+            @SecurityBuilder security: () -> [SecurityScheme] = { [] },
+            @ServersBuilder servers: () -> [Server] = { [] },
             @DescriptionBuilder description: () -> String? = { nil }
         ) {
             self.method = method
@@ -33,6 +37,8 @@ extension Path {
             self.description = description()
             self.parameters = parameters()
             self.responses = responses()
+            self.security = security()
+            self.servers = servers()
         }
         
         @resultBuilder
