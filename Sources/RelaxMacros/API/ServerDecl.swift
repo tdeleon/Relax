@@ -17,7 +17,7 @@ internal struct ServerDecl {
     let description: String?
     
     static func parse(_ expr: FunctionCallExprSyntax, in context: MacroExpansionContext) -> ServerDecl? {
-        guard expr.calledExpression.as(DeclReferenceExprSyntax.self)?.baseName.identifier?.name == "Server",
+        guard expr.baseName(matches: "Server"),
               let name = expr.arguments.first?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue,
               let urlExpr = expr.argument("url")?.expression.as(StringLiteralExprSyntax.self),
               let url = urlExpr.representedLiteralValue
@@ -64,6 +64,17 @@ internal struct ServerDecl {
         }
         
         return ServerDecl(name: name, url: url, variables: variables+templateOnlyVariables, description: description)
+    }
+}
+
+extension FunctionCallExprSyntax {
+    internal func baseName(matches: String) -> Bool {
+        calledExpression.trimmedDescription == matches ||
+        calledExpression.as(MemberAccessExprSyntax.self)?.base?.trimmedDescription == matches
+    }
+    
+    internal func parseDescription() -> String? {
+        trailingClosure?.statements.first?.item.as(StringLiteralExprSyntax.self)?.representedLiteralValue
     }
 }
 

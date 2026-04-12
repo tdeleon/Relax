@@ -28,10 +28,21 @@ struct APIMacroTests {
                     Server("Prod", url: "https://stage.example.com", description: "Staging server") {
                         Server.Variable("region", type: Region.self, defaultValue: .east, description: "The server region")
                     }
+                    Server("Stage", url: "https://stage.example.com")
                 }
                 
                 var security: [SecurityScheme] {
-                    SecurityScheme.http(.basic)
+                    SecurityScheme.apiKey("key", in: .header) {
+                        "An api key"
+                    }
+                    SecurityScheme.http(.basic) {
+                        "An http basic scheme"
+                    }
+                    SecurityScheme.oauth2(metadataURL: "https://oauth.example.com/metadata") {
+                        OAuthFlow.password(tokenURL: "https://oauth.example.com/token")
+                    } description: {
+                        "A custom OAuth2 scheme"
+                    }
                 }
                 
                 var paths: [Path] {
@@ -48,10 +59,21 @@ struct APIMacroTests {
                     Server("Prod", url: "https://stage.example.com", description: "Staging server") {
                         Server.Variable("region", type: Region.self, defaultValue: .east, description: "The server region")
                     }
+                    Server("Stage", url: "https://stage.example.com")
                 }
                 
                 var security: [SecurityScheme] {
-                    SecurityScheme.http(.basic)
+                    SecurityScheme.apiKey("key", in: .header) {
+                        "An api key"
+                    }
+                    SecurityScheme.http(.basic) {
+                        "An http basic scheme"
+                    }
+                    SecurityScheme.oauth2(metadataURL: "https://oauth.example.com/metadata") {
+                        OAuthFlow.password(tokenURL: "https://oauth.example.com/token")
+                    } description: {
+                        "A custom OAuth2 scheme"
+                    }                
                 }
                 
                 var paths: [Path] {

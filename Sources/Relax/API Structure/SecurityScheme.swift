@@ -105,7 +105,7 @@ public struct SecurityScheme: Hashable, Sendable {
     public let type: SecurityType
     /// An optional description of the scheme
     public let description: String?
-    /// An optional name of the scheme
+    /// An optional name of the scheme, when ``type`` is ``SecurityType/apiKey``.
     public let name: String?
     /// The location of the scheme, when ``type`` is ``SecurityType/apiKey``.
     public let location: Location?

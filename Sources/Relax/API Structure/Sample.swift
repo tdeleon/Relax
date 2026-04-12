@@ -35,9 +35,12 @@ struct MyAPI: API {
     }
     
     var security: [SecurityScheme] {
-        SecurityScheme.apiKey("api", in: .cookie)
         SecurityScheme.http(.basic)
-        SecurityScheme.mutualTLS()
+        SecurityScheme.oauth2(metadataURL: "https://oauth.example.com/metadata") {
+            OAuthFlow.password(tokenURL: "https://oauth.example.com/token")
+        } description: {
+            "A custom OAuth2 scheme"
+        }
     }
     
     struct ErrorResponse: Codable, Sendable {

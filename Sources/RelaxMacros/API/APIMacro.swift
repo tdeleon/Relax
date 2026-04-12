@@ -41,7 +41,7 @@ package struct APIMacro: ExtensionMacro {
         let servers = parseServers(members, in: context)
         
         // parse security
-        let securityFunctionCallExpr = parseComputedResultBuilder(members, identifier: "security", type: "SecurityScheme")
+        let security = parseSecurity(members, in: context)
 
         
         // parse paths
@@ -87,6 +87,24 @@ package struct APIMacro: ExtensionMacro {
         }
         
         return servers
+    }
+    
+    internal static func parseSecurity(_ members: [VariableDeclSyntax], in context: MacroExpansionContext) -> [SecuritySchemeDecl] {
+        guard let functionCallExpr = parseComputedResultBuilder(members, identifier: "security", type: "SecurityScheme")
+        else { return [] }
+        
+        let security = functionCallExpr.lines.compactMap { SecuritySchemeDecl.from($0) }
+        
+        var uniqueSecurity = Set<SecuritySchemeDecl>()
+        let duplicates = security.filter { !uniqueSecurity.insert($0).inserted }
+        
+        duplicates.forEach {
+            context.diagnose(
+                Diagnostic(node: $0.expr, message: MacroExpansionWarningMessage("Duplicate SecurityScheme, only the first will be used."))
+            )
+        }
+        
+        return Array(uniqueSecurity)
     }
 }
 
