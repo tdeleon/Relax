@@ -54,19 +54,24 @@ struct MyAPI: API {
     nonisolated static let navigationTag = Tag("nav")
     
     var paths: [Path] {
-        Path("/users") {
-            Path.Operation(.get) {
+        Path("/users/{id}", summary: "User path") {
+            Path.Operation(.get, summary: "Get user by ID") {
                 Response(.success) {
                     Response.Content.jsonDictionary()
                 }
+                Response(.success, returning: String.self)
                 Self.defaultErrorResponse
-            } tags: {
-                Tag.nav
+            } description: {
+                "A very long description of the /users/{id} path."
             }
-            
-            Path.Operation(.post) {
-                Response(.success, payload: .json(String.self))
+        } parameters: {
+            Parameter("id", ofType: Int.self, in: .path)
+        } tags: {
+            Tag("nav", summary: "summary") {
+                "Navigation endpoints"
             }
+        } description: {
+            "A longer description of the /users/{id} path."
         }
         
         Path("/user/{id}", summary: "Short summary") {

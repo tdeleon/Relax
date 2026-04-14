@@ -34,3 +34,28 @@ public struct Tag: Hashable, Sendable {
         self.description = description()
     }
 }
+
+extension Tag {
+    @resultBuilder
+    public enum Builder {
+        public static func buildBlock() -> [Tag] {
+            []
+        }
+        
+        public static func buildPartialBlock(first: [Tag]) -> [Tag] {
+            first
+        }
+        
+        public static func buildPartialBlock(accumulated: [Tag], next: [Tag]) -> [Tag] {
+            accumulated + next
+        }
+        
+        public static func buildExpression(_ expression: Tag) -> [Tag] {
+            [expression]
+        }
+        
+        public static func buildExpression(_ expression: StaticString) -> [Tag] {
+            [Tag("\(expression)")]
+        }
+    }
+}

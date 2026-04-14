@@ -71,7 +71,8 @@ internal struct SecuritySchemeDecl: Hashable {
             type: "apiKey",
             description: description,
             name: name,
-            location: location
+            location: location,
+            expr: expr
         )
     }
     
@@ -79,11 +80,11 @@ internal struct SecuritySchemeDecl: Hashable {
         let scheme = expr.arguments.first?.expression.as(MemberAccessExprSyntax.self)?.declName.baseName.text
         let description = expr.parseDescription()
         
-        return SecuritySchemeDecl(type: "http", description: description, scheme: scheme)
+        return SecuritySchemeDecl(type: "http", description: description, scheme: scheme, expr: expr)
     }
     
     private static func parseMutualTLS(_ expr: FunctionCallExprSyntax) -> Self? {
-        SecuritySchemeDecl(type: "mutualTLS", description: expr.parseDescription())
+        SecuritySchemeDecl(type: "mutualTLS", description: expr.parseDescription(), expr: expr)
     }
     
     private static func parseOAuth2(_ expr: FunctionCallExprSyntax) -> Self? {
@@ -93,19 +94,27 @@ internal struct SecuritySchemeDecl: Hashable {
             .compactMap { $0.item.as(FunctionCallExprSyntax.self) }
             .compactMap { OAuthFlowDecl.from($0) } ?? []
         
-        let description = expr.additionalTrailingClosures
-            .first { $0.label.text == "description" }?.closure
-            .statements.first?.item.as(StringLiteralExprSyntax.self)?
-            .representedLiteralValue
+        let description = expr.parseDescription()
         
-        return SecuritySchemeDecl(type: "oauth2", description: description, flows: flows, oauth2MetadataURL: url)
+        return SecuritySchemeDecl(
+            type: "oauth2",
+            description: description,
+            flows: flows,
+            oauth2MetadataURL: url,
+            expr: expr
+        )
     }
     
     private static func parseOpenIDConnect(_ expr: FunctionCallExprSyntax) -> Self? {
         guard let url = expr.argument("url")?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue
         else { return nil }
         
-        return SecuritySchemeDecl(type: "openIDConnect", description: expr.parseDescription(), openIDConnectURL: url)
+        return SecuritySchemeDecl(
+            type: "openIDConnect",
+            description: expr.parseDescription(),
+            openIDConnectURL: url,
+            expr: expr
+        )
     }
 }
 

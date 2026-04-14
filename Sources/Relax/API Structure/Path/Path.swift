@@ -19,15 +19,15 @@ public struct Path: Sendable {
     public init(
         _ path: String,
         summary: String? = nil,
-        tags: [Tag] = [],
         @OperationsBuilder operations: () -> [Request.HTTPMethod: Operation],
         @Parameter.Builder parameters: () -> [Parameter] = { [] },
         @ServersBuilder servers: () -> [Server] = { [] },
+        @Tag.Builder tags: () -> [Tag] = { [] },
         @DescriptionBuilder description: () -> String? = { nil }
     ) {
         self.path = path
         self.summary = summary
-        self.tags = tags
+        self.tags = tags()
         self.servers = servers()
         self.operations = operations()
         self.parameters = parameters()

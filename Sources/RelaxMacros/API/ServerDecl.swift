@@ -10,7 +10,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftDiagnostics
 
-internal struct ServerDecl {
+internal struct ServerDecl: Hashable {
     let name: String
     let url: String
     let variables: [ServerVariableDecl]
@@ -23,9 +23,7 @@ internal struct ServerDecl {
               let url = urlExpr.representedLiteralValue
         else { return nil }
         
-        let description = expr.argument("description")?
-            .expression.as(StringLiteralExprSyntax.self)?
-            .representedLiteralValue
+        let description = expr.parseDescription()
         
         let variables = expr.trailingClosure?.statements
             .compactMap { $0.item.as(FunctionCallExprSyntax.self) }
@@ -74,11 +72,25 @@ extension FunctionCallExprSyntax {
     }
     
     internal func parseDescription() -> String? {
-        trailingClosure?.statements.first?.item.as(StringLiteralExprSyntax.self)?.representedLiteralValue
+        trailingClosure?
+            .statements.first?
+            .item.as(StringLiteralExprSyntax.self)?
+            .representedLiteralValue ??
+        additionalTrailingClosure(matching: "description")?.first?
+            .item.as(StringLiteralExprSyntax.self)?
+            .representedLiteralValue ??
+        argument("description")?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue
+    }
+    
+    internal func additionalTrailingClosure(matching label: String) -> CodeBlockItemListSyntax? {
+        additionalTrailingClosures
+            .first { $0.label.text == label }?
+            .closure
+            .statements
     }
 }
 
-internal struct ServerVariableDecl {
+internal struct ServerVariableDecl: Hashable {
     let name: String
     let type: String
     let defaultValue: String?
@@ -95,9 +107,7 @@ internal struct ServerVariableDecl {
             name: name,
             type: type,
             defaultValue: expr.argument("defaultValue")?.expression.trimmedDescription,
-            description: expr.argument("description")?
-                .expression.as(StringLiteralExprSyntax.self)?
-                .representedLiteralValue,
+            description: expr.parseDescription(),
             expr: expr
         )
     }

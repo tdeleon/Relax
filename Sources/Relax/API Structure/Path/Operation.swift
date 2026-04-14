@@ -25,7 +25,7 @@ extension Path {
             summary: String? = nil,
             @ResponsesBuilder responses: () -> [Response.HTTPStatus : Response],
             @Parameter.Builder parameters: () -> [Parameter] = { [] },
-            @TagsBuilder tags: () -> [Tag] = { [] },
+            @Tag.Builder tags: () -> [Tag] = { [] },
             @SecurityBuilder security: () -> [SecurityScheme] = { [] },
             @ServersBuilder servers: () -> [Server] = { [] },
             @DescriptionBuilder description: () -> String? = { nil }
@@ -62,29 +62,6 @@ extension Path {
             
             public static func buildExpression(_ expression: Response) -> [Response.HTTPStatus : Response] {
                 [expression.httpStatus: expression]
-            }
-        }
-        
-        @resultBuilder
-        public enum TagsBuilder {
-            public static func buildBlock() -> [Tag] {
-                []
-            }
-            
-            public static func buildPartialBlock(first: [Tag]) -> [Tag] {
-                first
-            }
-            
-            public static func buildPartialBlock(accumulated: [Tag], next: [Tag]) -> [Tag] {
-                accumulated + next
-            }
-            
-            public static func buildExpression(_ expression: Tag) -> [Tag] {
-                [expression]
-            }
-            
-            public static func buildExpression(_ expression: StaticString) -> [Tag] {
-                [Tag("\(expression)")]
             }
         }
     }
