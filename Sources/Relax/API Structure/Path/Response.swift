@@ -16,8 +16,8 @@ public struct Response: Sendable {
     public enum Payload: @unchecked Sendable {
         case empty
         case bytes
-        case json(any Decodable.Type)
-        case text(encoding: String.Encoding = .utf8)
+        case json(_ type: any Decodable.Type)
+        case text(_ encoding: String.Encoding = .utf8)
     }
     
     public enum HTTPStatus: Hashable, Sendable {
@@ -93,8 +93,8 @@ public struct Response: Sendable {
     
     public init(
         _ status: HTTPStatus = .success,
-        summary: String? = nil,
         payload: Payload,
+        summary: String? = nil,
         @DescriptionBuilder description: () -> String? = { nil }
     ) {
         var content = [Header.ContentType: Payload]()
@@ -102,15 +102,6 @@ public struct Response: Sendable {
             content[contentType] = payload
         }
         self.init(status, summary: summary, description: description(), content: content)
-    }
-        
-    public init(
-        _ status: HTTPStatus,
-        summary: String? = nil,
-        @Builder content: () -> [Header.ContentType: Payload],
-        @DescriptionBuilder description: () -> String? = { nil }
-    ) {
-        self.init(status, summary: summary, description: description(), content: content())
     }
     
     public init(
@@ -120,6 +111,15 @@ public struct Response: Sendable {
         @DescriptionBuilder description: () -> String? = { nil }
     ) {
         self.init(status, summary: summary, description: description(), content: [.applicationJSON: .json(schema)])
+    }
+        
+    public init(
+        _ status: HTTPStatus,
+        summary: String? = nil,
+        @Builder content: () -> [Header.ContentType: Payload],
+        @DescriptionBuilder description: () -> String? = { nil }
+    ) {
+        self.init(status, summary: summary, description: description(), content: content())
     }
         
     @resultBuilder
@@ -179,7 +179,7 @@ public struct Response: Sendable {
         ///
         /// The generated code witll set an `Accept` header of `text/plain`, returning a `String` using the specified encoding.
         public static func text(_ encoding: String.Encoding = .utf8) -> Content {
-            self.init(.textPlain, payload: .text(encoding: encoding))
+            self.init(.textPlain, payload: .text(encoding))
         }
         
         /// Expected content of Data

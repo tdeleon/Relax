@@ -8,7 +8,7 @@
 import Foundation
 import SwiftSyntax
 
-internal struct SecuritySchemeDecl: Hashable {
+internal struct SecuritySchemeDecl: APIDecl {
     let type: String
     let description: String?
     let name: String?
@@ -118,7 +118,7 @@ internal struct SecuritySchemeDecl: Hashable {
     }
 }
 
-internal struct OAuthFlowDecl: Hashable {
+internal struct OAuthFlowDecl: APIDecl {
     let type: String
     let refreshURL: String?
     let scopes: [String: String]

@@ -56,16 +56,23 @@ struct MyAPI: API {
     var paths: [Path] {
         Path("/users/{id}", summary: "User path") {
             Path.Operation(.get, summary: "Get user by ID") {
-                Response(.success) {
-                    Response.Content.jsonDictionary()
+                Response(payload: .json(String.self), summary: "Summary") {
+                    "A response with a JSON payload"
                 }
-                Response(.success, returning: String.self)
+                Response(.code(500), summary: "Summary") {
+                    Response.Content.jsonDictionary()
+                } description: {
+                    "An error response returning a JSON dictionary"
+                }
+                Response(.success, returning: String.self) {
+                    "Success response"
+                }
                 Self.defaultErrorResponse
             } description: {
                 "A very long description of the /users/{id} path."
             }
         } parameters: {
-            Parameter("id", ofType: Int.self, in: .path)
+            Parameter.cookie("Cookie", valueType: Int.self, description: "Description", required: true)
         } tags: {
             Tag("nav", summary: "summary") {
                 "Navigation endpoints"
@@ -95,6 +102,14 @@ struct MyAPI: API {
             Path.Operation(.get) {
                 Response(.success, returning: User.self)
                 Response(.default, returning: UserError.self)
+                Response(payload: .json(String.self)) {
+                    ""
+                }
+                Response(.default) {
+                    Response.Content(.applicationJSON, payload: .bytes)
+                } description: {
+                    "Default response"
+                }
             }
             Path.Operation(.post) {
                 Response(.success) {
@@ -115,7 +130,7 @@ struct MyAPI: API {
             }
 
             Path.Operation(.patch, summary: "Patch a user") {
-                Response(.default, summary: "Default Response", payload: .bytes) {
+                Response(.default, payload: .bytes, summary: "Default Response") {
                     "Description"
                 }
                 Response(payload: .bytes)
@@ -123,6 +138,7 @@ struct MyAPI: API {
                     Response.Content(.applicationJSON, payload: .bytes)
                     Response.Content.data()
                     Response.Content.json(String.self)
+                    Response.Content(.applicationJSON, payload: .json(String.self))
                 } description: {
                     """
                     This is a description of the success response

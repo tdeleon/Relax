@@ -11,7 +11,6 @@ public struct Parameter: Sendable {
     public enum Location: Sendable {
         case path
         case query
-        case queryString
         case header
         case cookie
     }
@@ -58,7 +57,7 @@ public struct Parameter: Sendable {
     
     public static func path<T: CustomStringConvertible>(
         _ name: String,
-        ofType type: T.Type,
+        ofType type: T.Type = String.self,
         style: Style.Path = .simple,
         description: String? = nil
     ) -> Parameter {
@@ -67,7 +66,7 @@ public struct Parameter: Sendable {
     
     public static func query<T: CustomStringConvertible>(
         _ name: String,
-        ofType type: T.Type,
+        ofType type: T.Type = String.self,
         style: Style.Query = .form,
         description: String? = nil,
         required: Bool = false
@@ -115,18 +114,9 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
-    public static func queryString(
-        _ name: String,
-        contentType: Header.ContentType = .applicationFormURLEncoded,
-        description: String? = nil,
-        required: Bool = false
-    ) -> Parameter {
-        self.init(name, ofType: Header.ContentType.self, in: .queryString, required: required)
-    }
-    
     public static func header<T: LosslessStringConvertible>(
         _ name: String,
-        valueType: T.Type,
+        valueType: T.Type = String.self,
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
@@ -144,7 +134,7 @@ public struct Parameter: Sendable {
     
     public static func cookie<T: LosslessStringConvertible>(
         _ name: String,
-        valueType: T.Type,
+        valueType: T.Type = String.self,
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {

@@ -31,13 +31,6 @@ package struct APIMacro: ExtensionMacro {
         let members = declaration.memberBlock.members.compactMap { $0.decl.as(VariableDeclSyntax.self) }
         
         // parse servers
-//        let serverDecl = members.first { member in
-//            member.bindings.first { binding in
-//                binding.pattern.as(IdentifierPatternSyntax.self)?.identifier.text == "servers" &&
-//                binding.typeAnnotation?.type.as(ArrayTypeSyntax.self)?.element.as(IdentifierTypeSyntax.self)?.name.text == "Server"
-//            } != nil
-//        }
-        
         let servers = parseServers(members, in: context)
         
         // parse security
@@ -45,7 +38,7 @@ package struct APIMacro: ExtensionMacro {
 
         
         // parse paths
-        let pathsFunctionCallExpr = parsePaths(members, in: context)
+        let paths = parsePaths(members, in: context)
         
         return []
     }
@@ -110,10 +103,12 @@ package struct APIMacro: ExtensionMacro {
     internal static func parsePaths(_ members: [VariableDeclSyntax], in context: MacroExpansionContext) -> [PathDecl] {
         guard let functionCallExpr = parseComputedResultBuilder(members, identifier: "paths", type: "Path")
         else { return [] }
-        let paths = functionCallExpr.lines.compactMap { PathDecl.from($0) }
-        return []
+        let paths = functionCallExpr.lines.compactMap { PathDecl.from($0, in: context) }
+        return paths
     }
 }
+
+internal protocol APIDecl: Hashable {}
 
 extension FunctionCallExprSyntax {
     func argument(_ name: String) -> LabeledExprListSyntax.Element? {

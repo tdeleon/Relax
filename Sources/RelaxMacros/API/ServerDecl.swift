@@ -10,7 +10,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftDiagnostics
 
-internal struct ServerDecl: Hashable {
+internal struct ServerDecl: APIDecl {
     let name: String
     let url: String
     let variables: [ServerVariableDecl]
@@ -87,6 +87,16 @@ extension FunctionCallExprSyntax {
             .first { $0.label.text == label }?
             .closure
             .statements
+    }
+}
+
+extension CodeBlockItemListSyntax {
+    internal var functionCallExprItems: [FunctionCallExprSyntax] {
+        compactMap { $0.item.as(FunctionCallExprSyntax.self) }
+    }
+    
+    internal func functionCallExprItems<T: APIDecl>(mapping: (FunctionCallExprSyntax) -> T?) -> [T] {
+        functionCallExprItems.compactMap { mapping($0) }
     }
 }
 

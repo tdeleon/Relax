@@ -47,8 +47,22 @@ struct APIMacroTests {
                 
                 var paths: [Path] {
                     Path("/users/{id}", summary: "User path") {
+                        Path.Operation(.get) {
+                            Response(.code(500), summary: "Summary") {
+                                Response.Content.jsonDictionary()
+                                Response.Content.text(.utf8)
+                                Response.Content(.applicationJSON, payload: .json(String.self))
+                            } description: {
+                                "An error response returning a JSON dictionary"
+                            }
+                        }
                     } parameters: {
-                        Parameter("id", ofType: Int.self, in: .path)
+                        Parameter.cookie("Cookie", valueType: Int.self, description: "Description", required: true)
+                        Parameter.header("Header", valueType: String.self, description: "Description", required: true)
+                        Parameter.path("Path", ofType: Int.self, style: .label, description: "Description")
+                        Parameter.query("QueryObject", ofObjectType: String.self, style: .deepObject, description: "Description", required: true)
+                        Parameter.query("Query", ofType: Int.self, style: .deepObject, description: "Description", required: true)
+                        Parameter.queryString("Query", contentType: .applicationFormURLEncoded, description: "Description", required: true)
                     } tags: {
                         Tag("nav", summary: "summary") {
                             "Description of the nav tag"
@@ -86,8 +100,23 @@ struct APIMacroTests {
                 
                 var paths: [Path] {
                     Path("/users/{id}", summary: "User path") {
+                        Path.Operation(.get) {
+                            Response(.code(500), summary: "Summary") {
+                                Response.Content.jsonDictionary()
+                                Response.Content.text(.utf8)
+                                Response.Content(.applicationJSON, payload: .json(String.self))
+                            } description: {
+                                "An error response returning a JSON dictionary"
+                            }
+                        }
                     } parameters: {
-                        Parameter("id", ofType: Int.self, in: .path)
+                        Parameter("id", ofType: Int.self, in: .path, description: "Description", required: true)
+                        Parameter.cookie("Cookie", valueType: Int.self, description: "Description", required: true)
+                        Parameter.header("Header", valueType: String.self, description: "Description", required: true)
+                        Parameter.path("Path", ofType: Int.self, style: .label, description: "Description")
+                        Parameter.query("QueryObject", ofObjectType: String.self, style: .deepObject, description: "Description", required: true)
+                        Parameter.query("Query", ofType: Int.self, style: .deepObject, description: "Description", required: true)
+                        Parameter.queryString("Query", contentType: .applicationFormURLEncoded, description: "Description", required: true)
                     } tags: {
                         Tag("nav", summary: "summary") {
                             "Description of the nav tag"
