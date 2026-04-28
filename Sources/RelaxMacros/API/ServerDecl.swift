@@ -63,6 +63,66 @@ internal struct ServerDecl: APIDecl {
         
         return ServerDecl(name: name, url: url, variables: variables+templateOnlyVariables, description: description)
     }
+    
+    var baseName: String {
+        name.camelCased()
+    }
+    
+    enum CaseArgFormat {
+        case name
+        case declaration
+    }
+    
+    private func formattedArgs(format: CaseArgFormat) -> String {
+        variables.map {
+            switch format {
+            case .declaration:
+                "\($0.name): \($0.type.replacingOccurrences(of: ".self", with: ""))\($0.defaultValue.map { " = \($0)" } ?? "")"
+            case .name:
+                "let \($0.name)"
+            }
+        }.joined(separator: ", ")
+    }
+    
+    private var formattedDescription: String {
+        var formatted = ""
+        guard let description else { return formatted }
+        formatted = "/// \(description)"
+        
+        let variableDescriptions = variables.compactMap {
+            guard let description = $0.description else { return nil }
+            return "///   - \($0.name): \(description)"
+        }.joined(separator: "\n")
+        
+        if !variableDescriptions.isEmpty {
+            formatted += "\n/// - Parameters:\n\(variableDescriptions)"
+        }
+        
+        return formatted
+    }
+    
+    private func caseFormat(for format: CaseArgFormat) -> String {
+        let arguments = formattedArgs(format: format)
+        return "\(baseName)\(arguments.isEmpty ? "" : "(\(arguments))")"
+    }
+    
+    
+    var caseDeclaration: EnumCaseDeclSyntax? {
+        try? EnumCaseDeclSyntax(
+            """
+            \(raw: formattedDescription)
+            case \(raw: caseFormat(for: .declaration))
+            """
+        )
+    }
+    
+    var caseName: String {
+        caseFormat(for: .name)
+    }
+    
+    var urlWithVariables: String {
+        url.replacing(/\{([^}]+)\}/) { "\\(\($0.output.1))" }
+    }
 }
 
 extension FunctionCallExprSyntax {

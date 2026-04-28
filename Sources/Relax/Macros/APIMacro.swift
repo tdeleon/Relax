@@ -7,5 +7,5 @@
 
 import Foundation
 
-@attached(extension, conformances: API)
+@attached(extension, conformances: API, names: arbitrary)
 public macro API() = #externalMacro(module: "RelaxMacros", type: "APIMacro")

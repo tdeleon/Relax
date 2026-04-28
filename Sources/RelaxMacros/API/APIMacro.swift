@@ -35,12 +35,23 @@ package struct APIMacro: ExtensionMacro {
         
         // parse security
         let security = parseSecurity(members, in: context)
-
         
         // parse paths
         let paths = parsePaths(members, in: context)
         
-        return []
+        return [generateServerEnum(for: servers, on: declarationName!)]
+    }
+    
+    internal static func generateServerEnum(for servers: [ServerDecl], on type: String) -> ExtensionDeclSyntax {
+        let cases = servers.compactMap { $0.caseDeclaration }
+        return try! ExtensionDeclSyntax("extension \(raw: type)") {
+            try EnumDeclSyntax("public enum ServerSelection") {
+                for decl in cases {
+                    MemberBlockItemSyntax(decl: decl)
+                }
+            }
+            .with(\.leadingTrivia, .docLineComment("/// Available servers for \(type)") + .newline)
+        }
     }
     
     internal static func parseComputedResultBuilder(_ variableMembers: [VariableDeclSyntax], identifier: String, type: String) -> (expr: CodeBlockItemListSyntax, lines: [FunctionCallExprSyntax])? {

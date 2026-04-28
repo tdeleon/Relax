@@ -22,15 +22,17 @@ extension Tag {
 @API
 struct MyAPI: API {
     static let name = ""
-    enum Region: String {
+    public enum Region: String {
         case east
         case west
     }
     var servers: [Server] {
         Server("Prod", url: "https://prod.example.com")
-        Server("Stage", url: "https://stage.example.com")
-        Server("Other", url: "https://{region}.example.com") {
-            Server.Variable("region", type: Region.self, defaultValue: .east)
+        Server("Stage", url: "https://stage.example.com", description: "Staging")
+        Server("Test", url: "https://test.com", description: "Test server")
+        Server("Other", url: "https://{region}-{env}.example.com", description: "Regional servers") {
+            Server.Variable("region", type: Region.self, defaultValue: .east, description: "The server region")
+            Server.Variable("env", type: String.self, description: "Environment")
         }
     }
     
