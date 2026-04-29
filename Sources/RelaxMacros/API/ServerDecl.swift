@@ -8,6 +8,7 @@
 import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
+import SwiftSyntaxBuilder
 import SwiftDiagnostics
 
 internal struct ServerDecl: APIDecl {
@@ -180,6 +181,48 @@ internal struct ServerVariableDecl: Hashable {
             description: expr.parseDescription(),
             expr: expr
         )
+    }
+}
+
+extension ServerDecl {
+    internal static func serverExtensionDecl(for servers: [ServerDecl], on type: String) throws -> ExtensionDeclSyntax {
+        try ExtensionDeclSyntax("extension \(raw: type)") {
+            try initializer(for: servers, on: type)
+            try enumDecl(for: servers, on: type)
+        }
+    }
+    
+    private static func initializer(for servers: [ServerDecl], on type: String) throws -> InitializerDeclSyntax {
+        let hasMultipleServers = servers.count > 1
+        var docLineComment = Trivia(pieces: [.docLineComment("/// Creates a new instance of \(type)")])
+        if hasMultipleServers {
+            docLineComment += .newline + .docLineComment("///")
+            docLineComment += .newline + .docLineComment("/// - Parameter server: The server to make requests to.")
+        }
+        
+        let serverValue = hasMultipleServers ? "server" : ".\(servers[0].caseName)"
+        let header = "public init(\(hasMultipleServers ? "server: ServerSelection" : ""))"
+        return try InitializerDeclSyntax("\(raw: header)") {
+            "self._selectedServer = \(raw: serverValue)"
+        }.with(\.leadingTrivia, docLineComment + .newline)
+    }
+    
+    private static func enumDecl(for servers: [ServerDecl], on type: String) throws -> EnumDeclSyntax {
+        try EnumDeclSyntax("public enum ServerSelection") {
+            for serverCase in servers.compactMap(\.caseDeclaration) {
+                MemberBlockItemSyntax(decl: serverCase)
+            }
+            
+            try VariableDeclSyntax("var url: URL") {
+                try SwitchExprSyntax("switch self") {
+                    for server in servers {
+                        SwitchCaseSyntax("case .\(raw: server.caseName):") {
+                            "URL(string: \"\(raw: server.urlWithVariables)\")!"
+                        }
+                    }
+                }
+            }.with(\.leadingTrivia, .newlines(2))
+        }.with(\.leadingTrivia, .newlines(2) + .docLineComment("/// Available servers for \(type)") + .newline)
     }
 }
 

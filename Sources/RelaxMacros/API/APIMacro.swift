@@ -12,7 +12,16 @@ import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 import SwiftDiagnostics
 
-package struct APIMacro: ExtensionMacro {
+package struct APIMacro: ExtensionMacro, MemberMacro {
+    package static func expansion(
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
+        let serverSelectionProperty = DeclSyntax("private var _selectedServer: ServerSelection")
+        return [serverSelectionProperty]
+    }
+    
     package static func expansion(
         of node: SwiftSyntax.AttributeSyntax,
         attachedTo declaration: some SwiftSyntax.DeclGroupSyntax,
@@ -39,19 +48,7 @@ package struct APIMacro: ExtensionMacro {
         // parse paths
         let paths = parsePaths(members, in: context)
         
-        return [generateServerEnum(for: servers, on: declarationName!)]
-    }
-    
-    internal static func generateServerEnum(for servers: [ServerDecl], on type: String) -> ExtensionDeclSyntax {
-        let cases = servers.compactMap { $0.caseDeclaration }
-        return try! ExtensionDeclSyntax("extension \(raw: type)") {
-            try EnumDeclSyntax("public enum ServerSelection") {
-                for decl in cases {
-                    MemberBlockItemSyntax(decl: decl)
-                }
-            }
-            .with(\.leadingTrivia, .docLineComment("/// Available servers for \(type)") + .newline)
-        }
+        return [try ServerDecl.serverExtensionDecl(for: servers, on: declarationName!)]
     }
     
     internal static func parseComputedResultBuilder(_ variableMembers: [VariableDeclSyntax], identifier: String, type: String) -> (expr: CodeBlockItemListSyntax, lines: [FunctionCallExprSyntax])? {

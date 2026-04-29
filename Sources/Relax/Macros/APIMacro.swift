@@ -8,4 +8,5 @@
 import Foundation
 
 @attached(extension, conformances: API, names: arbitrary)
+@attached(member, names: named(_selectedServer))
 public macro API() = #externalMacro(module: "RelaxMacros", type: "APIMacro")

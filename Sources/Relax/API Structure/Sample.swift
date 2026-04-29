@@ -28,11 +28,9 @@ struct MyAPI: API {
     }
     var servers: [Server] {
         Server("Prod", url: "https://prod.example.com")
-        Server("Stage", url: "https://stage.example.com", description: "Staging")
-        Server("Test", url: "https://test.com", description: "Test server")
-        Server("Other", url: "https://{region}-{env}.example.com", description: "Regional servers") {
-            Server.Variable("region", type: Region.self, defaultValue: .east, description: "The server region")
-            Server.Variable("env", type: String.self, description: "Environment")
+        Server("Stage", url: "https://stage.example.com", description: "Staging server")
+        Server("Regional", url: "https://{region}.example.com", description: "Regional server") {
+            Server.Variable("region", type: Region.self, defaultValue: .east, description: "The region to use")
         }
     }
     
