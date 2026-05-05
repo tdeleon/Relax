@@ -54,7 +54,7 @@ struct MyAPI: API {
     nonisolated static let navigationTag = Tag("nav")
     
     var paths: [Path] {
-        Path("/users/{id}", summary: "User path") {
+        Path("/users/{id}", summary: "User path", group: "users") {
             Path.Operation(.get, summary: "Get user by ID") {
                 Response(payload: .json(String.self), summary: "Summary") {
                     "A response with a JSON payload"
@@ -73,15 +73,11 @@ struct MyAPI: API {
             }
         } parameters: {
             Parameter.cookie("Cookie", valueType: Int.self, description: "Description", required: true)
-        } tags: {
-            Tag("nav", summary: "summary") {
-                "Navigation endpoints"
-            }
         } description: {
             "A longer description of the /users/{id} path."
         }
         
-        Path("/user/{id}", summary: "Short summary") {
+        Path("/user/{id}", summary: "Short summary", group: "users") {
             Path.Operation(.get) {
                 
             } security: {

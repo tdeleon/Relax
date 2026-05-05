@@ -1,5 +1,5 @@
 //
-//  PathDecl.swift
+//  ParsedPath.swift
 //  Relax
 //
 //  Created by Thomas De Leon on 4/13/26.
@@ -9,23 +9,23 @@ import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
 
-internal struct PathDecl: APIDecl {
+internal struct ParsedPath: APIDecl {
     let path: String
     let summary: String?
-    let tags: [TagDecl]
+    let tags: [ParsedTag]
     let description: String?
     let servers: [ServerDecl]
-    let operations: [String: OperationDecl]
-    let parameters: [ParameterDecl]
+    let operations: [String: ParsedOperation]
+    let parameters: [ParsedParameter]
     
     init(
         path: String,
         summary: String? = nil,
-        tags: [TagDecl] = [],
+        tags: [ParsedTag] = [],
         description: String? = nil,
         servers: [ServerDecl] = [],
-        operations: [String : OperationDecl] = [:],
-        parameters: [ParameterDecl] = []
+        operations: [String : ParsedOperation] = [:],
+        parameters: [ParsedParameter] = []
     ) {
         self.path = path
         self.summary = summary
@@ -42,7 +42,7 @@ internal struct PathDecl: APIDecl {
         let summary = expr.argument("summary")?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue
         
         let operations = expr.trailingClosure?.statements.functionCallExprItems {
-            OperationDecl.from(expr: $0, in: context)
+            ParsedOperation.from(expr: $0, in: context)
         }
             .reduce(into: [:]) { $0[$1.method] = $1 }
         
@@ -52,13 +52,13 @@ internal struct PathDecl: APIDecl {
         
         let parameters = expr.additionalTrailingClosure(matching: "parameters")?
             .compactMap { $0.item.as(FunctionCallExprSyntax.self) }
-            .compactMap { ParameterDecl.from($0) }
+            .compactMap { ParsedParameter.from($0) }
         
-        let tags = expr.additionalTrailingClosure(matching: "tags")?.compactMap { TagDecl.from($0) } ?? []
+        let tags = expr.additionalTrailingClosure(matching: "tags")?.compactMap { ParsedTag.from($0) } ?? []
         
         let description = expr.parseDescription()
         
-        return PathDecl(
+        return ParsedPath(
             path: path,
             summary: summary,
             tags: tags,
@@ -70,14 +70,14 @@ internal struct PathDecl: APIDecl {
     }
 }
 
-internal struct OperationDecl: APIDecl {
+internal struct ParsedOperation: APIDecl {
     let method: String
     let id: String?
     let summary: String?
     let description: String?
-    let tags: [TagDecl]
-    let parameters: [ParameterDecl]
-    let responses: [String: ResponseDecl]
+    let tags: [ParsedTag]
+    let parameters: [ParsedParameter]
+    let responses: [String: ParsedResponse]
     let security: [SecuritySchemeDecl]
     let servers: [ServerDecl]
     
@@ -86,9 +86,9 @@ internal struct OperationDecl: APIDecl {
         id: String? = nil,
         summary: String? = nil,
         description: String? = nil,
-        tags: [TagDecl] = [],
-        parameters: [ParameterDecl] = [],
-        responses: [String : ResponseDecl] = [:],
+        tags: [ParsedTag] = [],
+        parameters: [ParsedParameter] = [],
+        responses: [String : ParsedResponse] = [:],
         security: [SecuritySchemeDecl] = [],
         servers: [ServerDecl] = []
     ) {
@@ -111,24 +111,24 @@ internal struct OperationDecl: APIDecl {
         let summary = expr.argument("summary")?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue
         let description = expr.parseDescription()
         
-        let tags = expr.additionalTrailingClosure(matching: "tags")?.compactMap { TagDecl.from($0) }
+        let tags = expr.additionalTrailingClosure(matching: "tags")?.compactMap { ParsedTag.from($0) }
 
         let parameters = expr.additionalTrailingClosure(matching: "parameters")?
             .functionCallExprItems
-            .compactMap { ParameterDecl.from($0) }
+            .compactMap { ParsedParameter.from($0) }
         
         let security = expr.additionalTrailingClosure(matching: "security")?
             .functionCallExprItems { SecuritySchemeDecl.from($0)
         }
         
         let responses = expr.trailingClosure?.statements
-            .functionCallExprItems { ResponseDecl.from($0) }
+            .functionCallExprItems { ParsedResponse.from($0) }
             .reduce(into: [:]) { $0[$1.status] = $1 }
         
         let servers = expr.additionalTrailingClosure(matching: "servers")?
             .functionCallExprItems { ServerDecl.parse($0, in: context) }
         
-        return OperationDecl(
+        return ParsedOperation(
             method: method,
             id: id,
             summary: summary,
@@ -142,13 +142,13 @@ internal struct OperationDecl: APIDecl {
     }
 }
 
-internal struct ResponseDecl: APIDecl {
+internal struct ParsedResponse: APIDecl {
     let summary: String?
     let description: String?
     let status: String
-    let content: [String: ContentDecl]
+    let content: [String: ParsedContent]
     
-    init(summary: String? = nil, description: String? = nil, status: String, content: [String : ContentDecl]) {
+    init(summary: String? = nil, description: String? = nil, status: String, content: [String : ParsedContent]) {
         self.summary = summary
         self.description = description
         self.status = status
@@ -165,21 +165,21 @@ internal struct ResponseDecl: APIDecl {
         // summary labeled arg
         let summary = expr.argument("summary")?.expression.as(StringLiteralExprSyntax.self)?.representedLiteralValue
         
-        var content: [String: ContentDecl]?
+        var content: [String: ParsedContent]?
         // payload arg
         if let payloadExpr = expr.argument("payload")?.expression.as(FunctionCallExprSyntax.self) {
             // returning decodable -> shortcut to content [.application/json: Type]
-            guard let payload = ContentDecl.Payload(expr: payloadExpr) else { return nil }
-            content = [payload.contentType: ContentDecl(type: payload.contentType, payload: payload)]
+            guard let payload = ParsedContent.Payload(expr: payloadExpr) else { return nil }
+            content = [payload.contentType: ParsedContent(type: payload.contentType, payload: payload)]
         } else if let returning = expr.argument("returning")?
             .expression.as(MemberAccessExprSyntax.self)?
             .base?.as(DeclReferenceExprSyntax.self)?
             .trimmedDescription {
             let type = "applicationJSON"
-            content = [type: ContentDecl(type: type, payload: ContentDecl.Payload.json(type: returning))]
+            content = [type: ParsedContent(type: type, payload: ParsedContent.Payload.json(type: returning))]
         } else if let contentBuilder = expr.trailingClosure?
             .statements
-            .functionCallExprItems(mapping: { ContentDecl.from($0) })
+            .functionCallExprItems(mapping: { ParsedContent.from($0) })
             .reduce(into: [:], { $0[$1.type] = $1 }) {
             content = contentBuilder
         }
@@ -187,11 +187,11 @@ internal struct ResponseDecl: APIDecl {
         // description
         let description = expr.parseDescription()
         
-        return ResponseDecl(summary: summary, description: description, status: status, content: content ?? [:])
+        return ParsedResponse(summary: summary, description: description, status: status, content: content ?? [:])
     }
 }
 
-internal struct ContentDecl: APIDecl {
+internal struct ParsedContent: APIDecl {
     let type: String
     let payload: Payload
     
@@ -246,15 +246,15 @@ internal struct ContentDecl: APIDecl {
         }
     }
     
-    private static func parseStaticType(_ expr: FunctionCallExprSyntax) -> ContentDecl? {
+    private static func parseStaticType(_ expr: FunctionCallExprSyntax) -> ParsedContent? {
         guard let contentArg = expr.arguments.first?.expression.as(MemberAccessExprSyntax.self)?.declName.trimmedDescription,
               let payloadExpr = expr.argument("payload")?.expression.as(FunctionCallExprSyntax.self),
               let payload = Payload(expr: payloadExpr)
         else { return nil }
-        return ContentDecl(type: contentArg, payload: payload)
+        return ParsedContent(type: contentArg, payload: payload)
     }
     
-    private static func parseContentPayload(_ expr: FunctionCallExprSyntax) -> ContentDecl? {
+    private static func parseContentPayload(_ expr: FunctionCallExprSyntax) -> ParsedContent? {
         guard let staticType = expr.calledExpression.as(MemberAccessExprSyntax.self)?.declName.trimmedDescription
         else { return nil }
         // parse args for static types
@@ -281,11 +281,11 @@ internal struct ContentDecl: APIDecl {
             return nil
         }
         
-        return ContentDecl(type: contentType, payload: payload)
+        return ParsedContent(type: contentType, payload: payload)
     }
 }
 
-internal struct ParameterDecl: APIDecl {
+internal struct ParsedParameter: APIDecl {
     let name: String
     let location: String
     let description: String?
@@ -325,7 +325,7 @@ internal struct ParameterDecl: APIDecl {
             break
         }
                 
-        return ParameterDecl(
+        return ParsedParameter(
             name: name,
             location: location,
             description: description,
@@ -336,7 +336,7 @@ internal struct ParameterDecl: APIDecl {
     }
 }
 
-internal struct TagDecl: APIDecl {
+internal struct ParsedTag: APIDecl {
     let name: String
     let summary: String?
     let description: String?
@@ -362,6 +362,6 @@ internal struct TagDecl: APIDecl {
         }
         
         guard let name else { return nil }
-        return TagDecl(name: name, summary: summary, description: description)
+        return ParsedTag(name: name, summary: summary, description: description)
     }
 }

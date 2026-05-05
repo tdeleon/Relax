@@ -10,7 +10,7 @@ import Foundation
 public struct Path: Sendable {
     public let path: String
     public let summary: String?
-    public let tags: [Tag]
+    public let group: String?
     public let description: String?
     public let operations: [Request.HTTPMethod: Operation]
     public let servers: [Server]
@@ -18,16 +18,49 @@ public struct Path: Sendable {
     
     public init(
         _ path: String,
-        summary: String? = nil,
         @OperationsBuilder operations: () -> [Request.HTTPMethod: Operation],
         @Parameter.Builder parameters: () -> [Parameter] = { [] },
         @ServersBuilder servers: () -> [Server] = { [] },
-        @Tag.Builder tags: () -> [Tag] = { [] },
+    ) {
+        self.path = path
+        self.summary = nil
+        self.group = nil
+        self.servers = servers()
+        self.operations = operations()
+        self.parameters = parameters()
+        self.description = nil
+    }
+    
+    public init(
+        _ path: String,
+        summary: String? = nil,
+        group: String,
+        @OperationsBuilder operations: () -> [Request.HTTPMethod: Operation],
+        @Parameter.Builder parameters: () -> [Parameter] = { [] },
+        @ServersBuilder servers: () -> [Server] = { [] },
         @DescriptionBuilder description: () -> String? = { nil }
     ) {
         self.path = path
         self.summary = summary
-        self.tags = tags()
+        self.group = group
+        self.servers = servers()
+        self.operations = operations()
+        self.parameters = parameters()
+        self.description = description()
+    }
+    
+    public init(
+        _ path: String,
+        summary: String? = nil,
+        tag: Tag,
+        @OperationsBuilder operations: () -> [Request.HTTPMethod: Operation],
+        @Parameter.Builder parameters: () -> [Parameter] = { [] },
+        @ServersBuilder servers: () -> [Server] = { [] },
+        @DescriptionBuilder description: () -> String? = { nil }
+    ) {
+        self.path = path
+        self.summary = summary
+        self.group = tag.name
         self.servers = servers()
         self.operations = operations()
         self.parameters = parameters()

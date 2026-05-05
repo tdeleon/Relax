@@ -15,4 +15,19 @@ extension String {
         
         return ([first] + remaining).joined()
     }
+    
+    internal func wrapped(lineLength: Int = 100) -> [String] {
+        stride(from: 0, to: count, by: lineLength).map {
+            let start = index(startIndex, offsetBy: $0)
+            let end = index(start, offsetBy: lineLength, limitedBy: endIndex) ?? endIndex
+            return String(self[start..<end])
+        }
+    }
+    
+    internal func commentFormatted(lineLength: Int = 100) -> String {
+        guard !self.isEmpty else { return "" }
+        return wrapped(lineLength: lineLength)
+            .map { "/// \($0)" }
+            .joined(separator: "\n")
+    }
 }
