@@ -10,21 +10,61 @@ import Foundation
 /// A structure which describes path components to be appended to the base URL of a request.
 ///
 /// You should not escape the values entered here as they will be escaped when they are appended to the URL of the request.
-public struct PathComponents: RequestProperty {
-    public var value: [String]
+public struct PathComponents: Hashable, Sendable {
+    internal var _value: [String]
     
-    public init(value: [String]) {
-        self.value = value.filter { !$0.isEmpty }
+    public init(_ components: [String]) {
+        self._value = components
+    }
+    
+    public init(_ string: String) {
+        _value = string.split(separator: "/").map { String($0) }.filter { !$0.isEmpty }
     }
     
     /// Creates path components from any number of strings or string arrays using a ``Builder``.
     /// - Parameter components: A ``Builder`` that returns the path components to be used.
     public init(@Builder _ components: () -> PathComponents) {
-        self.init(value: components().value)
+        self.init(components()._value)
     }
     
-    public func append(to property: PathComponents) -> PathComponents {
-        .init(value: value + property.value)
+    public static func +(lhs: Self, rhs: Self) -> Self {
+        self.init(lhs._value + rhs._value)
+    }
+}
+
+extension PathComponents: RangeReplaceableCollection, RandomAccessCollection {
+    public init() {
+        _value = []
+    }
+    
+    public var startIndex: Int {
+        _value.startIndex
+    }
+    
+    public var endIndex: Int {
+        _value.endIndex
+    }
+    
+    public func index(after i: Int) -> Int {
+        _value.index(after: i)
+    }
+    
+    public func index(before i: Int) -> Int {
+        _value.index(before: i)
+    }
+    
+    public subscript(position: Int) -> String {
+        _value[position]
+    }
+    
+    public mutating func replaceSubrange<C>(_ subrange: Range<Int>, with newElements: C) where C : Collection, String == C.Element {
+        _value.replaceSubrange(subrange, with: newElements)
+    }
+}
+
+extension PathComponents: CustomStringConvertible {
+    public var description: String {
+        _value.joined(separator: "/")
     }
 }
 
@@ -45,7 +85,7 @@ extension PathComponents {
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> PathComponents {
-            .init(value: [])
+            .init()
         }
         
         public static func buildPartialBlock(first: PathComponents) -> PathComponents {
@@ -57,7 +97,7 @@ extension PathComponents {
         }
         
         public static func buildOptional(_ component: PathComponents?) -> PathComponents {
-            component ?? .init(value: [])
+            component ?? .init()
         }
         
         public static func buildEither(first component: PathComponents) -> PathComponents {
@@ -69,7 +109,7 @@ extension PathComponents {
         }
         
         public static func buildArray(_ components: [PathComponents]) -> PathComponents {
-            components.reduce(.init(value: []), +)
+            .init(components.flatMap(\._value))
         }
         
         public static func buildExpression(_ expression: PathComponents) -> PathComponents {
@@ -77,12 +117,12 @@ extension PathComponents {
         }
         
         public static func buildExpression(_ expression: CustomStringConvertible?) -> PathComponents {
-            guard let expression else { return .init(value: []) }
-            return PathComponents(value: [expression.description])
+            guard let expression else { return .init() }
+            return PathComponents(expression.description)
         }
         
         public static func buildExpression(_ expression: [CustomStringConvertible]) -> PathComponents {
-            PathComponents(value: expression.map(\.description))
+            PathComponents(expression.map(\.description))
         }
         
         public static func buildLimitedAvailability(_ component: PathComponents) -> PathComponents {

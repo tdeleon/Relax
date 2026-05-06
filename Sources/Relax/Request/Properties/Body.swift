@@ -8,7 +8,7 @@
 import Foundation
 
 /// A structure which describes the body of a request
-public struct Body: RequestProperty {
+public struct Body: Hashable, Sendable {
     public var value: Data?
             
     public init(value: Data?) {
@@ -53,6 +53,10 @@ public struct Body: RequestProperty {
         } else {
             return Body(value: nil)
         }
+    }
+    
+    public static func +(lhs: Self, rhs: Self) -> Self {
+        rhs.append(to: lhs)
     }
 }
 

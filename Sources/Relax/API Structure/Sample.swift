@@ -144,8 +144,6 @@ struct MyAPI: API {
             } description: {
                 "Long description of the patch operation"
             }
-        } description: {
-            "Fetch a user by ID"
         }
     }
 }

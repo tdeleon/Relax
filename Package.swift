@@ -29,7 +29,9 @@ targets.append(
             name: "RelaxMacros",
             dependencies: [
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "HTTPTypes", package: "swift-http-types"),
+                .product(name: "HTTPTypesFoundation", package: "swift-http-types")
             ]
         ),
         .testTarget(
@@ -41,6 +43,7 @@ targets.append(
 dependencies = [
     // Depend on the Swift 6.0 release of SwiftSyntax
     .package(url: "https://github.com/apple/swift-syntax.git", exact: "600.0.1"),
+    .package(url: "https://github.com/apple/swift-http-types.git", exact: "1.5.1")
 ]
 #endif
 

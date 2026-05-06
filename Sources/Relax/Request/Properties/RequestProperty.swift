@@ -6,41 +6,21 @@
 //
 
 import Foundation
-
-/// A type describing a property of a request
-public protocol RequestProperty<PropertyType>: Hashable, Sendable {
-    associatedtype PropertyType
-    /// The base value type of the property
-    var value: PropertyType { get }
-    /// Create a new instance of the property
-    init(value: PropertyType)
-    /// Append this property to another property of the same type
-    func append(to property: Self) -> Self
-}
-
-extension RequestProperty {
-    public static func +(lhs: Self, rhs: Self) -> Self {
-        lhs.append(to: rhs)
-    }
-    
-    public static func +=(left: inout Self, right: Self) {
-        left = left + right
-    }
-}
+import HTTPTypes
 
 extension Request {
     /// A structure that groups properties of a request
     public struct Properties: Hashable, Sendable {
-        public var headers: Headers = Headers(value: [:])
-        public var queryItems: QueryItems = QueryItems(value: [])
-        public var pathComponents: PathComponents = PathComponents(value: [])
+        public var headers: HTTPFields = HTTPFields()
+        public var queryItems: QueryItems = QueryItems([])
+        public var pathComponents: PathComponents = PathComponents([])
         public var body: Body = Body(value: nil)
         
         public static func +(lhs: Properties, rhs: Properties) -> Request.Properties {
             var new = rhs
-            new.headers = lhs.headers.append(to: new.headers)
-            new.queryItems = lhs.queryItems.append(to: new.queryItems)
-            new.pathComponents = lhs.pathComponents.append(to: new.pathComponents)
+            new.headers += lhs.headers
+            new.queryItems += lhs.queryItems
+            new.pathComponents += lhs.pathComponents
             new.body = lhs.body.append(to: new.body)
             return new
         }
@@ -52,34 +32,26 @@ extension Request {
         /// Provides an instance with no property values set
         public static let empty: Properties = .init()
         
-        internal static func from(_ requestProperty: some RequestProperty) -> Request.Properties {
-            .empty
-            .updating(requestProperty, replace: true)
+        public init(
+            headers: HTTPFields = HTTPFields(),
+            queryItems: QueryItems = QueryItems([]),
+            pathComponents: PathComponents = PathComponents([]),
+            body: Body = Body(value: nil)
+        ) {
+            self.headers = headers
+            self.queryItems = queryItems
+            self.pathComponents = pathComponents
+            self.body = body
         }
         
-        internal func adding(_ requestProperty: some RequestProperty) -> Request.Properties {
-            updating(requestProperty, replace: false)
-        }
-        
-        internal func setting(_ requestProperty: some RequestProperty) -> Request.Properties {
-            updating(requestProperty, replace: true)
-        }
-        
-        private func updating(_ requestProperty: some RequestProperty, replace: Bool) -> Request.Properties {
-            var newProperties = self
-            switch requestProperty {
-            case let headers as Headers:
-                newProperties.headers = replace ? headers : newProperties.headers + headers
-            case let queryItems as QueryItems:
-                newProperties.queryItems = replace ? queryItems : newProperties.queryItems + queryItems
-            case let pathComponents as PathComponents:
-                newProperties.pathComponents = replace ? pathComponents : newProperties.pathComponents + pathComponents
-            case let body as Body:
-                newProperties.body = replace ? body : newProperties.body + body
-            default:
-                break
-            }
-            return newProperties
+        public init(@Builder builder: () -> Request.Properties) {
+            let properties = builder()
+            self.init(
+                headers: properties.headers,
+                queryItems: properties.queryItems,
+                pathComponents: properties.pathComponents,
+                body: properties.body
+            )
         }
     }
 }
@@ -121,8 +93,28 @@ extension Request.Properties {
             component
         }
         
-        public static func buildExpression(_ expression: some RequestProperty) -> Request.Properties {
-            .from(expression)
+        public static func buildExpression(_ expression: HTTPFields) -> Request.Properties {
+            Request.Properties(headers: expression)
+        }
+        
+        public static func buildExpression(_ expression: HTTPField) -> Request.Properties {
+            Request.Properties(headers: HTTPFields([expression]))
+        }
+        
+        public static func buildExpression(_ expression: QueryItems) -> Request.Properties {
+            Request.Properties(queryItems: expression)
+        }
+        
+        public static func buildExpression(_ expression: URLQueryItem) -> Request.Properties {
+            Request.Properties(queryItems: QueryItems([expression]))
+        }
+        
+        public static func buildExpression(_ expression: PathComponents) -> Request.Properties {
+            Request.Properties(pathComponents: expression)
+        }
+        
+        public static func buildExpression(_ expression: Body) -> Request.Properties {
+            Request.Properties(body: expression)
         }
         
         public static func buildExpression(_ expression: Request.Properties) -> Request.Properties {

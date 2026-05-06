@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import HTTPTypes
 
 /// A structure which represents a single request header
+@available(*, deprecated, message: "Use HTTPField instead.")
 public struct Header: CustomStringConvertible, Sendable, Hashable {
     /// The header name
     public var name: String
@@ -36,10 +38,12 @@ public struct Header: CustomStringConvertible, Sendable, Hashable {
     }
 }
 
+@available(*, deprecated, message: "Use HTTPField instead.")
 extension Header {
     /// Represents a request header name
     ///
     /// Common header names are provided, but additional can be added through an extension.
+    @available(*, deprecated, message: "Use HTTPField.Name instead.")
     public struct Name: RawRepresentable, Sendable {
         public var rawValue: String
         
@@ -87,6 +91,7 @@ extension Header {
     /// A struct representing request content types
     ///
     /// Additional content types may be added as needed.
+    @available(*, deprecated, renamed: "ContentType")
     public struct ContentType: RawRepresentable, Hashable, Sendable {
         public var rawValue: String
 
@@ -168,7 +173,8 @@ extension Header {
 }
 
 /// A structure which describes the headers in a request.
-public struct Headers: RequestProperty {
+@available(*, deprecated, message: "Use HTTPFields instead.")
+public struct Headers: Hashable, Sendable {
     public var value: [String: String]
     
     public init(value: [String: String]) {
@@ -211,7 +217,7 @@ public struct Headers: RequestProperty {
         }
         
         public static func buildPartialBlock(accumulated: Headers, next: Headers) -> Headers {
-            accumulated + next
+            next.append(to: accumulated)
         }
         
         public static func buildOptional(_ component: Headers?) -> Headers {
@@ -227,7 +233,7 @@ public struct Headers: RequestProperty {
         }
         
         public static func buildArray(_ components: [Headers]) -> Headers {
-            components.reduce(.init(value: [:]), +)
+            components.reduce(into: Headers(value: [:])) { $0 = $1.append(to: $0) }
         }
         
         public static func buildExpression(_ expression: Headers) -> Headers {
@@ -256,5 +262,59 @@ public struct Headers: RequestProperty {
 extension Dictionary where Key == String, Value == String {
     internal func mergingCommaSeparatedValues(_ other: [String: String]) -> [String: String] {
         self.merging(other, uniquingKeysWith: {"\($0),\($1)"})
+    }
+}
+
+extension HTTPFields {
+    public init(@Builder fields: () -> HTTPFields) {
+        self = fields()
+    }
+    
+    @resultBuilder
+    public enum Builder {
+        public static func buildBlock() -> HTTPFields {
+            HTTPFields()
+        }
+        
+        public static func buildPartialBlock(first: HTTPFields) -> HTTPFields {
+            first
+        }
+        
+        public static func buildPartialBlock(accumulated: HTTPFields, next: HTTPFields) -> HTTPFields {
+            accumulated + next
+        }
+        
+        public static func buildOptional(_ component: HTTPFields?) -> HTTPFields {
+            component ?? HTTPFields()
+        }
+        
+        public static func buildEither(first component: HTTPFields) -> HTTPFields {
+            component
+        }
+        
+        public static func buildEither(second component: HTTPFields) -> HTTPFields {
+            component
+        }
+        
+        public static func buildArray(_ components: [HTTPFields]) -> HTTPFields {
+            components.reduce(into: HTTPFields()) { $0 += $1 }
+        }
+        
+        public static func buildExpression(_ expression: HTTPFields) -> HTTPFields {
+            expression
+        }
+        
+        public static func buildExpression(_ expression: HTTPField) -> HTTPFields {
+            HTTPFields([expression])
+        }
+        
+        public static func buildExpression(_ expression: (HTTPField.Name, String)) -> HTTPFields {
+            HTTPFields(dictionaryLiteral: expression)
+        }
+        
+        public static func buildExpression(_ expression: (String, String)) -> HTTPFields {
+            guard let name = HTTPField.Name(expression.0) else { return HTTPFields() }
+            return HTTPFields(dictionaryLiteral: (name, expression.1))
+        }
     }
 }
