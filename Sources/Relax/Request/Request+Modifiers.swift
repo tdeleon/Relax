@@ -243,3 +243,19 @@ extension Request {
         return request
     }
 }
+
+extension Request {
+    public func settingBody(data: Data?) -> Request {
+        var request = self
+        request.body = data
+        return request
+    }
+    
+    public func settingBody(_ body: Body) -> Request {
+        settingBody(data: body.value)
+    }
+    
+    public func settingBody(@Body.Builder body: () -> Body) -> Request {
+        settingBody(body())
+    }
+}
