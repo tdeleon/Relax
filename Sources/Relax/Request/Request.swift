@@ -159,16 +159,12 @@ public struct Request: Sendable {
     ///   - httpMethod: The HTTP method to use
     ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
     ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
-    ///   - session: The session to use for the request. The default is `URLSession.shared`
-    ///   - decoder: The decoder to use for the request when receiving data. The default is `JSONDecoder()`.
     ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
     ///   ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPRequest.Method,
         url: URL,
         configuration: Configuration = .default,
-        session: URLSession = .shared,
-        decoder: JSONDecoder = JSONDecoder(),
         @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
     ) {
         self.init(
@@ -193,6 +189,10 @@ public struct Request: Sendable {
         self.configuration = configuration
         self._properties = properties
         self.headers = headers
+        self.queryItems = properties.queryItems._value
+        self.headers = properties.headers
+        self.pathComponents = properties.pathComponents
+        self.body = properties.body.value
     }
 }
 
