@@ -275,16 +275,16 @@ extension Request {
 //    }
 //}
 
-extension Request {
-    internal func handleURLSessionResponse(_ response: (Data, URLResponse)) throws -> (Request, HTTPURLResponse, Data) {
-        guard let httpResponse = response.1 as? HTTPURLResponse else {
-            throw RequestError.urlError(request: self, error: URLError(.unknown))
-        }
-        let requestResponse = (self, httpResponse, response.0)
-        if configuration.parseHTTPStatusErrors,
-           let httpError = RequestError.HTTPError(response: requestResponse) {
-            throw(RequestError.httpStatus(request: self, error: httpError))
-        }
-        return requestResponse
-    }
-}
+//extension Request {
+//    internal func handleURLSessionResponse(_ response: (Data, URLResponse)) throws -> (Request, HTTPURLResponse, Data) {
+//        guard let httpResponse = response.1 as? HTTPURLResponse else {
+//            throw RequestError.urlError(request: self, error: URLError(.unknown))
+//        }
+//        let requestResponse = (self, httpResponse, response.0)
+//        if configuration.parseHTTPStatusErrors,
+//           let httpError = RequestError.HTTPError(response: requestResponse) {
+//            throw(RequestError.httpStatus(request: self, error: httpError))
+//        }
+//        return requestResponse
+//    }
+//}

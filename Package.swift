@@ -6,13 +6,9 @@ import CompilerPluginSupport
 
 
 var targets: [Target] = [
-    .target(
-        name: "URLMock",
-        dependencies: ["Relax"]
-    ),
     .testTarget(
         name: "RelaxTests",
-        dependencies: ["Relax", "URLMock"]
+        dependencies: ["Relax"]
     ),
 ]
 
@@ -60,9 +56,6 @@ let package = Package(
         .library(
             name: "Relax",
             targets: ["Relax"]),
-        .library(
-            name: "URLMock",
-            targets: ["URLMock"])
     ],
     dependencies: dependencies,
     targets: targets
