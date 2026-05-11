@@ -10,6 +10,85 @@ import Foundation
 @preconcurrency import FoundationNetworking
 #endif
 
+public struct SendOptions: Sendable, Hashable {
+    public var cachePolicy: URLRequest.CachePolicy?
+    public var timeoutInterval: TimeInterval?
+    public var httpShouldHandleCookies: Bool?
+    public var allowsCellularAccess: Bool?
+    public var networkServiceType: URLRequest.NetworkServiceType?
+    
+    #if !canImport(FoundationNetworking)
+    public var allowsConstrainedNetworkAccess: Bool?
+    public var allowsExpensiveNetworkAccess: Bool?
+    
+    public init(
+        cachePolicy: URLRequest.CachePolicy? = nil,
+        timeoutInterval: TimeInterval? = nil,
+        httpShouldHandleCookies: Bool? = nil,
+        allowsCellularAccess: Bool? = nil,
+        networkServiceType: URLRequest.NetworkServiceType? = nil,
+        allowsConstrainedNetworkAccess: Bool? = nil,
+        allowsExpensiveNetworkAccess: Bool? = nil
+    ) {
+        self.cachePolicy = cachePolicy
+        self.timeoutInterval = timeoutInterval
+        self.httpShouldHandleCookies = httpShouldHandleCookies
+        self.allowsCellularAccess = allowsCellularAccess
+        self.networkServiceType = networkServiceType
+        self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
+        self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
+    }
+    #else
+    public init(
+        cachePolicy: URLRequest.CachePolicy? = nil,
+        timeoutInterval: TimeInterval? = nil,
+        httpShouldHandleCookies: Bool? = nil,
+        allowsCellularAccess: Bool? = nil,
+        networkServiceType: URLRequest.NetworkServiceType? = nil
+    ) {
+        self.cachePolicy = cachePolicy
+        self.timeoutInterval = timeoutInterval
+        self.httpShouldHandleCookies = httpShouldHandleCookies
+        self.allowsCellularAccess = allowsCellularAccess
+        self.networkServiceType = networkServiceType
+        self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
+        self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
+    }
+    #endif
+    
+    internal var hasSetOptions: Bool {
+        self != SendOptions()
+    }
+}
+
+extension URLRequest {
+    internal mutating func apply(options: SendOptions) {
+        if let cachePolicy = options.cachePolicy {
+            self.cachePolicy = cachePolicy
+        }
+        if let timeoutInterval = options.timeoutInterval {
+            self.timeoutInterval = timeoutInterval
+        }
+        if let httpShouldHandleCookies = options.httpShouldHandleCookies {
+            self.httpShouldHandleCookies = httpShouldHandleCookies
+        }
+        if let allowsCellularAccess = options.allowsCellularAccess {
+            self.allowsCellularAccess = allowsCellularAccess
+        }
+        if let networkServiceType = options.networkServiceType {
+            self.networkServiceType = networkServiceType
+        }
+        #if !canImport(FoundationNetworking)
+        if let allowsConstrainedNetworkAccess = options.allowsConstrainedNetworkAccess {
+            self.allowsConstrainedNetworkAccess = allowsConstrainedNetworkAccess
+        }
+        if let allowsExpensiveNetworkAccess = options.allowsExpensiveNetworkAccess {
+            self.allowsExpensiveNetworkAccess = allowsExpensiveNetworkAccess
+        }
+        #endif
+    }
+}
+
 extension Request {
     /// Defines configuration options for requests to use
     public struct Configuration: Hashable, Sendable {

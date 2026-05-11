@@ -24,7 +24,7 @@ public struct MockSender {
         delay: TimeInterval = 0
     ) throws -> Self {
         let data = try JSONEncoder().encode(object)
-        return try self.returning(object, status: status, delay: delay)
+        return try self.returning(data, status: status, delay: delay)
     }
     
     public static func returning(
@@ -45,15 +45,19 @@ public struct MockSender {
 }
 
 extension MockSender: RequestSending {
-    public func send(_ request: Request) async throws -> (Data, HTTPResponse) {
+    public func send(_ request: Request, options: SendOptions? = nil) async throws -> (Data, HTTPResponse) {
         try await mockResponse()
     }
     
-    public func send(_ request: Request, withFile file: URL) async throws -> (Data, HTTPResponse) {
+    public func send(
+        _ request: Request,
+        withFile file: URL,
+        options: SendOptions? = nil
+    ) async throws -> (Data, HTTPResponse) {
         try await mockResponse()
     }
     
-    public func sendDownload(_ request: Request) async throws -> (URL, HTTPResponse) {
+    public func sendDownload(_ request: Request, options: SendOptions? = nil) async throws -> (URL, HTTPResponse) {
         try await Task.sleep(for: .seconds(delay))
         if let error {
             throw error
