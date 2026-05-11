@@ -50,7 +50,7 @@ import HTTPTypesFoundation
 /// > Tip: For more details, see <doc:DefiningAPIStructure>, <doc:DefiningRequests>, and <doc:SendingRequestsAsync>,
 /// <doc:SendingRequestsPublisher>, or <doc:SendingRequestsHandler>.
 ///
-public struct Request: Sendable {
+public struct Request: Sendable, Hashable {
     /// The HTTP method of the request
     public var httpMethod: HTTPRequest.Method
     

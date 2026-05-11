@@ -22,17 +22,16 @@ public enum RequestError: Error, Hashable, Sendable, CustomDebugStringConvertibl
     public func hash(into hasher: inout Hasher) {
         switch self {
         case .urlError(let request, let error):
-            //TODO: Request hashable
-//            hasher.combine(request)
+            hasher.combine(request)
             hasher.combine(error)
         case .decoding(let request, let error):
-//            hasher.combine(request)
+            hasher.combine(request)
             hasher.combine(error.localizedDescription)
         case .httpStatus(let request, let error):
-//            hasher.combine(request)
+            hasher.combine(request)
             hasher.combine(error)
         case .other(let request, let message):
-//            hasher.combine(request)
+            hasher.combine(request)
             hasher.combine(message)
         }
     }
