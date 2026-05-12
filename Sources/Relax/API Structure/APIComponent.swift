@@ -27,11 +27,7 @@ public protocol APIComponent {
     ///
     /// - Important: You should not override this property, doing so will not allow properties to be properly inherited by child components.
     static var allProperties: Request.Properties { get }
-    
-    /// The configuration to use for any Requests provided by this component or its children.
-    ///
-    /// The default value  is ``Request/Configuration-swift.struct/default``
-    static var configuration: Request.Configuration { get }
+
     
     /// The URLSession to use for any Requests defined in this component or its children.
     ///
@@ -46,7 +42,6 @@ public protocol APIComponent {
 
 //MARK: Default Implementation
 extension APIComponent {
-    public static var configuration: Request.Configuration { .default }
     
     @Request.Properties.Builder
     public static var sharedProperties: Request.Properties { .empty }
@@ -68,10 +63,6 @@ public protocol APISubComponent<Parent>: APIComponent {
 extension APISubComponent {
     public static var allProperties: Request.Properties {
         Parent.allProperties + sharedProperties
-    }
-    
-    public static var configuration: Request.Configuration {
-        Parent.configuration
     }
     
     public static var session: URLSession {

@@ -72,19 +72,10 @@ public struct Request: Sendable, Hashable {
     /// The request body
     public var body: Data?
     
-    /// The configuration of the request
-    ///
-    /// This value will be inherited from the parent ``APIComponent/configuration-5p4i`` property, if the request is linked to a parent. If there is no
-    /// parent, the default value is ``Request/Configuration-swift.struct/default``.
-    public var configuration: Configuration
-    
     /// The request URL
     public var url: URL {
         var fullURL = _url
         fullURL.append(path: pathComponents.description)
-        if configuration.appendTraillingSlashToPath {
-            fullURL.append(path: "/")
-        }
         guard var components = URLComponents(url: fullURL, resolvingAgainstBaseURL: true) else { return _url }
         if !_properties.queryItems._value.isEmpty {
             components.queryItems = _properties.queryItems._value
@@ -129,49 +120,43 @@ public struct Request: Sendable, Hashable {
     
 //MARK: - Initializers
     
-    /// Creates a request using a provided HTTP method, base URL, and properties using a ``Request/Properties/Builder``.
-    /// - Parameters:
-    ///   - httpMethod: The HTTP method to use
-    ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
-    ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
-    ///   - session: The session to use for the request. The default is `URLSession.shared`
-    ///   - decoder: The decoder to use for the request when receiving data. The default is `JSONDecoder()`.
-    ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
-    ///   ``Request/Properties/empty`` (no properties).
-    @available(*, deprecated, message: "HTTPMethod is deprecated. Use the initializer with HTTPRequest.Method instead.")
-    public init(
-        _ httpMethod: HTTPMethod,
-        url: URL,
-        configuration: Configuration = .default,
-        @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
-    ) {
-        self.init(
-            httpMethod: httpMethod.httpRequestMethod ?? .get,
-            url: url,
-            headers: HTTPFields(),
-            configuration: configuration,
-            properties: properties()
-        )
-    }
+//    /// Creates a request using a provided HTTP method, base URL, and properties using a ``Request/Properties/Builder``.
+//    /// - Parameters:
+//    ///   - httpMethod: The HTTP method to use
+//    ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
+//    ///   - session: The session to use for the request. The default is `URLSession.shared`
+//    ///   - decoder: The decoder to use for the request when receiving data. The default is `JSONDecoder()`.
+//    ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
+//    ///   ``Request/Properties/empty`` (no properties).
+//    @available(*, deprecated, message: "HTTPMethod is deprecated. Use the initializer with HTTPRequest.Method instead.")
+//    public init(
+//        _ httpMethod: HTTPMethod,
+//        url: URL,
+//        @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
+//    ) {
+//        self.init(
+//            httpMethod: httpMethod.httpRequestMethod ?? .get,
+//            url: url,
+//            headers: HTTPFields(),
+//            properties: properties()
+//        )
+//    }
     
     /// Creates a request using a provided HTTP method, base URL, and properties using a ``Request/Properties/Builder``.
     /// - Parameters:
     ///   - httpMethod: The HTTP method to use
     ///   - url: The base URL of the request (this does not include path components and query items which you provide in `properties`).
-    ///   - configuration: The configuration for the request. The default is ``Configuration-swift.struct/default``.
     ///   - properties: Any additional properties to use in the request, such as the body, headers, query items, or path components. The default value is
     ///   ``Request/Properties/empty`` (no properties).
     public init(
         _ httpMethod: HTTPRequest.Method,
         url: URL,
-        configuration: Configuration = .default,
         @Request.Properties.Builder properties: () -> Request.Properties = { .empty }
     ) {
         self.init(
             httpMethod: httpMethod,
             url: url,
             headers: HTTPFields(),
-            configuration: configuration,
             properties: properties()
         )
     }
@@ -180,13 +165,11 @@ public struct Request: Sendable, Hashable {
         httpMethod: HTTPRequest.Method,
         url: URL,
         headers: HTTPFields,
-        configuration: Configuration,
         properties: Properties
     ) {
         self._url = url
         
         self.httpMethod = httpMethod
-        self.configuration = configuration
         self._properties = properties
         self.headers = headers
         self.queryItems = properties.queryItems._value
@@ -196,44 +179,44 @@ public struct Request: Sendable, Hashable {
     }
 }
 
-extension Request {
-    /// HTTP Request type
-    ///
-    /// The main request types are provided (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`); additional ones can be added as static properties in an extension.
-    @available(*, deprecated, message: "Use HTTPRequest.Method instead")
-    public struct HTTPMethod: RawRepresentable, Hashable, Sendable {
-        public var rawValue: String
-        
-        public init(rawValue: String) {
-            self.rawValue = rawValue
-        }
-        
-        public init(_ rawValue: String) {
-            self.init(rawValue: rawValue)
-        }
-        
-        /// `GET` request type
-        @available(*, deprecated, message: "Use HTTPRequest.Method.get")
-        public static let get = HTTPMethod("GET")
-        /// `PUT` request type
-        @available(*, deprecated, message: "Use HTTPRequest.Method.put")
-        public static let put = HTTPMethod("PUT")
-        /// `POST` request type
-        @available(*, deprecated, message: "Use HTTPRequest.Method.post")
-        public static let post = HTTPMethod("POST")
-        /// `DELETE` request type
-        @available(*, deprecated, message: "Use HTTPRequest.Method.delete")
-        public static let delete = HTTPMethod("DELETE")
-        /// `PATCH` request type
-        @available(*, deprecated, message: "Use HTTPRequest.Method.patch")
-        public static let patch = HTTPMethod("PATCH")
-        
-        /// A bridge to the standardized HTTPRequest.Method from swift-http-types
-        internal var httpRequestMethod: HTTPRequest.Method? {
-            HTTPRequest.Method(rawValue)
-        }
-    }
-}
+//extension Request {
+//    /// HTTP Request type
+//    ///
+//    /// The main request types are provided (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`); additional ones can be added as static properties in an extension.
+//    @available(*, deprecated, message: "Use HTTPRequest.Method instead")
+//    public struct HTTPMethod: RawRepresentable, Hashable, Sendable {
+//        public var rawValue: String
+//        
+//        public init(rawValue: String) {
+//            self.rawValue = rawValue
+//        }
+//        
+//        public init(_ rawValue: String) {
+//            self.init(rawValue: rawValue)
+//        }
+//        
+//        /// `GET` request type
+//        @available(*, deprecated, message: "Use HTTPRequest.Method.get")
+//        public static let get = HTTPMethod("GET")
+//        /// `PUT` request type
+//        @available(*, deprecated, message: "Use HTTPRequest.Method.put")
+//        public static let put = HTTPMethod("PUT")
+//        /// `POST` request type
+//        @available(*, deprecated, message: "Use HTTPRequest.Method.post")
+//        public static let post = HTTPMethod("POST")
+//        /// `DELETE` request type
+//        @available(*, deprecated, message: "Use HTTPRequest.Method.delete")
+//        public static let delete = HTTPMethod("DELETE")
+//        /// `PATCH` request type
+//        @available(*, deprecated, message: "Use HTTPRequest.Method.patch")
+//        public static let patch = HTTPMethod("PATCH")
+//        
+//        /// A bridge to the standardized HTTPRequest.Method from swift-http-types
+//        internal var httpRequestMethod: HTTPRequest.Method? {
+//            HTTPRequest.Method(rawValue)
+//        }
+//    }
+//}
 
 
 //@resultBuilder

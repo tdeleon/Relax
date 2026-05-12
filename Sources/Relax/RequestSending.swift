@@ -77,6 +77,7 @@ public protocol URLSessionRequestSending {
     /// - Parameters:
     ///   - request: The request to send
     ///   - delegate: A delegate to recieve task events, such as progress.
+    ///   - options: Options for this request. Any set options will override the `URLSessionConfiguration`
     /// - Returns: The data and `HTTPResponse` returned by the request.
     func send(
         _ request: Request,

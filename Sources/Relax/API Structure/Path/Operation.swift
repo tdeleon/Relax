@@ -1,15 +1,16 @@
 //
-//  File.swift
+//  Operation.swift
 //  Relax
 //
 //  Created by Thomas De Leon on 4/1/26.
 //
 
 import Foundation
+import HTTPTypes
 
 extension Path {
     public struct Operation: Sendable {
-        public let method: Request.HTTPMethod
+        public let method: HTTPRequest.Method
         public let id: String?
         public let summary: String?
         public let description: String?
@@ -20,7 +21,7 @@ extension Path {
         public let servers: [Server]
         
         public init(
-            _ method: Request.HTTPMethod,
+            _ method: HTTPRequest.Method,
             id: StaticString? = nil,
             summary: String? = nil,
             @ResponsesBuilder responses: () -> [Response.HTTPStatus : Response],
