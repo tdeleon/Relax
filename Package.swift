@@ -20,7 +20,11 @@ targets.append(.target(name: "Relax"))
 #else
 targets.append(
     contentsOf: [
-        .target(name: "Relax", dependencies: ["RelaxMacros"]),
+        .target(name: "Relax", dependencies: [
+            "RelaxMacros",
+            .product(name: "HTTPTypes", package: "swift-http-types"),
+            .product(name: "HTTPTypesFoundation", package: "swift-http-types")
+        ]),
         .macro(
             name: "RelaxMacros",
             dependencies: [
