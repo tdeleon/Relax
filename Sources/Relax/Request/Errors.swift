@@ -23,13 +23,13 @@ public enum RequestError: Error, Hashable, Sendable, CustomDebugStringConvertibl
         switch self {
         case .urlError(let request, let error):
             hasher.combine(request)
-            hasher.combine(error)
+            hasher.combine(error.code.hashValue)
         case .decoding(let request, let error):
             hasher.combine(request)
             hasher.combine(error.localizedDescription)
         case .httpStatus(let request, let error):
             hasher.combine(request)
-            hasher.combine(error)
+            hasher.combine(error.status.code)
         case .other(let request, let message):
             hasher.combine(request)
             hasher.combine(message)
