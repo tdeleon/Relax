@@ -62,6 +62,7 @@ extension URLSession {
         return (response.url, try response.urlResponse.httpResponse)
     }
     
+    #if !canImport(FoundationNetworking)
     internal func bytes(
         for request: URLRequest,
         delegate: URLSessionTaskDelegate? = nil
@@ -72,6 +73,7 @@ extension URLSession {
         )
         return (response.bytes, try response.urlResponse.httpResponse)
     }
+    #endif
 }
 
 extension URLResponse {

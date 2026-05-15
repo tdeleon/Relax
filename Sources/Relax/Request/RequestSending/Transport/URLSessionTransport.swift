@@ -44,10 +44,12 @@ internal struct URLSessionTransport: Transport {
         try await session.download(for: request, delegate: delegate)
     }
     
+    #if !canImport(FoundationNetworking)
     internal func bytes(
         for request: URLRequest,
         delegate: (any URLSessionTaskDelegate)? = nil
     ) async throws -> (URLSession.AsyncBytes, HTTPResponse) {
         try await session.bytes(for: request, delegate: delegate)
     }
+    #endif
 }
