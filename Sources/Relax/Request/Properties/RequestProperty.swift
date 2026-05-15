@@ -14,14 +14,14 @@ extension Request {
         public var headers: HTTPFields = HTTPFields()
         public var queryItems: QueryItems = QueryItems([])
         public var pathComponents: PathComponents = PathComponents([])
-        public var body: Body = Body(value: nil)
+        public var body: Body = Body(data: nil)
         
         public static func +(lhs: Properties, rhs: Properties) -> Request.Properties {
             var new = rhs
             new.headers += lhs.headers
             new.queryItems += lhs.queryItems
             new.pathComponents += lhs.pathComponents
-            new.body = lhs.body.append(to: new.body)
+            new.body += lhs.body
             return new
         }
         
@@ -36,7 +36,7 @@ extension Request {
             headers: HTTPFields = HTTPFields(),
             queryItems: QueryItems = QueryItems([]),
             pathComponents: PathComponents = PathComponents([]),
-            body: Body = Body(value: nil)
+            body: Body = Body(data: nil)
         ) {
             self.headers = headers
             self.queryItems = queryItems
@@ -122,3 +122,4 @@ extension Request.Properties {
         }
     }
 }
+

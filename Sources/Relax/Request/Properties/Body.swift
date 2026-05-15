@@ -9,25 +9,25 @@ import Foundation
 
 /// A structure which describes the body of a request
 public struct Body: Hashable, Sendable {
-    public var value: Data?
+    public var data: Data?
             
-    public init(value: Data?) {
-        self.value = value
+    public init(data: Data?) {
+        self.data = data
     }
     
     /// Creates a body from an Encodable value encoded as JSON.
     /// - Parameters:
-    ///   - value: Value to encode as JSON.
+    ///   - data: Value to encode as JSON.
     ///   - encoder: An optional JSONEncoder to use for the encoding
     public init<T: Encodable>(_ value: T, encoder: JSONEncoder = JSONEncoder()) {
-        self.init(value: try? encoder.encode(value))
+        self.init(data: try? encoder.encode(value))
     }
     
     /// Creates a body from a dictionary
     /// - Parameter dictionary: Dictionary to serialize as JSON
     /// - Parameter options: Options for JSONSerialization
     public init(_ dictionary: [String: Any], options: JSONSerialization.WritingOptions = []) {
-        self.init(value: try? JSONSerialization.data(withJSONObject: dictionary, options: options))
+        self.init(data: try? JSONSerialization.data(withJSONObject: dictionary, options: options))
     }
     
     /// Creates a body from any number of `Data` or `Encodable` instances using a ``Builder``.
@@ -40,23 +40,35 @@ public struct Body: Hashable, Sendable {
     /// ``Body/init(_:encoder:)`` initializer instead.
     /// - Parameter content: A body builder that returns the content of the body.
     public init(@Builder _ content: () -> Body) {
-        self.init(value: content().value)
+        self.init(data: content().data)
     }
     
-    public func append(to property: Body) -> Body {
-        if let value, let other = property.value {
-            return Body(value: value + other)
-        } else if let value {
-            return Body(value: value)
-        } else if let other = property.value {
-            return Body(value: other)
+//    public func append(to property: Body) -> Body {
+//        if let data, let other = property.data {
+//            return Body(data: data + other)
+//        } else if let data {
+//            return Body(data: data)
+//        } else if let other = property.data {
+//            return Body(data: other)
+//        } else {
+//            return Body(data: nil)
+//        }
+//    }
+    
+    public static func +(lhs: Self, rhs: Self) -> Self {
+        if let leftData = lhs.data, let rightData = rhs.data {
+            Body(data: leftData + rightData)
+        } else if let leftData = lhs.data {
+            Body(data: leftData)
+        } else if let rightData = rhs.data {
+            Body(data: rightData)
         } else {
-            return Body(value: nil)
+            Body(data: nil)
         }
     }
     
-    public static func +(lhs: Self, rhs: Self) -> Self {
-        rhs.append(to: lhs)
+    public static func +=(lhs: inout Self, rhs: Self) {
+        lhs = lhs + rhs
     }
 }
 
@@ -64,7 +76,7 @@ extension Body {
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> Body {
-            .init(value: nil)
+            .init(data: nil)
         }
         
         public static func buildPartialBlock(first: Body) -> Body {
@@ -76,7 +88,7 @@ extension Body {
         }
         
         public static func buildOptional(_ component: Body?) -> Body {
-            component ?? Body(value: nil)
+            component ?? Body(data: nil)
         }
         
         public static func buildEither(first component: Body) -> Body {
@@ -88,7 +100,7 @@ extension Body {
         }
         
         public static func buildArray(_ components: [Body]) -> Body {
-            components.reduce(Body(value: nil), +)
+            components.reduce(Body(data: nil), +)
         }
         
         public static func buildLimitedAvailability(_ component: Body) -> Body {
@@ -100,11 +112,11 @@ extension Body {
         }
         
         public static func buildExpression(_ expression: Data?) -> Body {
-            .init(value: expression)
+            .init(data: expression)
         }
         
         public static func buildExpression(_ expression: Data) -> Body {
-            .init(value: expression)
+            .init(data: expression)
         }
         
         public static func buildExpression<T: Encodable>(_ expression: T) -> Body {

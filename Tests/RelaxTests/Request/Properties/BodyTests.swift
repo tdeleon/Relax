@@ -20,64 +20,64 @@ final class BodyTests: XCTestCase {
     let model = Test(name: "abc")
     
     func testInit() {
-        let body = Body(value: stringData1)
+        let body = Body(data: stringData1)
         
-        XCTAssertEqual(body.value, stringData1)
+        XCTAssertEqual(body.data, stringData1)
     }
     
     func testInitModel() throws {
         let encoder = JSONEncoder()
         
         let body = Body(model, encoder: encoder)
-        let bodyData = try XCTUnwrap(body.value)
+        let bodyData = try XCTUnwrap(body.data)
         XCTAssertEqual(try? JSONDecoder().decode(Test.self, from: bodyData), model)
     }
     
     func testInitDictionary() throws {
         let dictionary = ["key": "value"]
         let body = Body(dictionary)
-        XCTAssertEqual(body.value, try JSONSerialization.data(withJSONObject: dictionary))
+        XCTAssertEqual(body.data, try JSONSerialization.data(withJSONObject: dictionary))
     }
     
     func testAppend() throws {
         let body1 = Body { stringData1 }
         let body2 = Body { stringData2 }
         
-        XCTAssertEqual(body1 + body2, Body(value: stringData1! + stringData2!))
+        XCTAssertEqual(body1 + body2, Body(data: stringData1! + stringData2!))
         
         let bodyNil = Body {}
         
-        XCTAssertEqual(body1 + bodyNil, Body(value: stringData1!))
-        XCTAssertEqual(bodyNil + body2, Body(value: stringData2!))
-        XCTAssertEqual(bodyNil + bodyNil, Body(value: nil))
+        XCTAssertEqual(body1 + bodyNil, Body(data: stringData1!))
+        XCTAssertEqual(bodyNil + body2, Body(data: stringData2!))
+        XCTAssertEqual(bodyNil + bodyNil, Body(data: nil))
         
         let bodyAppended = Body {
-            Body(value: stringData1)
-            Body(value: stringData2)
+            Body(data: stringData1)
+            Body(data: stringData2)
         }
-        XCTAssertEqual(bodyAppended.value, stringData1! + stringData2!)
+        XCTAssertEqual(bodyAppended.data, stringData1! + stringData2!)
     }
     
     func testBuildEmpty() {
-        XCTAssertEqual(Body {}, Body(value: nil))
+        XCTAssertEqual(Body {}, Body(data: nil))
     }
     
     func testBuild() throws {
-        let body1 = Body(value: stringData1)
+        let body1 = Body(data: stringData1)
         
-        XCTAssertEqual(Body { body1 }.value, body1.value)
+        XCTAssertEqual(Body { body1 }.data, body1.data)
         
         let nonOptionalData = try XCTUnwrap(stringData2)
         let body2 = Body {
             nonOptionalData
         }
-        XCTAssertEqual(body2.value, nonOptionalData)
+        XCTAssertEqual(body2.data, nonOptionalData)
         
         let dictionary = ["key": "value"]
         let body3 = Body {
             dictionary
         }
-        XCTAssertEqual(body3.value, try JSONSerialization.data(withJSONObject: dictionary))
+        XCTAssertEqual(body3.data, try JSONSerialization.data(withJSONObject: dictionary))
     }
     
     func testBuildOptional() {
@@ -87,8 +87,8 @@ final class BodyTests: XCTestCase {
                 stringData1
             }
         }
-        XCTAssertEqual(body(include: true), Body(value: stringData1))
-        XCTAssertEqual(body(include: false), Body(value: nil))
+        XCTAssertEqual(body(include: true), Body(data: stringData1))
+        XCTAssertEqual(body(include: false), Body(data: nil))
     }
     
     func testBuildEither() {
@@ -101,8 +101,8 @@ final class BodyTests: XCTestCase {
             }
         }
         
-        XCTAssertEqual(body(include: true), Body(value: stringData1))
-        XCTAssertEqual(body(include: false), Body(value: stringData2))
+        XCTAssertEqual(body(include: true), Body(data: stringData1))
+        XCTAssertEqual(body(include: false), Body(data: stringData2))
     }
     
     func testBuildArray() {
@@ -114,7 +114,7 @@ final class BodyTests: XCTestCase {
                 item
             }
         }
-        XCTAssertEqual(body, Body(value: data.compactMap { $0 }.reduce(Data(), +)))
+        XCTAssertEqual(body, Body(data: data.compactMap { $0 }.reduce(Data(), +)))
     }
     
     func testBuildCodable() throws {

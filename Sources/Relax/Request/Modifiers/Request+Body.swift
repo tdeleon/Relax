@@ -22,7 +22,7 @@ extension Request {
     /// - Parameter body: The body to set
     /// - Returns: A request with the specified Body set
     public func settingBody(_ body: Body) -> Request {
-        settingBody(data: body.value)
+        settingBody(data: body.data)
     }
     
     /// Set the body of the request with a builder

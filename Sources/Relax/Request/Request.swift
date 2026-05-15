@@ -175,7 +175,7 @@ public struct Request: Sendable, Hashable {
         self.queryItems = properties.queryItems._value
         self.headers = properties.headers
         self.pathComponents = properties.pathComponents
-        self.body = properties.body.value
+        self.body = properties.body.data
     }
 }
 

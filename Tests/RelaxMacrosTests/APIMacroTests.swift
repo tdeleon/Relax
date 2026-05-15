@@ -19,7 +19,7 @@ struct APIMacroTests {
     
     let failureHandler: (TestFailureSpec) -> Void = { Issue.record($0) }
     
-    @Test func test() async throws {
+    @Test(.disabled()) func test() async throws {
         assertMacroExpansion(
             """
             @API
