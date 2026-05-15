@@ -54,14 +54,6 @@ extension URLSession {
         return (response.url, try response.urlResponse.httpResponse)
     }
     
-    internal func download(
-        resumeFrom data: Data,
-        delegate: URLSessionTaskDelegate? = nil
-    ) async throws -> (URL, HTTPResponse) {
-        let response: (url: URL, urlResponse: URLResponse) = try await download(resumeFrom: data, delegate: delegate)
-        return (response.url, try response.urlResponse.httpResponse)
-    }
-    
     #if !canImport(FoundationNetworking)
     internal func bytes(
         for request: URLRequest,
