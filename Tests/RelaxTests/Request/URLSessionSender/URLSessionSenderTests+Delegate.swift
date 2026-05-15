@@ -103,7 +103,7 @@ extension URLSessionSenderTests {
                 .sendDownload(request, delegate: delegate, options: options)
         }
     }
-    
+    #if !canImport(FoundationNetworking)
     @Test func `Send a streaming request with a delegate`() async throws {
         let request = Request(.get, url: url)
         let delegate = MockDelegate()
@@ -119,6 +119,7 @@ extension URLSessionSenderTests {
                 .sendStreaming(request, delegate: delegate, options: options)
         }
     }
+    #endif
 }
 
 final class MockDelegate: NSObject, URLSessionTaskDelegate {}

@@ -113,6 +113,7 @@ public protocol URLSessionRequestSending {
         options: SendOptions?
     ) async throws -> (URL, HTTPResponse)
     
+    #if !canImport(FoundationNetworking)
     /// Send a request with a streaming response
     /// - Parameters:
     ///   - request: The request to send
@@ -123,6 +124,7 @@ public protocol URLSessionRequestSending {
         delegate: (any URLSessionTaskDelegate)?,
         options: SendOptions?
     ) async throws -> (URLSession.AsyncBytes, HTTPResponse)
+    #endif
 }
 
 /// The default implementation for sending Requests
@@ -202,7 +204,8 @@ extension URLSessionSender: URLSessionRequestSending {
     ) async throws -> (URL, HTTPResponse) {
         try await _sendDownload(request: request, delegate: delegate, options: options)
     }
-    
+
+    #if !canImport(FoundationNetworking)
     public func sendStreaming(
         _ request: Request,
         delegate: (any URLSessionTaskDelegate)? = nil,
@@ -210,6 +213,7 @@ extension URLSessionSender: URLSessionRequestSending {
     ) async throws -> (URLSession.AsyncBytes, HTTPResponse) {
         try await transport.bytes(for: try request.urlRequest(applying: options), delegate: delegate)
     }
+    #endif
 }
 
 extension URLSessionSender {

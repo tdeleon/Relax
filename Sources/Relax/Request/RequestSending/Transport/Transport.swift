@@ -24,8 +24,10 @@ internal protocol Transport: Sendable {
         delegate: URLSessionTaskDelegate?
     ) async throws -> (Data, HTTPResponse)
     func download(for request: URLRequest, delegate: URLSessionTaskDelegate?) async throws -> (URL, HTTPResponse)
+    #if !canImport(FoundationNetworking)
     func bytes(
         for request: URLRequest,
         delegate: URLSessionTaskDelegate?
     ) async throws -> (URLSession.AsyncBytes, HTTPResponse)
+    #endif
 }

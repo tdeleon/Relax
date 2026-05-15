@@ -209,6 +209,7 @@ struct MockTransport: Transport {
         return response()
     }
     
+    #if !canImport(FoundationNetworking)
     func bytes(
         for request: URLRequest,
         delegate: (any URLSessionTaskDelegate)?
@@ -216,6 +217,7 @@ struct MockTransport: Transport {
         bytesForRequestCalled(request, delegate)
         throw URLError(.unknown)
     }
+    #endif
 
     func download(for request: URLRequest, delegate: (any URLSessionTaskDelegate)?) async throws -> (URL, HTTPResponse) {
         downloadForRequestCalled(request, delegate)
