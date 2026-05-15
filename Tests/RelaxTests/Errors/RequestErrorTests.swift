@@ -11,6 +11,7 @@ import HTTPTypes
 #if canImport(FoundationNetworking)
 @preconcurrency import FoundationNetworking
 #endif
+
 @testable import Relax
 
 struct RequestErrorTests {
@@ -27,13 +28,13 @@ struct RequestErrorTests {
         
         switch code {
         case 100...399:
-            #expect(error == nil)
+            #expect(error == nil, "Status 100-399 should not be an error.")
         case 400...499:
-            #expect(error?.kind == .client)
+            #expect(error?.kind == .client, "Status 400-499 should be a client error.")
         case 500...599:
-            #expect(error?.kind == .server)
+            #expect(error?.kind == .server, "Status 500-599 should be a server error.")
         default:
-            #expect(error?.kind == .invalid)
+            #expect(error?.kind == .invalid, "Status outside 100-599 is invalid.")
         }
         
     }

@@ -36,7 +36,7 @@ extension Request {
     /// If there are multiple existing query items with the same name, then they will all be removed, and a single query item with the new value will be added. If
     /// there is no existing matching query item, then a new one will be added with the given name and value.
     public func replacingQueryItems(_ named: String, value: String?) -> Request {
-        var request = removingQueryItems(named: named)
+        let request = removingQueryItems(named: named)
         return request.addingQueryItem(name: named, value: value)
     }
     
