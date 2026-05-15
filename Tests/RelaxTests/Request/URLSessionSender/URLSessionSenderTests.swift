@@ -23,7 +23,7 @@ struct URLSessionSenderTests {
             timeoutInterval: 10,
             httpShouldHandleCookies: false,
             allowsCellularAccess: false,
-            networkServiceType: .avStreaming
+            networkServiceType: .video
         )
         #else
         SendOptions(
@@ -31,7 +31,7 @@ struct URLSessionSenderTests {
             timeoutInterval: 10,
             httpShouldHandleCookies: false,
             allowsCellularAccess: false,
-            networkServiceType: .avStreaming,
+            networkServiceType: .video,
             allowsConstrainedNetworkAccess: false,
             allowsExpensiveNetworkAccess: false
         )
