@@ -21,7 +21,7 @@ public struct Path: Sendable {
         _ path: String,
         @OperationsBuilder operations: () -> [HTTPRequest.Method: Operation],
         @Parameter.Builder parameters: () -> [Parameter] = { [] },
-        @ServersBuilder servers: () -> [Server] = { [] },
+        @ServersBuilder servers: () -> [Server] = { [] }
     ) {
         self.path = path
         self.summary = nil
