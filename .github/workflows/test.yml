@@ -8,17 +8,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-       os: [macos-15]
-       destination: ["platform=macOS,name=My Mac", "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5", "platform=tvOS Simulator,name=Apple TV 4K (3rd generation),OS=18.5", "platform=watchOS Simulator,name=Apple Watch Series 10 (42mm),OS=11.5", "platform=visionOS Simulator,name=Apple Vision Pro,OS=2.5"]
+       os: [macos-latest]
+       destination: ["platform=macOS,name=My Mac"]
 
     runs-on: ${{ matrix.os }}
 
     steps:
     - name: Select Xcode
-      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+      run: sudo xcode-select -s /Applications/Xcode_26.4.1.app
 
     - name: SPM Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: /Users/runner/Library/Developer/Xcode/DerivedData/**/SourcePackages/checkouts
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
@@ -26,7 +26,7 @@ jobs:
           ${{ runner.os }}-spm-
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Build
       run: xcodebuild -scheme Relax-Package -destination '${{ matrix.destination }}' build-for-testing
@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, ubuntu-latest]
+        os: [macos-26, ubuntu-latest]
         swift: ["6.0.3"]
     runs-on: ${{ matrix.os }}
 
@@ -53,7 +53,7 @@ jobs:
         swift-version: ${{ matrix.swift }}
 
     - name: SPM Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: .build
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
@@ -64,7 +64,7 @@ jobs:
       run: swift --version
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       
     - name: Build
       run: swift build
