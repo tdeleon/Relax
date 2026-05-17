@@ -9,10 +9,10 @@ import Foundation
 
 /// A structure which describes the body of a request
 public struct Body: Hashable, Sendable {
-    public var data: Data?
+    var _value: Data?
             
     public init(data: Data?) {
-        self.data = data
+        self._value = data
     }
     
     /// Creates a body from an Encodable value encoded as JSON.
@@ -40,27 +40,15 @@ public struct Body: Hashable, Sendable {
     /// ``Body/init(_:encoder:)`` initializer instead.
     /// - Parameter content: A body builder that returns the content of the body.
     public init(@Builder _ content: () -> Body) {
-        self.init(data: content().data)
+        self.init(data: content()._value)
     }
     
-//    public func append(to property: Body) -> Body {
-//        if let data, let other = property.data {
-//            return Body(data: data + other)
-//        } else if let data {
-//            return Body(data: data)
-//        } else if let other = property.data {
-//            return Body(data: other)
-//        } else {
-//            return Body(data: nil)
-//        }
-//    }
-    
     public static func +(lhs: Self, rhs: Self) -> Self {
-        if let leftData = lhs.data, let rightData = rhs.data {
+        if let leftData = lhs._value, let rightData = rhs._value {
             Body(data: leftData + rightData)
-        } else if let leftData = lhs.data {
+        } else if let leftData = lhs._value {
             Body(data: leftData)
-        } else if let rightData = rhs.data {
+        } else if let rightData = rhs._value {
             Body(data: rightData)
         } else {
             Body(data: nil)

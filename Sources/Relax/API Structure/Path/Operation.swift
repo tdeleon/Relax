@@ -16,7 +16,7 @@ extension Path {
         public let description: String?
         public let tags: [Tag]
         public let parameters: [Parameter]
-        public let responses: [Response.HTTPStatus: Response]
+        public let responses: [Response.ResponseType: Response]
         public let security: [SecurityScheme]
         public let servers: [Server]
         
@@ -24,7 +24,7 @@ extension Path {
             _ method: HTTPRequest.Method,
             id: StaticString? = nil,
             summary: String? = nil,
-            @ResponsesBuilder responses: () -> [Response.HTTPStatus : Response],
+            @ResponsesBuilder responses: () -> [Response.ResponseType : Response],
             @Parameter.Builder parameters: () -> [Parameter] = { [] },
             @Tag.Builder tags: () -> [Tag] = { [] },
             @SecurityBuilder security: () -> [SecurityScheme] = { [] },
@@ -44,25 +44,25 @@ extension Path {
         
         @resultBuilder
         public enum ResponsesBuilder {
-            public static func buildBlock() -> [Response.HTTPStatus: Response] {
+            public static func buildBlock() -> [Response.ResponseType: Response] {
                 [:]
             }
             
             public static func buildPartialBlock(
-                first: [Response.HTTPStatus : Response]
-            ) -> [Response.HTTPStatus : Response] {
+                first: [Response.ResponseType : Response]
+            ) -> [Response.ResponseType : Response] {
                 first
             }
             
             public static func buildPartialBlock(
-                accumulated: [Response.HTTPStatus : Response],
-                next: [Response.HTTPStatus : Response]
-            ) -> [Response.HTTPStatus : Response] {
+                accumulated: [Response.ResponseType : Response],
+                next: [Response.ResponseType : Response]
+            ) -> [Response.ResponseType : Response] {
                 accumulated.merging(next) { _, new in new }
             }
             
-            public static func buildExpression(_ expression: Response) -> [Response.HTTPStatus : Response] {
-                [expression.httpStatus: expression]
+            public static func buildExpression(_ expression: Response) -> [Response.ResponseType : Response] {
+                [expression.responseType: expression]
             }
         }
     }

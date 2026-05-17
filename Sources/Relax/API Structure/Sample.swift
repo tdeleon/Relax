@@ -47,7 +47,7 @@ struct MyAPI: API {
         let error: String
     }
     
-    nonisolated static let defaultErrorResponse = Response(.default, summary: "Default error response", returning: ErrorResponse.self) {
+    nonisolated static let defaultErrorResponse = Response.default("Default error response", returning: ErrorResponse.self) {
         "The default error response for all operations"
     }
     
@@ -56,15 +56,19 @@ struct MyAPI: API {
     var paths: [Path] {
         Path("/users/{id}", summary: "User path", group: "users") {
             Path.Operation(.get, summary: "Get user by ID") {
-                Response(payload: .json(String.self), summary: "Summary") {
+                Response(.ok, payload: .json(String.self), summary: "Summary") {
                     "A response with a JSON payload"
                 }
-                Response(.code(500), summary: "Summary") {
+                Response(kind: .clientError, summary: "Client errors") {
+                    
+                }
+                
+                Response(code: 500, summary: "Summary") {
                     Response.Content.jsonDictionary()
                 } description: {
                     "An error response returning a JSON dictionary"
                 }
-                Response(.success, returning: String.self) {
+                Response(.ok, returning: String.self) {
                     "Success response"
                 }
                 Self.defaultErrorResponse
@@ -96,19 +100,19 @@ struct MyAPI: API {
         
         Path("/users/{id}") {
             Path.Operation(.get) {
-                Response(.success, returning: User.self)
-                Response(.default, returning: UserError.self)
-                Response(payload: .json(String.self)) {
+                Response(.ok, returning: User.self)
+                Response.default(returning: UserError.self)
+                Response(.ok, payload: .json(String.self)) {
                     ""
                 }
-                Response(.default) {
+                Response.default {
                     Response.Content(.applicationJSON, payload: .bytes)
                 } description: {
                     "Default response"
                 }
             }
             Path.Operation(.post) {
-                Response(.success) {
+                Response(.ok) {
                     
                 } description: {
                     
@@ -126,11 +130,11 @@ struct MyAPI: API {
             }
 
             Path.Operation(.patch, summary: "Patch a user") {
-                Response(.default, payload: .bytes, summary: "Default Response") {
+                Response.default(payload: .bytes, summary: "Default Response") {
                     "Description"
                 }
-                Response(payload: .bytes)
-                Response(.success, summary: "On Success") {
+                Response(.ok, payload: .bytes)
+                Response(.ok, summary: "On Success") {
                     Response.Content(.applicationJSON, payload: .bytes)
                     Response.Content.data()
                     Response.Content.json(String.self)

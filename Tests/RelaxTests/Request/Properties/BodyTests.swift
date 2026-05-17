@@ -22,21 +22,21 @@ final class BodyTests: XCTestCase {
     func testInit() {
         let body = Body(data: stringData1)
         
-        XCTAssertEqual(body.data, stringData1)
+        XCTAssertEqual(body._value, stringData1)
     }
     
     func testInitModel() throws {
         let encoder = JSONEncoder()
         
         let body = Body(model, encoder: encoder)
-        let bodyData = try XCTUnwrap(body.data)
+        let bodyData = try XCTUnwrap(body._value)
         XCTAssertEqual(try? JSONDecoder().decode(Test.self, from: bodyData), model)
     }
     
     func testInitDictionary() throws {
         let dictionary = ["key": "value"]
         let body = Body(dictionary)
-        XCTAssertEqual(body.data, try JSONSerialization.data(withJSONObject: dictionary))
+        XCTAssertEqual(body._value, try JSONSerialization.data(withJSONObject: dictionary))
     }
     
     func testAppend() throws {
@@ -55,7 +55,7 @@ final class BodyTests: XCTestCase {
             Body(data: stringData1)
             Body(data: stringData2)
         }
-        XCTAssertEqual(bodyAppended.data, stringData1! + stringData2!)
+        XCTAssertEqual(bodyAppended._value, stringData1! + stringData2!)
     }
     
     func testBuildEmpty() {
@@ -65,19 +65,19 @@ final class BodyTests: XCTestCase {
     func testBuild() throws {
         let body1 = Body(data: stringData1)
         
-        XCTAssertEqual(Body { body1 }.data, body1.data)
+        XCTAssertEqual(Body { body1 }._value, body1._value)
         
         let nonOptionalData = try XCTUnwrap(stringData2)
         let body2 = Body {
             nonOptionalData
         }
-        XCTAssertEqual(body2.data, nonOptionalData)
+        XCTAssertEqual(body2._value, nonOptionalData)
         
         let dictionary = ["key": "value"]
         let body3 = Body {
             dictionary
         }
-        XCTAssertEqual(body3.data, try JSONSerialization.data(withJSONObject: dictionary))
+        XCTAssertEqual(body3._value, try JSONSerialization.data(withJSONObject: dictionary))
     }
     
     func testBuildOptional() {
