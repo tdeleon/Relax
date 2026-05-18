@@ -14,15 +14,17 @@ import UniformTypeIdentifiers
 //MARK: Authorization
 extension HTTPField {
     /// An authorization header with the specified security scheme
+    ///
     /// - Parameters:
     ///   - scheme: The scheme to use
     ///   - value: The authorization value
     /// - Returns: An Authorization header with the value formatted "<scheme> <value>"
     public static func authorization(_ scheme: SecurityScheme.HTTPAuthenticationScheme, value: String) -> Self {
-        HTTPField(name: .authorization, value: "\(scheme) \(value)")
+        HTTPField(name: .authorization, value: "\(scheme.rawValue) \(value)")
     }
     
     /// An Authorization header with Basic security scheme using an encoded username and password
+    ///
     /// - Parameters:
     ///   - user: The username to send
     ///   - password: The password to send
@@ -71,6 +73,7 @@ extension HTTPField {
     }
     
     /// Cache-Control header
+    ///
     /// - Parameter value: The value to specify for the header
     /// - Returns: An HTTPField with the name `Cache-Control` and value specified. There is no formatting applied to the string provided for `value`.
     public static func cacheControl(_ value: String) -> HTTPField {
@@ -78,6 +81,7 @@ extension HTTPField {
     }
     
     /// Cache Control header with a directive
+    ///
     /// - Parameter directive: Directives to specify
     /// - Returns: An `HTTPField` header whose name is `Cache-Control` and whose value is a directive.
     public static func cacheControl(_ directive: CacheControlDirective) -> HTTPField {
@@ -85,6 +89,7 @@ extension HTTPField {
     }
     
     /// Cache Control header with directives
+    ///
     /// - Parameter directives: Directives to specify
     /// - Returns: An `HTTPField` header whose name is `Cache-Control` and whose value is a comma separated list of directives.
     public static func cacheControl(_ directives: [CacheControlDirective]) -> HTTPField {
@@ -95,9 +100,9 @@ extension HTTPField {
 //MARK: - Content/Media Type
 extension HTTPField {
     
-    /// Media Types for use  in headers such as `accept` or `content-type`.
+    /// Media Types for use in headers such as `Accept` or `Content-Type`.
     ///
-    /// Common types are pre-defined a sa convenience; others can be created as needed.
+    /// Common types are pre-defined as a convenience; others can be created as needed.
     /// For a complete list of all types, see: https://datatracker.ietf.org/doc/html/rfc6838
     public struct MediaType: CustomStringConvertible, Hashable, Sendable {
         /// The type
@@ -105,14 +110,28 @@ extension HTTPField {
         /// The subtype
         public let subtype: String
         /// Parameter list of the media type
-        public let parameters: [String: String]
+        public let parameters: [(name: String, value: String)]
+        
+        public static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.type == rhs.type &&
+            lhs.subtype == rhs.subtype &&
+            lhs.parameters.map { "\($0.name)\($0.value)" } == rhs.parameters.map { "\($0.name)\($0.value)" }
+        }
+        
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(type)
+            hasher.combine(subtype)
+            hasher.combine(parameters.map(\.0))
+            hasher.combine(parameters.map(\.1))
+        }
         
         /// Create a media type from a type/subtype and optional parameters
+        ///
         /// - Parameters:
         ///   - type: The type
         ///   - subtype: The subtype
         ///   - parameters: Parameters to include
-        public init(_ type: String, _ subtype: String, parameters: [String: String] = [:]) {
+        public init(_ type: String, _ subtype: String, parameters: [(name: String, value: String)] = []) {
             self.type = type
             self.subtype = subtype
             self.parameters = parameters
@@ -120,10 +139,10 @@ extension HTTPField {
         
         /// A formatted string description of the media type, for use in HTTP header values.
         ///
-        /// The media type will be formatted as `<type>/<subtype>;<parameter=value>`
+        /// The media type will be formatted as `<type>/<subtype>;<name=value>;<name2=value>`
         public var description: String {
             let base = "\(type)/\(subtype)"
-            let parameters = parameters.map { "\($0.key)=\($0.value)" }
+            let parameters = parameters.map { "\($0.name)=\($0.value)" }
             return ([base] + parameters).joined(separator: ";")
         }
         
@@ -146,6 +165,7 @@ extension HTTPField {
     }
     
     /// An Accept header with the specified value
+    ///
     /// - Parameter value: The value to send
     /// - Returns: An `HTTPField` header  with the name `Accept` and specified value.
     public static func accept(_ value: String) -> HTTPField {
@@ -153,41 +173,43 @@ extension HTTPField {
     }
     
     /// An Accept header with the specified media type
+    ///
     /// - Parameter type: The media type value to specify
     /// - Returns: An `HTTPField` header whose name `Accept` and whose value is the media type specified.
     ///
-    /// The value will be formatted `<type>/<subtype>;[parameter=value]`.
+    /// The value will be formatted `<type>/<subtype>;[name=value]`.
     public static func accept(_ type: MediaType) -> HTTPField {
         HTTPField.accept(type.description)
     }
     
     /// An Accept header with the specified media type
+    ///
     /// - Parameter types: The media type values to specify
     /// - Returns: An `HTTPField` header with the name `Accept` and whose value is the media types specified.
     ///
-    /// The value will be formatted as a comma sepated list of media types; each media type will be formatted as
-    /// `<type>/<subtype>;[parameter=value]`.
+    /// The value will be formatted as a comma separated list of media types; each media type will be formatted as `<type>/<subtype>;[name=value]`.
     public static func accept(_ types: [MediaType]) -> HTTPField {
         HTTPField.accept(types.map(\.description).joined(separator: ", "))
     }
     
     #if canImport(UniformTypeIdentifiers)
-
     /// An Accept header with a Uniform Type.
+    ///
     /// - Parameter utType: The Uniform Type value to specify
     /// - Returns: An `HTTPField` whose name is `Accept` and whose value is the `preferredMIMEType` property of the provided type. If there is
     ///            no `preferredMIMEType` property on the type, then nil is returned.
-    /// - Note: Only available on iOS, macOS, watchOS, and tvOS.
+    /// - Note: Only available on iOS, macOS, watchOS, visionOS, and tvOS.
     public static func accept(_ utType: UTType) -> HTTPField? {
         guard let mime = utType.preferredMIMEType else { return nil }
         return HTTPField.accept(mime)
     }
     
     /// An Accept header with a list of Uniform Types
+    ///
     /// - Parameter utTypes: The Uniform Type values to specify
     /// - Returns: An `HTTPField` whose name is `Accept` and whose value is a comma separated list of the `preferredMIMEType` properties of the
     ///            provided types. If none of the provided types have a `preferredMIMEType`, then nil is returned.
-    /// - Note: Only available on iOS, macOS, watchOS, and tvOS.
+    /// - Note: Only available on iOS, macOS, watchOS, visionOS, and tvOS.
     public static func accept(_ utTypes: [UTType]) -> HTTPField? {
         let types = utTypes.compactMap(\.preferredMIMEType).joined(separator: ", ")
         guard !types.isEmpty else { return nil }
@@ -196,50 +218,46 @@ extension HTTPField {
     #endif
     
     /// A Content-Type header
+    ///
     /// - Parameter value: The content type value
-    /// - Returns: An `HTTPField` header with name `content-type` and the value specified.
+    /// - Returns: An `HTTPField` header with name `Content-Type` and the value specified.
     public static func contentType(_ value: String) -> HTTPField {
         HTTPField(name: .contentType, value: value)
     }
     
-    /// A Content-Type header using a typed MediaType value.
+    /// A Content-Type header with a Media Type
     ///
-    /// Use this overload when you want to construct the Content-Type header from a strongly-typed
-    /// MediaType rather than a raw string. The provided MediaType is formatted as
-    /// "<type>/<subtype>;[parameter=value]" and used as the header value.
-    ///
-    /// - Parameter mediaType: The MediaType describing the body’s media type and any parameters.
-    /// - Returns: An `HTTPField` with the name `Content-Type` and the formatted media type as its value.
+    /// - Parameter mediaType: The media type to specify
+    /// - Returns: An `HTTPField` whose name is `Content-Type` and whose value is the formatted media type.
     public static func contentType(_ mediaType: MediaType) -> Self {
         HTTPField.contentType(mediaType.description)
     }
     
+    /// A Content-Type header with a list of media types
+    ///
+    /// - Parameter mediaTypes: The media types to specify
+    /// - Returns: An `HTTPField` whose name is `Content-Type` and whose value is a comma separated list of the formatted media types as its value.
+    public static func contentType(_ mediaTypes: [MediaType]) -> Self {
+        HTTPField.contentType(mediaTypes.map(\.description).joined(separator: ", "))
+    }
+    
     #if canImport(UniformTypeIdentifiers)
     /// A Content-Type header using a typed MediaType value.
-    ///
-    /// Use this overload when you want to construct the Content-Type header from a strongly-typed
-    /// MediaType rather than a raw string. The provided MediaType is formatted as
-    /// "<type>/<subtype>;[parameter=value]" and used as the header value.
     /// 
-    ///- Parameter utType: The UniformType value to specify
+    /// - Parameter utType: The UniformType value to specify
     /// - Returns: An `HTTPField` with the name `Content-Type` and the formatted media type as its value.
-    ///
-    /// - Note: Only available on iOS, macOS, watchOS, and tvOS.
+    /// - Note: Only available on iOS, macOS, watchOS, visionOS, and tvOS.
     public static func contentType(_ utType: UTType) -> HTTPField? {
         guard let mime = utType.preferredMIMEType else { return nil }
         return contentType(mime)
     }
     
-    /// A Content-Type header using a typed MediaType value.
+    /// A Content Type header with a list of Uniform Types
     ///
-    /// Use this overload when you want to construct the Content-Type header from a strongly-typed
-    /// MediaType rather than a raw string. The provided MediaType is formatted as
-    /// "<type>/<subtype>;[parameter=value]" and used as the header value.
-    ///
-    /// - Parameter utTypes: The MediaType describing the body’s media type and any parameters.
-    /// - Returns: An `HTTPField` header whose name is `Content-Type` and whose value is a comma separated list of the formatted.
-    ///
-    /// - Note: Only available on iOS, macOS, watchOS, and tvOS.
+    /// - Parameter utTypes: The Uniform Type values to specify
+    /// - Returns: An `HTTPField` whose name is `Content-Type` and whose value is a comma separated list of the `preferredMIMEType`
+    ///            properties of the provided types. If none of the provided types have a `preferredMIMEType`, then nil is returned.
+    /// - Note: Only available on iOS, macOS, watchOS, visionOS, and tvOS.
     public static func contentType(_ utTypes: [UTType]) -> HTTPField? {
         let types = utTypes.compactMap(\.preferredMIMEType).joined(separator: ", ")
         guard !types.isEmpty else { return nil }
@@ -252,8 +270,7 @@ extension HTTPField {
 extension HTTPField {
     /// An Accept-Language header with the provided string value.
     ///
-    /// - Parameter value: A raw Accept-Language header value composed of one or more BCP 47 language identifiers, optionally including q-values to
-    ///                    express preference. For example, "en-US" or "en-US, en;q=0.9, fr-CA;q=0.8".
+    /// - Parameter value: The value to specify.
     /// - Returns: An `HTTPField` header whose name is `Accept-Language` and whose value is the provided string.
     public static func acceptLanguage(_ value: String) -> HTTPField {
         HTTPField(name: .acceptLanguage, value: value)
