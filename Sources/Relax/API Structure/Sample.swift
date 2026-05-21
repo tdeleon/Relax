@@ -35,6 +35,9 @@ struct MyAPI: API {
     }
     
     var security: [SecurityScheme] {
+        SecurityScheme.apiKey("api-key", in: .header) {
+            "An API key scheme"
+        }
         SecurityScheme.http(.basic)
         SecurityScheme.oauth2(metadataURL: "https://oauth.example.com/metadata") {
             OAuthFlow.password(tokenURL: "https://oauth.example.com/token")
@@ -47,7 +50,7 @@ struct MyAPI: API {
         let error: String
     }
     
-    nonisolated static let defaultErrorResponse = Response.default("Default error response", returning: ErrorResponse.self) {
+    nonisolated static let defaultErrorResponse = Response.json(kind: .serverError, returning: ErrorResponse.self) {
         "The default error response for all operations"
     }
     
@@ -56,34 +59,50 @@ struct MyAPI: API {
     var paths: [Path] {
         Path("/users/{id}", summary: "User path", group: "users") {
             Path.Operation(.get, summary: "Get user by ID") {
-                Response(.ok, payload: .json(String.self), summary: "Summary") {
+                Response.json(.ok, returning: String.self, summary: "Summary") {
                     "A response with a JSON payload"
                 }
-                Response(kind: .clientError, summary: "Client errors") {
-                    
-                }
-                
-                Response(code: 500, summary: "Summary") {
-                    Response.Content.jsonDictionary()
-                } description: {
+                Response.jsonDictionary(code: 500, summary: "summary") {
                     "An error response returning a JSON dictionary"
                 }
-                Response(.ok, returning: String.self) {
+                Response.json(.ok, returning: String.self) {
                     "Success response"
                 }
                 Self.defaultErrorResponse
             } description: {
                 "A very long description of the /users/{id} path."
             }
+            Path.Operation(.post, summary: "Add a new user") {
+                // payload
+                Response(.ok, summary: "hello")
+                Response(.ok, accept: .wildcard)
+                Response(.ok)
+                
+                Response(.ok, summary: "hello") {
+                    "This is a longer description"
+                }
+                
+                // decodable
+                Response.json(.ok, returning: User.self, summary: "Summary")
+                
+                Response.json(.ok, returning: User.self) {
+                    " desc"
+                }
+                
+                Response.text(.ok)
+            }
         } parameters: {
-            Parameter.cookie("Cookie", valueType: Int.self, description: "Description", required: true)
+            Parameter.path("id", ofType: Int.self, description: "User ID")
         } description: {
             "A longer description of the /users/{id} path."
         }
         
         Path("/user/{id}", summary: "Short summary", group: "users") {
             Path.Operation(.get) {
-                
+                Response(.ok)
+            } parameters: {
+                Parameter.path("id", ofType: Int.self, description: "The user ID")
+                Parameter.query("name", ofObjectType: String.self, description: "The user name", required: true)
             } security: {
                 SecurityScheme.http(.basic)
             } servers: {
@@ -100,21 +119,10 @@ struct MyAPI: API {
         
         Path("/users/{id}") {
             Path.Operation(.get) {
-                Response(.ok, returning: User.self)
-                Response.default(returning: UserError.self)
-                Response(.ok, payload: .json(String.self)) {
-                    ""
-                }
-                Response.default {
-                    Response.Content(.applicationJSON, payload: .bytes)
-                } description: {
-                    "Default response"
-                }
+                Response.json(.ok, returning: User.self)
             }
             Path.Operation(.post) {
                 Response(.ok) {
-                    
-                } description: {
                     
                 }
             } parameters: {
@@ -130,20 +138,8 @@ struct MyAPI: API {
             }
 
             Path.Operation(.patch, summary: "Patch a user") {
-                Response.default(payload: .bytes, summary: "Default Response") {
-                    "Description"
-                }
-                Response(.ok, payload: .bytes)
-                Response(.ok, summary: "On Success") {
-                    Response.Content(.applicationJSON, payload: .bytes)
-                    Response.Content.data()
-                    Response.Content.json(String.self)
-                    Response.Content(.applicationJSON, payload: .json(String.self))
-                } description: {
-                    """
-                    This is a description of the success response
-                    operation.
-                    """
+                Response.data(.ok) {
+                    "Success response"
                 }
             } description: {
                 "Long description of the patch operation"
