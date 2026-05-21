@@ -156,7 +156,8 @@ public struct SecurityScheme: Hashable, Sendable {
     
     /// Specify an OAuth2 scheme
     /// - Parameters:
-    ///   - flows: OAuth2 flows to use
+    ///   - metadataURL: The metadata URL to use
+    ///  - flows: OAuth2 flows to use
     ///   - description: A description for the security scheme
     /// - Returns: An OAuth2 scheme
     public static func oauth2(
