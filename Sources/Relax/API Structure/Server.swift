@@ -33,7 +33,8 @@ public struct Server: Sendable {
         
         public init<T: CustomStringConvertible>(
             _ name: String,
-            type: T.Type, defaultValue: T? = nil,
+            type: T.Type,
+            defaultValue: T? = nil,
             description: StaticString? = nil
         ) {
             self.name = name
