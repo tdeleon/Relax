@@ -162,6 +162,8 @@ extension HTTPField {
         public static let imageJPEG = Self("image", "jpeg")
         /// Content type of `image/png`
         public static let imagePNG = Self("image", "png")
+        /// Content type of `*/*`
+        public static let wildcard = Self("*", "*")
     }
     
     /// An Accept header with the specified value
