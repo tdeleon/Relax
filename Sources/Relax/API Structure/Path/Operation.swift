@@ -87,7 +87,7 @@ extension Path {
             )
         }
         
-        /// <#Description#>
+        /// Create a request operation with a body
         /// - Parameters:
         ///   - method: The HTTP method to use
         ///   - id: An optional identifier for this operation
