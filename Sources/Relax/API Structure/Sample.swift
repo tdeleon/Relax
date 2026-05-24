@@ -58,7 +58,20 @@ struct MyAPI: API {
     
     var paths: [Path] {
         Path("/users/{id}", summary: "User path", group: "users") {
-            Path.Operation(.get, summary: "Get user by ID") {
+            Path.Operation(.get) {
+                Response(.ok)
+            } body: {
+                ["userID": "123"]
+            }
+
+            Path.Operation(.post, bodyParameter: .json(User.self, name: "user")) {
+                Response(.created)
+            }
+            
+            Path.Operation(.get, bodyParameter: .string(name: "user name"), summary: "Find a user by name") {
+                Response.json(.ok, returning: User.self)
+            }
+            Path.Operation(.get, bodyParameter: .json(User.self, name: "user"), summary: "Get user by ID") {
                 Response.json(.ok, returning: String.self, summary: "Summary") {
                     "A response with a JSON payload"
                 }
@@ -69,9 +82,25 @@ struct MyAPI: API {
                     "Success response"
                 }
                 Self.defaultErrorResponse
+            } tags: {
+                "abc"
             } description: {
                 "A very long description of the /users/{id} path."
             }
+
+            Path.Operation(.get, bodyParameter: .data(name: "abc")) {
+                Response(.ok)
+            } parameters: {
+                Parameter.path("hello")
+            } tags: {
+                Tag("abc")
+            } servers: {
+                Server("test", url: URL(string: "https://test.com")!)
+            } description: {
+                
+            }
+
+
             Path.Operation(.post, summary: "Add a new user") {
                 // payload
                 Response(.ok, summary: "hello")
