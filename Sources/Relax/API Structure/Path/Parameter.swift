@@ -8,20 +8,28 @@
 import Foundation
 
 public struct Parameter: Sendable {
+    /// Describes the location of a parameter
     public enum Location: Sendable {
+        /// A parameter located in the path
         case path
+        /// A parameter located in the query string
         case query
+        /// A parameter located in the header
         case header
+        /// A parameter located in the cookie
         case cookie
     }
     
+    /// The style of how the parameter is sent in a request
     public enum Style: Sendable {
+        /// Styles specific for path parameters
         public enum Path {
             case simple
             case label
             case matrix
         }
         
+        /// Styles specific for query parameters
         public enum Query: Sendable {
             case form
             case spaceDelimited
@@ -29,6 +37,7 @@ public struct Parameter: Sendable {
             case deepObject
         }
         
+        /// Styles specific for cookie parameters
         public enum Cookie: Sendable {
             case cookie
             case form
@@ -55,6 +64,15 @@ public struct Parameter: Sendable {
         self.type = type
     }
     
+    //MARK: Path
+    
+    /// Describes a path parameter
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    /// - Returns: A path parameter description
     public static func path<T: CustomStringConvertible>(
         _ name: String,
         ofType type: T.Type = String.self,
@@ -64,6 +82,16 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .path, description: description, required: true)
     }
     
+    //MARK: Query
+    
+    /// Describes a query parameter of a `CustomStringConvertible` type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
     public static func query<T: CustomStringConvertible>(
         _ name: String,
         ofType type: T.Type = String.self,
@@ -74,6 +102,14 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
+    /// Describes a query parameter of an array of a `CustomStringConvertible` type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
     public static func query<T: CustomStringConvertible>(
         _ name: String,
         ofType type: [T].Type,
@@ -84,6 +120,14 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
+    /// Describes a query parameter of a `RawRepresentable` type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
     public static func query<T: RawRepresentable>(
         _ name: String,
         ofType type: T.Type,
@@ -94,6 +138,14 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
+    /// Describes a query parameter of a dictionary type`
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
     public static func query(
         _ name: String,
         ofType type: [String: any CustomStringConvertible].Type,
@@ -104,6 +156,14 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
+    /// Describes a query parameter of an encodable object type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
     public static func query<T: Encodable>(
         _ name: String,
         ofObjectType type: T.Type,
@@ -114,6 +174,15 @@ public struct Parameter: Sendable {
         self.init(name, ofType: type, in: .query, description: description, required: required)
     }
     
+    //MARK: Header
+    
+    /// Describes a header parameter of a `LosslessStringConvertible` type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - valueType: The type of the parameter
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A header parameter description
     public static func header<T: LosslessStringConvertible>(
         _ name: String,
         valueType: T.Type = String.self,
@@ -123,6 +192,13 @@ public struct Parameter: Sendable {
         self.init(name, ofType: valueType.self, in: .header, description: description, required: required)
     }
     
+    /// Describes a header parameter of an array value type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - valueType: The type of the parameter
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A header parameter description
     public static func header<T: LosslessStringConvertible>(
         _ name: String,
         valueType: [T].Type,
@@ -132,6 +208,15 @@ public struct Parameter: Sendable {
         self.init(name, ofType: valueType.self, in: .header, description: description, required: required)
     }
     
+    //MARK: Cookie
+    
+    /// Describes a cookie parameter of a value type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - valueType: The type of the parameter
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A header parameter description
     public static func cookie<T: LosslessStringConvertible>(
         _ name: String,
         valueType: T.Type = String.self,
@@ -141,6 +226,13 @@ public struct Parameter: Sendable {
         self.init(name, ofType: valueType, in: .cookie, description: description, required: required)
     }
     
+    /// Describes a cookie parameter of a value type array
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - valueType: The type of the parameter
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A header parameter description
     public static func cookie<T: LosslessStringConvertible>(
         _ name: String,
         valueType: [T].Type,
@@ -150,6 +242,7 @@ public struct Parameter: Sendable {
         self.init(name, ofType: valueType, in: .cookie, description: description, required: required)
     }
     
+    //MARK: - Result Builder
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> [Parameter] {

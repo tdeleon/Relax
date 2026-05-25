@@ -17,6 +17,12 @@ public struct Path: Sendable {
     public let servers: [Server]
     public let parameters: [Parameter]
     
+    /// Create a path
+    /// - Parameters:
+    ///   - path: The path string
+    ///   - operations: Operations that exist at this path
+    ///   - parameters: Parameters that apply to all operations on this path
+    ///   - servers: Specific servers to use for operations on this path. Overrides servers defined at the root of the API
     public init(
         _ path: String,
         @OperationsBuilder operations: () -> [HTTPRequest.Method: Operation],
@@ -32,6 +38,15 @@ public struct Path: Sendable {
         self.description = nil
     }
     
+    /// Create a path, grouping operations under a specified name
+    /// - Parameters:
+    ///   - path: The path string
+    ///   - summary: A short summary of the path
+    ///   - group: A name to group operations in this path by
+    ///   - operations: Operations that apply to this path
+    ///   - parameters: Parameters that apply to all operations on this path
+    ///   - servers: Specific servers to use for operations on this path. Overrides servers defined at the root of the API
+    ///   - description: A longer description of the path
     public init(
         _ path: String,
         summary: String? = nil,
@@ -50,6 +65,15 @@ public struct Path: Sendable {
         self.description = description()
     }
     
+    /// Create a path, grouping operations under a specified tag
+    /// - Parameters:
+    ///   - path: The path string
+    ///   - summary: A short summary of the path
+    ///   - tag: A tag to group operations in this path by
+    ///   - operations: Operations that apply to this path
+    ///   - parameters: Parameters that apply to all operations on this path
+    ///   - servers: Specific servers to use for operations on this path. Overrides servers defined at the root of the API
+    ///   - description: A longer description of the path
     public init(
         _ path: String,
         summary: String? = nil,
