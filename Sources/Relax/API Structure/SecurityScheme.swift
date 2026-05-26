@@ -118,7 +118,7 @@ public struct SecurityScheme: Hashable, Sendable {
     /// when ``type`` is ``SecurityType/openIDConnect``.
     public let openIDConnectURL: String?
     /// URL to the [OAuth2 authorization server metadata](https://www.rfc-editor.org/rfc/rfc8414), when ``type`` is
-    /// ``SecurityType/openIDConnect``.
+    /// ``SecurityType/oauth2``.
     public let oauth2MetadataURL: String?
     
     /// Specify API Key scheme
@@ -144,7 +144,7 @@ public struct SecurityScheme: Hashable, Sendable {
         _ scheme: HTTPAuthenticationScheme,
         @DescriptionBuilder description: () -> String? = { nil }
     ) -> Self {
-        self.init(type: .http, scheme: scheme)
+        self.init(type: .http, description: description(), scheme: scheme)
     }
     
     /// Specify Mutual TLS scheme
@@ -207,6 +207,7 @@ public struct SecurityScheme: Hashable, Sendable {
 
 /// Configuration details for a supported OAuth Flow
 public enum OAuthFlow: Hashable, Sendable {
+    /// A result builder for defining an OAuth flow.
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> Set<OAuthFlow> {
