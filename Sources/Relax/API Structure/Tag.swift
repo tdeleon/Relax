@@ -7,10 +7,11 @@
 
 import Foundation
 
-/// Used to group Operations
+/// Defines a Tag used to group Operations
 ///
 /// Tags are arbitrary metadata with a name and optional description. When applied to a ``Path/Operation``, the generated functions will be grouped under
-/// an enum matching the tag name. This overrides the default behavior of grouping by the ``Path``.
+/// an enum matching the tag name. This overrides the default behavior of grouping by the ``Path``. The enum name is derived from the tag’s name
+/// (sanitized and camel-cased).
 public struct Tag: Hashable, Sendable {
     /// The name of the tag
     public let name: String
@@ -36,6 +37,17 @@ public struct Tag: Hashable, Sendable {
 }
 
 extension Tag {
+    /// A result builder to define Tags
+    ///
+    /// Use this result builder to define tags either with explicit tag definitions (with an optional summary), or as simple strings.
+    /// ```
+    /// var tags: [Tag] {
+    ///     Tag("Accounts", summary: "User account operations")
+    ///     "Billing" // Will define a tag as Tag("Billing")
+    /// }
+    /// ```
+    ///
+    /// - Note:This builder is used by the macro at compile time. Optionals, conditionals, and arrays are not supported to ensure deterministic macro expansion.
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> [Tag] {
@@ -56,6 +68,31 @@ extension Tag {
         
         public static func buildExpression(_ expression: StaticString) -> [Tag] {
             [Tag("\(expression)")]
+        }
+        
+        @available(*, unavailable, message: "Optionals are not supported in this builder.")
+        public static func buildOptional(_ component: [Tag]?) -> [Tag] {
+            component ?? []
+        }
+        
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
+        public static func buildEither(first component: [Tag]) -> [Tag] {
+            component
+        }
+        
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
+        public static func buildEither(second component: [Tag]) -> [Tag] {
+            component
+        }
+        
+        @available(*, unavailable, message: "Arrays are not supported in this builder.")
+        public static func buildArray(_ components: [[Tag]]) -> [Tag] {
+            components.flatMap { $0 }
+        }
+        
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
+        public static func buildLimitedAvailability(_ component: [Tag]) -> [Tag] {
+            component
         }
     }
 }

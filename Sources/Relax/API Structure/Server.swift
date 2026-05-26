@@ -208,7 +208,7 @@ extension Server {
     /// }
     ///  ```
     ///
-    /// - Note:Use explicit `Server()` definitions within the builder. Optionals and conditionals are not supported.
+    /// - Note:This builder is used by the macro at compile time. Optionals, conditionals, and arrays are not supported to ensure deterministic macro expansion.
     @resultBuilder
     public enum Builder {
         public static func buildBlock() -> [String: Variable] {
@@ -227,35 +227,35 @@ extension Server {
             accumulated.merging(next) { _, new in new }
         }
         
-        @available(*, unavailable, message: "Use explicit Server() to define servers")
+        @available(*, unavailable, message: "Optionals are not supported in this builder.")
         public static func buildOptional(
             _ component: [String : Server.Variable]?
         ) -> [String : Server.Variable] {
             component ?? [:]
         }
         
-        @available(*, unavailable, message: "Use explicit Server() to define servers")
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
         public static func buildEither(
             first component: [String : Server.Variable]
         ) -> [String : Server.Variable] {
             component
         }
         
-        @available(*, unavailable, message: "Use explicit Server() to define servers")
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
         public static func buildEither(
             second component: [String : Server.Variable]
         ) -> [String : Server.Variable] {
             component
         }
         
-        @available(*, unavailable, message: "Use explicit Server() to define servers")
+        @available(*, unavailable, message: "Arrays are not supported in this builder.")
         public static func buildArray(
             _ components: [[String : Server.Variable]]
         ) -> [String : Server.Variable] {
             components.flatMap { $0 }.reduce(into: [:]) { $0[$1.key] = $1.value }
         }
         
-        @available(*, unavailable, message: "Use explicit Server() to define servers")
+        @available(*, unavailable, message: "Conditionals are not supported in this builder.")
         public static func buildLimitedAvailability(
             _ component: [String : Server.Variable]
         ) -> [String : Server.Variable] {
