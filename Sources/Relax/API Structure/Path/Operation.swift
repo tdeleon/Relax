@@ -30,7 +30,7 @@ extension Path {
             tags: [Tag],
             parameters: [Parameter],
             body: Body,
-            requestBodyParameter: BodyParameter?,
+            bodyParameter: BodyParameter?,
             responses: [Response],
             security: [SecurityScheme],
             servers: [Server]
@@ -42,7 +42,7 @@ extension Path {
             self.tags = tags
             self.parameters = parameters
             self.body = body
-            self.bodyParameter = requestBodyParameter
+            self.bodyParameter = bodyParameter
             self.responses = responses
             self.security = security
             self.servers = servers
@@ -80,7 +80,7 @@ extension Path {
                 tags: tags(),
                 parameters: parameters(),
                 body: Body(data: nil),
-                requestBodyParameter: bodyParameter,
+                bodyParameter: bodyParameter,
                 responses: responses(),
                 security: security(),
                 servers: servers()
@@ -119,7 +119,7 @@ extension Path {
                 tags: tags(),
                 parameters: parameters(),
                 body: body(),
-                requestBodyParameter: nil,
+                bodyParameter: nil,
                 responses: responses(),
                 security: security(),
                 servers: servers()

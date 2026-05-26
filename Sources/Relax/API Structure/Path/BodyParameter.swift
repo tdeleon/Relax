@@ -17,8 +17,8 @@ public struct BodyParameter: Sendable {
     internal let summary: String?
     
     internal enum Payload: @unchecked Sendable {
-        case bytes
-        case json(_ type: any Encodable.Type)
+        case data
+        case json(_ type: Encodable.Type)
         case jsonDictionary
         case text(_ encoding: String.Encoding = .utf8)
     }
@@ -104,7 +104,7 @@ public struct BodyParameter: Sendable {
     ) -> BodyParameter {
         self.init(
             contentType: contentType,
-            payload: .bytes,
+            payload: .data,
             required: required,
             name: name,
             summary: summary

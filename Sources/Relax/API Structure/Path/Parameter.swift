@@ -23,7 +23,11 @@ public struct Parameter: Sendable {
     /// The style of how the parameter is sent in a request
     public enum Style: Sendable {
         /// Styles specific for path parameters
-        public enum Path {
+        case path(Style.Path)
+        case query(Style.Query)
+        case cookie(Style.Cookie)
+        
+        public enum Path: Sendable {
             case simple
             case label
             case matrix
@@ -49,19 +53,25 @@ public struct Parameter: Sendable {
     let description: String?
     let required: Bool
     let type: Any.Type
+    let style: Style?
+    let explode: Bool?
     
     internal init(
         _ name: String,
         ofType type: Any.Type,
         in location: Location,
         description: String? = nil,
-        required: Bool = false
+        required: Bool = false,
+        style: Style? = nil,
+        explode: Bool? = nil
     ) {
         self.name = name
         self.location = location
         self.description = description
         self.required = required
         self.type = type
+        self.style = style
+        self.explode = explode
     }
     
     //MARK: Path
@@ -79,7 +89,7 @@ public struct Parameter: Sendable {
         style: Style.Path = .simple,
         description: String? = nil
     ) -> Parameter {
-        self.init(name, ofType: type, in: .path, description: description, required: true)
+        self.init(name, ofType: type, in: .path, description: description, required: true, style: .path(style))
     }
     
     //MARK: Query
@@ -99,7 +109,7 @@ public struct Parameter: Sendable {
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: type, in: .query, description: description, required: required)
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
     }
     
     /// Describes a query parameter of an array of a `CustomStringConvertible` type
@@ -117,7 +127,7 @@ public struct Parameter: Sendable {
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: type, in: .query, description: description, required: required)
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
     }
     
     /// Describes a query parameter of a `RawRepresentable` type
@@ -134,8 +144,26 @@ public struct Parameter: Sendable {
         style: Style.Query = .form,
         description: String? = nil,
         required: Bool = false
-    ) -> Parameter where T.RawValue == CustomStringConvertible {
-        self.init(name, ofType: type, in: .query, description: description, required: required)
+    ) -> Parameter where T.RawValue: CustomStringConvertible {
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
+    }
+    
+    /// Describes a query parameter of a `RawRepresentable` type
+    /// - Parameters:
+    ///   - name: The parameter name
+    ///   - type: The type of the parameter
+    ///   - style: The style when the parameter is sent in a request
+    ///   - description: A description of the parameter
+    ///   - required: Whether the parameter is required
+    /// - Returns: A query parameter description
+    public static func query<T: RawRepresentable>(
+        _ name: String,
+        ofType type: [T].Type,
+        style: Style.Query = .form,
+        description: String? = nil,
+        required: Bool = false
+    ) -> Parameter where T.RawValue: CustomStringConvertible {
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
     }
     
     /// Describes a query parameter of a dictionary type`
@@ -146,14 +174,14 @@ public struct Parameter: Sendable {
     ///   - description: A description of the parameter
     ///   - required: Whether the parameter is required
     /// - Returns: A query parameter description
-    public static func query(
+    public static func query<T: CustomStringConvertible>(
         _ name: String,
-        ofType type: [String: any CustomStringConvertible].Type,
+        ofType type: [String: T].Type,
         style: Style.Query = .form,
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: type, in: .query, description: description, required: required)
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
     }
     
     /// Describes a query parameter of an encodable object type
@@ -171,7 +199,7 @@ public struct Parameter: Sendable {
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: type, in: .query, description: description, required: required)
+        self.init(name, ofType: type, in: .query, description: description, required: required, style: .query(style))
     }
     
     //MARK: Header
@@ -189,7 +217,7 @@ public struct Parameter: Sendable {
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: valueType.self, in: .header, description: description, required: required)
+        self.init(name, ofType: valueType, in: .header, description: description, required: required)
     }
     
     /// Describes a header parameter of an array value type
@@ -205,7 +233,7 @@ public struct Parameter: Sendable {
         description: String? = nil,
         required: Bool = false
     ) -> Parameter {
-        self.init(name, ofType: valueType.self, in: .header, description: description, required: required)
+        self.init(name, ofType: valueType, in: .header, description: description, required: required)
     }
     
     //MARK: Cookie

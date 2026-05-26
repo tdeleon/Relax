@@ -76,7 +76,7 @@ public struct Server: Sendable {
         self.variables = variables
     }
     
-    /// <#Description#>
+    /// Create a server with variables
     /// - Parameters:
     ///   - name: Name for server
     ///   - url: Base URL for server
@@ -86,10 +86,20 @@ public struct Server: Sendable {
         self.init(name, url: "\(url)", description: description, variables: variables())
     }
     
+    /// Create a server with a URL string
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - url: <#url description#>
+    ///   - description: <#description description#>
     public init(_ name: String, url: String, description: String? = nil) {
         self.init(name, url: url, description: description, variables: [:])
     }
     
+    /// Create a server with a URL
+    /// - Parameters:
+    ///   - name: <#name description#>
+    ///   - url: <#url description#>
+    ///   - description: <#description description#>
     public init(_ name: String, url: URL, description: String? = nil) {
         self.init(name, url: url.absoluteString, description: description)
     }

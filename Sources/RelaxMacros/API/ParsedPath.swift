@@ -210,7 +210,7 @@ internal struct ParsedContent: APIDecl {
             switch type {
             case "empty":
                 self = .empty
-            case "bytes":
+            case "data":
                 self = .bytes
             case "json":
                 guard let arg else { return nil }

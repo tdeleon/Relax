@@ -17,7 +17,7 @@ public struct Body: Hashable, Sendable {
     
     /// Creates a body from an Encodable value encoded as JSON.
     /// - Parameters:
-    ///   - data: Value to encode as JSON.
+    ///   - value: Value to encode as JSON.
     ///   - encoder: An optional JSONEncoder to use for the encoding
     public init<T: Encodable>(_ value: T, encoder: JSONEncoder = JSONEncoder()) {
         self.init(data: try? encoder.encode(value))

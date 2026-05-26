@@ -18,8 +18,9 @@ public struct Response: Sendable {
     
     public enum Payload: @unchecked Sendable {
         case empty
-        case bytes
-        case json(_ type: any Decodable.Type)
+        case data
+        case json(_ type: Decodable.Type)
+        case jsonDictionary
         case text(_ encoding: String.Encoding = .utf8)
     }
     
@@ -38,6 +39,8 @@ public struct Response: Sendable {
         self.accept = accept
         self.content = content
     }
+    
+    //MARK: - JSON
     
     /// A JSON response for an HTTP status
     /// - Parameters:
@@ -133,7 +136,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .jsonDictionary
         )
     }
     
@@ -156,7 +159,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .jsonDictionary
         )
     }
     
@@ -179,9 +182,11 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .jsonDictionary
         )
     }
+    
+    //MARK: Text
     
     /// A text response for an HTTP status
     /// - Parameters:
@@ -276,7 +281,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .data
         )
     }
     
@@ -299,7 +304,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .data
         )
     }
     
@@ -322,7 +327,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .data
         )
     }
     
@@ -387,7 +392,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .jsonDictionary
         )
     }
     
@@ -431,7 +436,7 @@ public struct Response: Sendable {
             accept: accept,
             summary: summary,
             description: description(),
-            content: .bytes
+            content: .data
         )
     }
     
