@@ -1,5 +1,5 @@
 //
-//  Request+Path.swift
+//  Request+Endpoint.swift
 //  Relax
 //
 //  Created by Thomas De Leon on 5/8/26.

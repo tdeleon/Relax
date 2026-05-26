@@ -16,7 +16,7 @@ import Foundation
 /// an argument for the server to use. Each server you define will be mapped to a case in a generated enum.
 ///
 /// You can define a server using a simple name and URL string:
-/// ```
+/// ```swift
 /// var servers: [Server] {
 ///     Server("Prod", url: "https://prod.example.com", description: "Prod server")
 ///     Server("Stage", url: "https://stage.example.com", description: "Staging server")
@@ -29,8 +29,7 @@ import Foundation
 ///
 /// You can also define variables within the URL string within curly braces, with matching definitions with ``Server/Variable``. Variables can be any type with
 /// string representation.
-/// ```
-///
+/// ```swift
 /// @API
 /// struct MyAPI {
 ///     enum Region: String {
@@ -149,7 +148,7 @@ public struct Server: Sendable {
     /// Variable names should match placeholder names in the `url` string in braces. If a variable is defined in the `variables` builder without being used,
     /// it will be ignored. Variable types can be a simple string value, or any type which can be represented by a string.
     ///
-    /// ```
+    /// ```swift
     /// enum Region: String {
     ///     case east
     ///     case west
@@ -170,7 +169,7 @@ public struct Server: Sendable {
     ///   - description: A short description of the server
     ///
     /// Use this initializer to define a server with a URL string, without any variables:
-    ///  ```
+    ///  ```swift
     ///  Server("Prod", url: "https://prod.example.com")
     ///  ```
     public init(_ name: String, url: String, description: String? = nil) {
@@ -184,7 +183,7 @@ public struct Server: Sendable {
     ///   - description: A short description of the server
     ///
     /// Use this initializer to define a server with a URL, without any variables
-    ///  ```
+    ///  ```swift
     ///  let url = URL(string: "https://example.com")!
     ///  Server("Prod", url: url)
     ///  ```
@@ -199,7 +198,7 @@ extension Server {
     /// A result builder to define servers.
     ///
     /// Use this result builder to define one or more servers that the API can use.
-    /// ```
+    /// ```swift
     /// var servers: [Server] {
     ///     Server("Prod", url: "https://prod-{region}.example.com", description: "Prod server") {
     ///         Server.Variable("region", type: Region.self, defaultValue: .east, description: "The region to use")

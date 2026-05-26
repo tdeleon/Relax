@@ -74,7 +74,7 @@ public struct Parameter: Sendable {
         self.explode = explode
     }
     
-    //MARK: Path
+    //MARK: Endpoint
     
     /// Describes a path parameter
     /// - Parameters:

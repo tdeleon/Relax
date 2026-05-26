@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Defines a security scheme that can be used by an ``Path/Operation``.
+/// Defines a security scheme that can be used by an ``Endpoint/Operation``.
 ///
 /// Use the ``SecurityScheme`` to define how security is applied on various `Operations`. Supported ``SecurityType`` schemes include:
 ///  - ``SecurityType/apiKey``

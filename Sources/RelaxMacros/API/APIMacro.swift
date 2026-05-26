@@ -45,7 +45,7 @@ package struct APIMacro: ExtensionMacro, MemberMacro {
         // parse security
         let security = parseSecurity(members, in: context)
         
-        // parse paths
+        // parse endpoints
         let paths = parsePaths(members, in: context)
         
         return [try ServerDecl.serverExtensionDecl(for: servers, on: declarationName!)]
@@ -109,7 +109,7 @@ package struct APIMacro: ExtensionMacro, MemberMacro {
     }
     
     internal static func parsePaths(_ members: [VariableDeclSyntax], in context: MacroExpansionContext) -> [ParsedPath] {
-        guard let functionCallExpr = parseComputedResultBuilder(members, identifier: "paths", type: "Path")
+        guard let functionCallExpr = parseComputedResultBuilder(members, identifier: "endpoints", type: "Endpoint")
         else { return [] }
         let paths = functionCallExpr.lines.compactMap { ParsedPath.from($0, in: context) }
         return paths

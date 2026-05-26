@@ -28,6 +28,6 @@ import Foundation
 /// to a parent ``APIComponent`` by specifying it as a generic type.
 ///
 /// - Parameter path: The path of the endpoint which all child ``Request``s or ``Endpoint``s will inherit.
-@attached(extension, conformances: Endpoint, names: named(Parent), named(path))
+@attached(extension, conformances: EndpointOld, names: named(Parent), named(path))
 public macro APIEndpoint<APIComponent>(_ path: String) = #externalMacro(module: "RelaxMacros", type: "APIEndpointMacro")
 #endif

@@ -9,8 +9,8 @@ import Foundation
 
 /// Defines a Tag used to group Operations
 ///
-/// Tags are arbitrary metadata with a name and optional description. When applied to a ``Path/Operation``, the generated functions will be grouped under
-/// an enum matching the tag name. This overrides the default behavior of grouping by the ``Path``. The enum name is derived from the tag’s name
+/// Tags are arbitrary metadata with a name and optional description. When applied to a ``Endpoint/Operation``, the generated functions will be grouped under
+/// an enum matching the tag name. This overrides the default behavior of grouping by the ``Endpoint``. The enum name is derived from the tag’s name
 /// (sanitized and camel-cased).
 public struct Tag: Hashable, Sendable {
     /// The name of the tag
@@ -40,7 +40,7 @@ extension Tag {
     /// A result builder to define Tags
     ///
     /// Use this result builder to define tags either with explicit tag definitions (with an optional summary), or as simple strings.
-    /// ```
+    /// ```swift
     /// var tags: [Tag] {
     ///     Tag("Accounts", summary: "User account operations")
     ///     "Billing" // Will define a tag as Tag("Billing")

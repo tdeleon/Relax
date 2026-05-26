@@ -45,8 +45,8 @@ struct APIMacroTests {
                     }
                 }
                 
-                var paths: [Path] {
-                    Path("/users/{id}", summary: "User path") {
+                var endpoints: [Endpoint] {
+                    Endpoint("/users/{id}", summary: "User path") {
                         Path.Operation(.get) {
                             Response(.code(500), summary: "Summary") {
                                 Response.Content.jsonDictionary()
@@ -98,9 +98,9 @@ struct APIMacroTests {
                     }
                 }
                 
-                var paths: [Path] {
-                    Path("/users/{id}", summary: "User path") {
-                        Path.Operation(.get) {
+                var endpoints: [Endpoint] {
+                    Endpoint("/users/{id}", summary: "User path") {
+                        Endpoint.Operation(.get) {
                             Response(.code(500), summary: "Summary") {
                                 Response.Content.jsonDictionary()
                                 Response.Content.text(.utf8)

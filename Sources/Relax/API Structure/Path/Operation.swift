@@ -8,7 +8,7 @@
 import Foundation
 import HTTPTypes
 
-extension Path {
+extension Endpoint {
     public struct Operation: Sendable {
         public let method: HTTPRequest.Method
         public let id: String?

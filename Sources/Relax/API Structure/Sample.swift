@@ -56,22 +56,36 @@ struct MyAPI: API {
     
     nonisolated static let navigationTag = Tag("nav")
     
-    var paths: [Path] {
-        Path("/users/{id}", summary: "User path", group: "users") {
-            Path.Operation(.get) {
+    var endpoints: [Endpoint] {
+        Endpoint("/users/") {
+            Endpoint.Operation(.get) {
+                Response.json(.ok, returning: User.self)
+            }
+        } parameters: {
+            Parameter.query("id", ofType: Int.self)
+        }
+
+        Endpoint("/users/{id}", summary: "User path", group: "users") {
+            Endpoint.Operation(.get) {
                 Response(.ok)
             } body: {
                 ["userID": "123"]
             }
+            
+            Endpoint.Operation(.get) {
+                Response.json(.ok, returning: User.self)
+            } parameters: {
+                Parameter.path("id", ofType: Int.self)
+            }
 
-            Path.Operation(.post, bodyParameter: .json(User.self, name: "user")) {
+            Endpoint.Operation(.post, bodyParameter: .json(User.self, name: "user")) {
                 Response(.created)
             }
             
-            Path.Operation(.get, bodyParameter: .string(name: "user name"), summary: "Find a user by name") {
+            Endpoint.Operation(.get, bodyParameter: .string(name: "user name"), summary: "Find a user by name") {
                 Response.json(.ok, returning: User.self)
             }
-            Path.Operation(.get, bodyParameter: .json(User.self, name: "user"), summary: "Get user by ID") {
+            Endpoint.Operation(.get, bodyParameter: .json(User.self, name: "user"), summary: "Get user by ID") {
                 Response.json(.ok, returning: String.self, summary: "Summary") {
                     "A response with a JSON payload"
                 }
@@ -88,7 +102,7 @@ struct MyAPI: API {
                 "A very long description of the /users/{id} path."
             }
 
-            Path.Operation(.get, bodyParameter: .data(name: "abc")) {
+            Endpoint.Operation(.get, bodyParameter: .data(name: "abc")) {
                 Response(.ok)
             } parameters: {
                 Parameter.path("hello")
@@ -101,7 +115,7 @@ struct MyAPI: API {
             }
 
 
-            Path.Operation(.post, summary: "Add a new user") {
+            Endpoint.Operation(.post, summary: "Add a new user") {
                 // payload
                 Response(.ok, summary: "hello")
                 Response(.ok, accept: .wildcard)
@@ -126,8 +140,8 @@ struct MyAPI: API {
             "A longer description of the /users/{id} path."
         }
         
-        Path("/user/{id}", summary: "Short summary", group: "users") {
-            Path.Operation(.get) {
+        Endpoint("/user/{id}", summary: "Short summary", group: "users") {
+            Endpoint.Operation(.get) {
                 Response(.ok)
             } parameters: {
                 Parameter.path("id", ofType: Int.self, description: "The user ID")
@@ -146,11 +160,11 @@ struct MyAPI: API {
             "Longer description here."
         }
         
-        Path("/users/{id}") {
-            Path.Operation(.get) {
+        Endpoint("/users/{id}") {
+            Endpoint.Operation(.get) {
                 Response.json(.ok, returning: User.self)
             }
-            Path.Operation(.post) {
+            Endpoint.Operation(.post) {
                 Response(.ok) {
                     
                 }
@@ -159,14 +173,14 @@ struct MyAPI: API {
                 Parameter.query("uuids", ofType: [UUID].self)
             }
             
-            Path.Operation(.delete, summary: "short summary") {
+            Endpoint.Operation(.delete, summary: "short summary") {
                 
             } description: {
                 "Longer description here"
                 "adfsf"
             }
 
-            Path.Operation(.patch, summary: "Patch a user") {
+            Endpoint.Operation(.patch, summary: "Patch a user") {
                 Response.data(.ok) {
                     "Success response"
                 }
